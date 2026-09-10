@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hostelería Pro - Pedidos</title>
+  <!-- VERSION: 2026-09-11-B (botones cliente + contabilidad pedidos pagados) -->
   <style>
     :root {
       --bg-primary: #0a0a0f;
@@ -538,6 +539,7 @@
           </div>
           <button class="btn btn-secondary btn-sm" onclick="toggleDebug()">Mostrar/Ocultar</button>
         </div>
+        <div class="small" style="color: var(--text-muted); margin-bottom: 6px;">Versión: 2026-09-11 B</div>
         <div id="debugPanel" class="debug-panel hidden">
           <div class="debug-line">Iniciando diagnóstico...</div>
         </div>
@@ -671,6 +673,7 @@
         <div class="total-mesa-value" id="totalMesaValue">0,00 €</div>
       </div>
 
+      <!-- BOTONES DE ACCIÓN DEL CLIENTE (llamar camarero / pedir cuenta) -->
       <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
         <button class="btn btn-primary btn-block" onclick="toggleClientOrders()">
           🍽️ Ver carta y pedir
@@ -922,7 +925,7 @@
     function estadoLabel(estado) {
       var estados = {
         RECIBIDO: '📥 Recibido',
-        EN_PREPARACION: '👨‍🍳 En preparación',
+        EN_PREPARACION: '👨‍ En preparación',
         LISTO: '✅ Listo',
         ENTREGADO: '📦 Entregado',
         CANCELADO: '❌ Cancelado',
@@ -1429,9 +1432,6 @@
       if (e4) e4.textContent = mesas.length;
     }
 
-    // ============================================================
-    // CAMBIO 2 APLICADO: renderCuentasMesas con bloqueo de cobro
-    // ============================================================
     function renderCuentasMesas() {
       var box = document.getElementById('cuentasMesas');
       if (!box) {
@@ -1520,9 +1520,6 @@
       box.innerHTML = html;
     }
 
-    // ============================================================
-    // CAMBIO 1 APLICADO: el botón Pagado ya NO aparece en LISTO
-    // ============================================================
     function renderStaffOrders() {
       var box = document.getElementById('staffOrders');
       if (!box) return;
@@ -1918,10 +1915,19 @@
       });
     }
 
+    // ============================================================
+    // CAMBIO: cambiarEstado ahora registra el pago en contabilidad
+    // cuando un pedido pasa a PAGADO (antes solo lo hacía "Cobrar mesa")
+    // ============================================================
     function cambiarEstado(orderId, estado) {
       if (!requireFirebase()) return;
 
       debugLog('cambiarEstado: pedido ' + orderId + ' -> ' + estado, 'info');
+
+      var ordenPrevia = null;
+      for (var i = 0; i < orders.length; i++) {
+        if (orders[i].id === orderId) { ordenPrevia = orders[i]; break; }
+      }
 
       db.ref('pedidos/' + orderId).update({
         estado: estado,
@@ -1929,15 +1935,32 @@
       }).then(function() {
         debugLog('cambiarEstado: estado actualizado correctamente', 'success');
         showToast('✅ Estado actualizado a ' + estadoLabel(estado), 'success');
+
+        if (estado === 'PAGADO' && ordenPrevia && ordenPrevia.estado !== 'PAGADO') {
+          var totalOrden = ordenPrevia.totalPedido || extraerTotalPedido(ordenPrevia.items);
+          var nowPago = new Date();
+          var pagoId = newId();
+
+          db.ref('pagos/' + pagoId).set({
+            fecha: nowPago.toISOString().slice(0, 10),
+            hora: nowPago.toTimeString().slice(0, 5),
+            timestamp: nowPago.getTime(),
+            mesa: ordenPrevia.mesa || 'S/M',
+            total: Math.round(totalOrden * 100) / 100,
+            numPedidos: 1,
+            origen: 'pedido_individual'
+          }).then(function() {
+            debugLog('Pago registrado en contabilidad por pedido ' + orderId, 'success');
+          }).catch(function(e) {
+            debugLog('Error registrando pago individual: ' + e.message, 'error');
+          });
+        }
       }).catch(function(e) {
         debugLog('cambiarEstado: ERROR - ' + e.message, 'error');
         showToast('❌ Error: ' + e.message, 'error');
       });
     }
 
-    // ============================================================
-    // CAMBIO 3 APLICADO: cobrarMesa valida que todo esté ENTREGADO
-    // ============================================================
     function cobrarMesa(mesaEncoded) {
       var mesa = decodeURIComponent(mesaEncoded);
       debugLog('cobrarMesa: iniciando cobro para mesa "' + mesa + '"', 'info');
@@ -1957,7 +1980,6 @@
         return;
       }
 
-      // VALIDACIÓN: no se puede cobrar si hay pedidos sin entregar
       var noEntregados = pedidosMesa.filter(function(o) { return o.estado !== 'ENTREGADO'; });
       if (noEntregados.length) {
         var detalle = noEntregados.map(function(o) { return estadoLabel(o.estado); }).join(', ');
