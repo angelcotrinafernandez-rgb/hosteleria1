@@ -194,25 +194,46 @@
 
     .qr-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 10px;
-      margin-top: 10px;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
     }
 
     .qr-card {
       border: 1px solid #334155;
       border-radius: 12px;
-      padding: 10px;
+      padding: 12px;
       text-align: center;
       background: #020617;
     }
 
-    .qr-card canvas, .qr-card img {
-      width: 140px;
-      height: 140px;
+    .qr-card canvas,
+    .qr-card img {
+      width: 150px !important;
+      height: 150px !important;
       background: white;
-      padding: 6px;
+      padding: 8px;
       border-radius: 8px;
+      display: inline-block;
+    }
+
+    .qr-card h3 {
+      margin: 8px 0 4px 0;
+      font-size: 16px;
+    }
+
+    .qr-actions {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .qr-actions button {
+      font-size: 12px;
+      padding: 6px 10px;
+      margin: 0;
     }
   </style>
 </head>
@@ -263,15 +284,17 @@
     <section id="adminPanel" class="hidden">
 
       <div class="card">
-        <h2>Códigos QR de mesas</h2>
+        <h2>📱 Códigos QR de mesas</h2>
         <div class="small">
           Cada mesa tiene su propio QR. El cliente escanea y el sistema detecta la mesa automáticamente.
         </div>
+
         <div class="row" style="margin-top:10px;">
-          <button onclick="imprimirTodosQR()">Imprimir todos los QR</button>
-          <button class="secondary" onclick="mostrarQRPanel()">Ver QR</button>
+          <button onclick="mostrarTodosQR()">📋 Ver todos los QR</button>
+          <button class="secondary" onclick="imprimirTodosQR()">🖨️ Imprimir todos</button>
         </div>
-        <div id="qrPreview" class="hidden" style="margin-top:10px;"></div>
+
+        <div id="qrPreview" class="hidden" style="margin-top:12px;"></div>
       </div>
 
       <div class="card">
@@ -318,7 +341,7 @@
       <div class="card">
         <h2>Cliente</h2>
 
-        <div id="mesaDetectada" class="pill" style="margin-bottom:10px; display:none;"></div>
+        <div id="mesaDetectada" class="pill" style="margin-bottom:10px; display:none; background:#065f46; color:#d1fae5; border-color:#10b981;"></div>
 
         <button id="btnPedidos" class="big">Pedidos</button>
         <button id="btnLlamar" class="big secondary">Llamar al camarero</button>
@@ -423,7 +446,6 @@
 
     let role = "menu";
 
-    // Si la URL trae ?mesa=..., forzar modo cliente
     if (mesaParam) {
       role = "cliente";
       localStorage.setItem(MESA_PARAM_KEY, mesaParam);
@@ -590,9 +612,14 @@
         if (mesaFija) {
           document.getElementById("mesa").value = mesaFija;
           const badge = document.getElementById("mesaDetectada");
-          badge.textContent = "Mesa detectada: " + mesaFija;
+          badge.textContent = "✓ Mesa detectada: " + mesaFija;
           badge.style.display = "inline-block";
           document.getElementById("mesa").readOnly = true;
+
+          // Abrir automáticamente la sección de pedidos
+          setTimeout(() => {
+            document.getElementById("clientOrdersCard").classList.remove("hidden");
+          }, 300);
         }
       } else {
         staffPanel.classList.remove("hidden");
@@ -613,68 +640,138 @@
       return base + "?vista=cliente&mesa=" + encodeURIComponent(nombreMesa);
     }
 
-    function generarQRIndividual(container, nombreMesa) {
+    function generarQREnElemento(container, url) {
       container.innerHTML = "";
-      const url = urlQR(nombreMesa);
 
-      if (typeof QRCode !== "undefined") {
-        new QRCode(container, {
+      if (typeof QRCode === "undefined") {
+        container.innerHTML = '<div class="small">Librería QR no cargada</div>';
+        return null;
+      }
+
+      try {
+        const qr = new QRCode(container, {
           text: url,
-          width: 140,
-          height: 140,
+          width: 150,
+          height: 150,
           colorDark: "#000000",
           colorLight: "#ffffff",
           correctLevel: QRCode.CorrectLevel.M
         });
+        return qr;
+      } catch (e) {
+        container.innerHTML = '<div class="small">Error generando QR</div>';
+        return null;
       }
     }
 
-    function mostrarQRPanel() {
+    function mostrarTodosQR() {
       const preview = document.getElementById("qrPreview");
 
       if (!mesas.length) {
         preview.classList.remove("hidden");
-        preview.innerHTML = '<div class="small">Primero añade mesas.</div>';
+        preview.innerHTML = '<div class="small">Primero añade mesas en la sección de abajo.</div>';
         return;
       }
 
       preview.classList.remove("hidden");
-      preview.innerHTML = '<div class="qr-grid" id="qrGridPreview"></div>';
+
+      const html = `
+        <div class="row" style="margin-bottom:10px;">
+          <button class="secondary" onclick="document.getElementById('qrPreview').classList.add('hidden')">✕ Cerrar vista QR</button>
+        </div>
+        <div class="qr-grid" id="qrGridPreview"></div>
+      `;
+
+      preview.innerHTML = html;
 
       const grid = document.getElementById("qrGridPreview");
 
-      mesas.forEach(m => {
+      mesas.forEach((m, idx) => {
+        const nombre = m.nombre || "";
+        const url = urlQR(nombre);
+
         const card = document.createElement("div");
         card.className = "qr-card";
         card.innerHTML = `
-          <div class="qr-canvas"></div>
-          <div class="small" style="margin-top:6px;"><strong>${escapeHtml(m.nombre || "")}</strong></div>
-          <button class="secondary" style="margin-top:6px; font-size:12px; padding:6px 10px;" onclick="descargarQRMesa('${escapeHtml(m.nombre || "").replace(/'/g, "\\'")}')">Descargar</button>
+          <div class="qr-canvas" id="qr-${idx}"></div>
+          <h3>${escapeHtml(nombre)}</h3>
+          <div class="small" style="color:#94a3b8;">Mesa ${idx + 1}</div>
+          <div class="qr-actions">
+            <button onclick="descargarQRMesa('${escapeHtml(nombre).replace(/'/g, "\\'")}', ${idx})">⬇ Descargar</button>
+            <button class="secondary" onclick="copiarURLMesa('${escapeHtml(url).replace(/'/g, "\\'")}')">📋 Copiar URL</button>
+          </div>
         `;
         grid.appendChild(card);
-      });
 
-      grid.querySelectorAll(".qr-card").forEach((card, idx) => {
-        const canvasDiv = card.querySelector(".qr-canvas");
-        generarQRIndividual(canvasDiv, mesas[idx].nombre || "");
+        // Generar QR después de añadir al DOM
+        setTimeout(() => {
+          const canvasDiv = document.getElementById("qr-" + idx);
+          if (canvasDiv) {
+            generarQREnElemento(canvasDiv, url);
+          }
+        }, 50);
       });
     }
 
-    function descargarQRMesa(nombreMesa) {
-      const tmp = document.createElement("div");
-      document.body.appendChild(tmp);
-      generarQRIndividual(tmp, nombreMesa);
+    function descargarQRMesa(nombreMesa, idx) {
+      const canvasDiv = document.getElementById("qr-" + idx);
+      if (!canvasDiv) {
+        showToast("QR no encontrado. Vuelve a mostrar los QR.");
+        return;
+      }
 
-      setTimeout(() => {
-        const canvas = tmp.querySelector("canvas");
-        if (canvas) {
-          const link = document.createElement("a");
-          link.download = "QR_" + (nombreMesa || "mesa").replace(/\s+/g, "_") + ".png";
-          link.href = canvas.toDataURL("image/png");
-          link.click();
-        }
-        tmp.remove();
-      }, 300);
+      const canvas = canvasDiv.querySelector("canvas");
+      const img = canvasDiv.querySelector("img");
+
+      let dataURL = null;
+
+      if (canvas) {
+        dataURL = canvas.toDataURL("image/png");
+      } else if (img && img.src) {
+        dataURL = img.src;
+      }
+
+      if (!dataURL) {
+        showToast("No se pudo obtener la imagen del QR");
+        return;
+      }
+
+      const link = document.createElement("a");
+      link.download = "QR_" + (nombreMesa || "mesa").replace(/\s+/g, "_") + ".png";
+      link.href = dataURL;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      showToast("QR descargado: " + nombreMesa);
+    }
+
+    function copiarURLMesa(url) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(() => {
+          showToast("URL copiada al portapapeles");
+        }).catch(() => {
+          fallbackCopy(url);
+        });
+      } else {
+        fallbackCopy(url);
+      }
+    }
+
+    function fallbackCopy(text) {
+      const textarea = document.createElement("textarea");
+      textarea.value = text;
+      textarea.style.position = "fixed";
+      textarea.style.opacity = "0";
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand("copy");
+        showToast("URL copiada");
+      } catch (e) {
+        showToast("No se pudo copiar");
+      }
+      document.body.removeChild(textarea);
     }
 
     function imprimirTodosQR() {
@@ -690,47 +787,74 @@
       }
 
       const base = location.origin + location.pathname;
+      const mesasData = JSON.stringify(mesas.map(m => m.nombre || ""));
 
       const html = `
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>QR Mesas</title>
+<title>QR Mesas - Imprimir</title>
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"><\/script>
 <style>
-  body { font-family: Arial, sans-serif; padding: 20px; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background: white;
+    color: black;
+  }
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 28px;
+  }
   .grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 30px;
   }
   .qr-card {
-    border: 2px dashed #888;
+    border: 3px dashed #888;
     border-radius: 16px;
-    padding: 20px;
+    padding: 24px;
     text-align: center;
     page-break-inside: avoid;
+    background: white;
   }
-  .qr-canvas { display: inline-block; }
-  .qr-card h2 { margin: 10px 0 0 0; font-size: 24px; }
-  .qr-card .sub { font-size: 14px; color: #555; margin-top: 4px; }
+  .qr-canvas {
+    display: inline-block;
+  }
+  .qr-card h2 {
+    margin: 16px 0 4px 0;
+    font-size: 26px;
+  }
+  .qr-card .sub {
+    font-size: 16px;
+    color: #555;
+    margin-top: 4px;
+  }
+  .qr-card .instruccion {
+    font-size: 14px;
+    color: #777;
+    margin-top: 8px;
+    font-style: italic;
+  }
   @media print {
     body { padding: 0; }
-    .grid { gap: 15px; }
+    .grid { gap: 20px; }
   }
 </style>
 </head>
 <body>
-<h1 style="text-align:center;">Códigos QR de mesas</h1>
+<h1>🍽️ Códigos QR de Mesas</h1>
 <div class="grid" id="grid"></div>
 <script>
-  const mesas = ${JSON.stringify(mesas.map(m => m.nombre || ""))};
+  const mesas = ${mesasData};
   const base = "${base}";
-
   const grid = document.getElementById("grid");
 
-  mesas.forEach(nombre => {
+  mesas.forEach((nombre, idx) => {
     const url = base + "?vista=cliente&mesa=" + encodeURIComponent(nombre);
 
     const card = document.createElement("div");
@@ -738,7 +862,8 @@
     card.innerHTML =
       '<div class="qr-canvas"></div>' +
       '<h2>' + nombre + '</h2>' +
-      '<div class="sub">Escanea para pedir</div>';
+      '<div class="sub">Mesa ' + (idx + 1) + '</div>' +
+      '<div class="instruccion">Escanea para ver la carta y pedir</div>';
     grid.appendChild(card);
 
     new QRCode(card.querySelector(".qr-canvas"), {
@@ -751,7 +876,9 @@
     });
   });
 
-  setTimeout(() => window.print(), 800);
+  setTimeout(() => {
+    window.print();
+  }, 1000);
 <\/script>
 </body>
 </html>
@@ -850,22 +977,28 @@
       if (!box) return;
 
       if (!mesas.length) {
-        box.innerHTML = '<div class="small">No hay mesas.</div>';
+        box.innerHTML = '<div class="small">No hay mesas. Añade mesas para generar sus QR.</div>';
         return;
       }
 
-      box.innerHTML = mesas.map(m => {
+      box.innerHTML = mesas.map((m, idx) => {
         return `
           <div class="order">
-            <div>${escapeHtml(m.nombre || "")}</div>
+            <div><strong>${escapeHtml(m.nombre || "")}</strong></div>
             <div class="row">
-              <button class="secondary" onclick="renombrarMesa('${m.id}')">Renombrar</button>
-              <button class="secondary" onclick="descargarQRMesa('${escapeHtml(m.nombre || "").replace(/'/g, "\\'")}')">QR</button>
-              <button class="danger" onclick="eliminarMesa('${m.id}')">Eliminar</button>
+              <button class="secondary" onclick="renombrarMesa('${m.id}')">✏️ Renombrar</button>
+              <button onclick="mostrarYDescargarQR('${escapeHtml(m.nombre || "").replace(/'/g, "\\'")}', '${m.id}')">📱 QR</button>
+              <button class="danger" onclick="eliminarMesa('${m.id}')">🗑️ Eliminar</button>
             </div>
           </div>
         `;
       }).join("");
+    }
+
+    function mostrarYDescargarQR(nombreMesa, mesaId) {
+      // Mostrar todos los QR y hacer scroll hasta la sección
+      mostrarTodosQR();
+      document.getElementById("qrPreview").scrollIntoView({ behavior: "smooth" });
     }
 
     function renderCamarerosAdmin() {
@@ -1029,7 +1162,7 @@
           <div class="order">
             <div>
               <strong>Pedido ${escapeHtml(order.id.slice(-6))}</strong>
-              · <strong>Mesa ${escapeHtml(order.mesa || "S/M")}</strong>
+              · <strong style="color:#fbbf24;">Mesa ${escapeHtml(order.mesa || "S/M")}</strong>
               · ${formatTime(order.createdAtLocal)}
             </div>
 
@@ -1072,7 +1205,7 @@
           <div class="order">
             <div>
               <strong>${alertLabel(alert.tipo)}</strong>
-              · <strong>Mesa ${escapeHtml(alert.mesa || "S/M")}</strong>
+              · <strong style="color:#fbbf24;">Mesa ${escapeHtml(alert.mesa || "S/M")}</strong>
               · ${formatTime(alert.createdAtLocal)}
             </div>
             <div class="small">${alert.atendida ? "Atendida" : "Pendiente"}</div>
@@ -1239,7 +1372,7 @@
         cart = [];
         document.getElementById("manualItems").value = "";
         renderCart();
-        showToast("Pedido enviado desde mesa " + mesa);
+        showToast("✓ Pedido enviado desde mesa " + mesa);
       } catch (e) {
         showToast("Error al crear pedido: " + e.message);
       }
@@ -1302,9 +1435,9 @@
         });
 
         if (tipo === "PEDIR_CUENTA") {
-          showToast("Cuenta solicitada desde mesa " + mesa);
+          showToast("✓ Cuenta solicitada desde mesa " + mesa);
         } else {
-          showToast("Camarero avisado desde mesa " + mesa);
+          showToast("✓ Camarero avisado desde mesa " + mesa);
         }
       } catch (e) {
         showToast("Error al enviar aviso: " + e.message);
@@ -1350,7 +1483,7 @@
         });
 
         document.getElementById("nuevaMesa").value = "";
-        showToast("Mesa añadida");
+        showToast("✓ Mesa añadida: " + nombre);
       } catch (e) {
         showToast("Error al añadir mesa: " + e.message);
       }
@@ -1810,7 +1943,8 @@
         "productosClienteList",
         "productoNombre",
         "productoFoto",
-        "cartList"
+        "cartList",
+        "qrPreview"
       ];
 
       addResult("Interfaz necesaria", ids.every(id => !!document.getElementById(id)));
@@ -1832,7 +1966,9 @@
         "Funciones QR",
         typeof imprimirTodosQR === "function" &&
         typeof descargarQRMesa === "function" &&
-        typeof mostrarQRPanel === "function"
+        typeof mostrarTodosQR === "function" &&
+        typeof urlQR === "function" &&
+        typeof generarQREnElemento === "function"
       );
 
       if (firebaseReady && db) {
@@ -1867,7 +2003,7 @@
       }).join("");
 
       if (!failures.length) {
-        showToast("Diagnóstico correcto: 0 fallos detectados");
+        showToast("✓ Diagnóstico correcto: 0 fallos detectados");
       } else {
         showToast("Diagnóstico con " + failures.length + " fallos");
       }
