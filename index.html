@@ -900,7 +900,7 @@
 
     function escapeHtmlLines(value) {
       if (!value) return '';
-      return escapeHtml(value).replace(/\n/g, '<br>');
+      return escapeHtml(String(value)).replace(/\n/g, '<br>');
     }
 
     function nowLocal() {
@@ -947,8 +947,20 @@
       return n.toFixed(2).replace('.', ',') + ' €';
     }
 
+    // ============================================================
+    // FUNCIÓN CORREGIDA: extraerTotalPedido
+    // Antes fallaba porque items podía ser un objeto en vez de string
+    // ============================================================
     function extraerTotalPedido(items) {
       if (!items) return 0;
+      if (typeof items !== 'string') {
+        // Si items es un objeto o array, intentar convertirlo a string
+        try {
+          items = String(items);
+        } catch (e) {
+          return 0;
+        }
+      }
       var match = items.match(/Total:\s*([\d.,]+)\s*€/);
       if (match) {
         return parseFloat(match[1].replace(',', '.'));
@@ -1516,7 +1528,7 @@
         var botones = '';
 
         if (order.estado === 'RECIBIDO') {
-          botones += '<button class="btn btn-secondary btn-sm" onclick="cambiarEstado(\'' + order.id + '\', \'EN_PREPARACION\')">👨‍🍳 Preparar</button>';
+          botones += '<button class="btn btn-secondary btn-sm" onclick="cambiarEstado(\'' + order.id + '\', \'EN_PREPARACION\')">👨‍ Preparar</button>';
         }
 
         if (order.estado === 'EN_PREPARACION') {
@@ -2284,7 +2296,6 @@
 
       debugLog('Iniciando suscripciones para rol: ' + role, 'info');
 
-      // Mesas
       db.ref('mesas').on('value', function(snapshot) {
         var data = snapshot.val() || {};
         mesas = Object.keys(data).map(function(id) {
@@ -2302,7 +2313,6 @@
         debugLog('Error en suscripción mesas: ' + error.message, 'error');
       });
 
-      // Productos
       if (role === 'cliente' || role === 'admin') {
         db.ref('productos').on('value', function(snapshot) {
           var data = snapshot.val() || {};
@@ -2322,7 +2332,6 @@
         });
       }
 
-      // Pedidos
       if (role === 'cliente') {
         db.ref('pedidos').on('value', function(snapshot) {
           var data = snapshot.val() || {};
@@ -2410,7 +2419,6 @@
           debugLog('Error en suscripción camareros: ' + error.message, 'error');
         });
 
-        // Pagos
         db.ref('pagos').on('value', function(snapshot) {
           var data = snapshot.val() || {};
           pagos = Object.keys(data).map(function(id) {
