@@ -3,407 +3,1124 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pedidos Restaurante QR</title>
+  <title>Hostelería Pro - Pedidos</title>
   <style>
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: #0f172a;
-      color: #e5e7eb;
+    :root {
+      --bg-primary: #0a0a0f;
+      --bg-secondary: #13131a;
+      --bg-card: #1a1a24;
+      --bg-card-hover: #22222e;
+      --border: #2a2a38;
+      --text-primary: #f4f4f5;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+      --accent-gold: #f59e0b;
+      --accent-gold-dark: #d97706;
+      --accent-green: #10b981;
+      --accent-green-dark: #059669;
+      --accent-blue: #3b82f6;
+      --accent-red: #ef4444;
+      --accent-purple: #8b5cf6;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.4), 0 2px 4px -1px rgba(0,0,0,0.3);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.5), 0 4px 6px -2px rgba(0,0,0,0.4);
+      --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.6), 0 10px 10px -5px rgba(0,0,0,0.5);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 20px;
     }
 
-    header {
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    /* Header */
+    .header {
       position: sticky;
       top: 0;
-      z-index: 10;
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      flex-wrap: wrap;
-      padding: 12px;
-      background: rgba(2, 6, 23, 0.92);
-      border-bottom: 1px solid #334155;
-    }
-
-    main {
-      max-width: 980px;
-      margin: 0 auto;
-      padding: 16px;
-    }
-
-    .card {
-      background: #111827;
-      border: 1px solid #334155;
-      border-radius: 16px;
-      padding: 14px;
-      margin-bottom: 14px;
-    }
-
-    button {
-      border: 0;
-      border-radius: 12px;
-      padding: 10px 12px;
-      background: #2563eb;
-      color: white;
-      font-weight: 700;
-      margin: 4px 4px 4px 0;
-      cursor: pointer;
-    }
-
-    button.secondary {
-      background: #334155;
-      color: #e5e7eb;
-    }
-
-    button.active {
-      background: #22c55e;
-    }
-
-    button.big {
-      width: 100%;
-      padding: 16px;
-      font-size: 16px;
-      margin-bottom: 10px;
-    }
-
-    input, textarea, select {
-      width: 100%;
-      padding: 12px;
-      border-radius: 12px;
-      border: 1px solid #334155;
-      background: #020617;
-      color: #e5e7eb;
-      margin-bottom: 10px;
-      outline: none;
-    }
-
-    input[type="file"] {
-      padding: 8px;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    .pill {
-      display: inline-block;
-      padding: 4px 8px;
-      border-radius: 999px;
-      font-size: 12px;
-      border: 1px solid #334155;
-      color: #cbd5e1;
-    }
-
-    .order {
-      border: 1px solid #334155;
-      border-radius: 12px;
-      padding: 10px;
-      margin-bottom: 10px;
-    }
-
-    .small {
-      font-size: 13px;
-      color: #94a3b8;
-    }
-
-    .row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 8px;
-      align-items: center;
-    }
-
-    #toast {
-      position: fixed;
-      bottom: 22px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #020617;
-      border: 1px solid #334155;
-      color: #e5e7eb;
-      padding: 10px 14px;
-      border-radius: 12px;
-      opacity: 0;
-      transition: 0.25s;
       z-index: 100;
-      max-width: 90%;
+      background: rgba(10, 10, 15, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
-    #toast.show {
-      opacity: 1;
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
-    .warning {
-      border-color: #f59e0b;
-      background: #1c1400;
-      color: #fdba74;
-    }
-
-    .thumb {
-      width: 72px;
-      height: 72px;
-      object-fit: cover;
-      border-radius: 12px;
-      border: 1px solid #334155;
-      cursor: pointer;
-    }
-
-    .thumb.placeholder {
+    .logo {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-dark));
+      border-radius: var(--radius-sm);
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #020617;
-      font-size: 28px;
+      font-size: 20px;
     }
 
-    .productos-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
+    .brand {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .brand span {
+      color: var(--accent-gold);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
       gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-red);
+    }
+
+    .status-dot.connected {
+      background: var(--accent-green);
+      box-shadow: 0 0 8px var(--accent-green);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    .role-badge {
+      padding: 6px 12px;
+      background: linear-gradient(135deg, var(--accent-purple), #7c3aed);
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .role-badge.cliente {
+      background: linear-gradient(135deg, var(--accent-green), var(--accent-green-dark));
+    }
+
+    /* Main container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-md);
+      transition: all 0.2s ease;
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-lg);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-title .icon {
+      font-size: 20px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-dark));
+      color: #000;
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--text-muted);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, var(--accent-green), var(--accent-green-dark));
+      color: white;
+    }
+
+    .btn-success:hover {
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .btn-danger {
+      background: linear-gradient(135deg, var(--accent-red), #dc2626);
+      color: white;
+    }
+
+    .btn-danger:hover {
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+
+    .btn-block {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+    }
+
+    /* Inputs */
+    .input, .textarea, .select {
+      width: 100%;
+      padding: 12px 14px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+
+    .input:focus, .textarea:focus, .select:focus {
+      outline: none;
+      border-color: var(--accent-gold);
+      box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
+    }
+
+    .input::placeholder, .textarea::placeholder {
+      color: var(--text-muted);
+    }
+
+    .textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    /* Menu panel */
+    .menu-panel {
+      max-width: 400px;
+      margin: 60px auto;
+      text-align: center;
+    }
+
+    .menu-logo {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-dark));
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      margin: 0 auto 20px;
+      box-shadow: var(--shadow-xl);
+    }
+
+    .menu-title {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .menu-subtitle {
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+    }
+
+    .menu-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .menu-btn {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: left;
+    }
+
+    .menu-btn:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--accent-gold);
+      transform: translateX(4px);
+    }
+
+    .menu-btn .icon {
+      font-size: 24px;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-sm);
+    }
+
+    /* Stats bar */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--accent-gold);
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 4px;
+    }
+
+    /* Orders grid */
+    .orders-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .order-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      border-left: 4px solid var(--accent-blue);
+      transition: all 0.2s ease;
+    }
+
+    .order-card:hover {
+      background: var(--bg-card-hover);
+    }
+
+    .order-card.estado-recibido {
+      border-left-color: var(--accent-blue);
+    }
+
+    .order-card.estado-preparacion {
+      border-left-color: var(--accent-gold);
+    }
+
+    .order-card.estado-listo {
+      border-left-color: var(--accent-green);
+    }
+
+    .order-card.estado-entregado {
+      border-left-color: var(--text-muted);
+      opacity: 0.7;
+    }
+
+    .order-card.estado-cancelado {
+      border-left-color: var(--accent-red);
+      opacity: 0.7;
+    }
+
+    .order-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .order-mesa {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent-gold);
+    }
+
+    .order-time {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .order-items {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+      white-space: pre-line;
+    }
+
+    .order-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .order-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .order-status.recibido {
+      background: rgba(59, 130, 246, 0.15);
+      color: var(--accent-blue);
+    }
+
+    .order-status.preparacion {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--accent-gold);
+    }
+
+    .order-status.listo {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--accent-green);
+    }
+
+    .order-status.entregado {
+      background: rgba(113, 113, 122, 0.15);
+      color: var(--text-muted);
+    }
+
+    .order-status.cancelado {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--accent-red);
+    }
+
+    /* Alerts */
+    .alert-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-left: 4px solid var(--accent-red);
+    }
+
+    .alert-card.atendida {
+      border-left-color: var(--accent-green);
+      opacity: 0.6;
+    }
+
+    .alert-info {
+      flex: 1;
+    }
+
+    .alert-title {
+      font-weight: 600;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .alert-meta {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Products grid */
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 12px;
     }
 
     .product-card {
-      border: 1px solid #334155;
-      border-radius: 12px;
-      padding: 8px;
-      text-align: center;
-      background: #020617;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .product-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent-gold);
+      box-shadow: var(--shadow-md);
     }
 
     .product-img {
       width: 100%;
-      height: 95px;
+      height: 100px;
       object-fit: cover;
-      border-radius: 10px;
-      cursor: pointer;
-      margin-bottom: 6px;
+      background: var(--bg-card);
     }
 
-    .product-placeholder {
-      width: 100%;
-      height: 95px;
+    .product-img.placeholder {
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #111827;
-      border-radius: 10px;
-      font-size: 30px;
-      margin-bottom: 6px;
+      font-size: 36px;
+      background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
     }
 
+    .product-info {
+      padding: 12px;
+    }
+
+    .product-name {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .product-price {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--accent-gold);
+    }
+
+    .product-add {
+      width: 100%;
+      margin-top: 10px;
+      padding: 8px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .product-add:hover {
+      background: var(--accent-gold);
+      color: #000;
+      border-color: var(--accent-gold);
+    }
+
+    /* Cart */
+    .cart-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .cart-item:last-child {
+      border-bottom: none;
+    }
+
+    .cart-item-info {
+      flex: 1;
+    }
+
+    .cart-item-name {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .cart-item-price {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .cart-item-remove {
+      background: none;
+      border: none;
+      color: var(--accent-red);
+      cursor: pointer;
+      font-size: 18px;
+      padding: 4px 8px;
+    }
+
+    /* Client header */
+    .client-header {
+      text-align: center;
+      padding: 20px;
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.05));
+      border-radius: var(--radius-lg);
+      margin-bottom: 20px;
+      border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+
+    .client-mesa {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-dark));
+      border-radius: 30px;
+      font-size: 18px;
+      font-weight: 700;
+      color: #000;
+      margin-top: 10px;
+    }
+
+    /* QR Section */
     .qr-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-      gap: 12px;
-      margin-top: 12px;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 16px;
     }
 
     .qr-card {
-      border: 1px solid #334155;
-      border-radius: 12px;
-      padding: 12px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
       text-align: center;
-      background: #020617;
     }
 
-    .qr-card canvas,
-    .qr-card img {
-      width: 150px !important;
-      height: 150px !important;
+    .qr-card canvas, .qr-card img {
+      width: 140px !important;
+      height: 140px !important;
       background: white;
       padding: 8px;
-      border-radius: 8px;
-      display: inline-block;
+      border-radius: var(--radius-sm);
     }
 
-    .qr-card h3 {
-      margin: 8px 0 4px 0;
-      font-size: 16px;
+    .qr-card h4 {
+      margin: 12px 0 8px;
+      font-size: 15px;
     }
 
-    .qr-actions {
-      display: flex;
-      gap: 6px;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-top: 8px;
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 24px;
+      box-shadow: var(--shadow-xl);
+      z-index: 1000;
+      opacity: 0;
+      transition: all 0.3s ease;
+      max-width: 90%;
     }
 
-    .qr-actions button {
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    .toast.success {
+      border-color: var(--accent-green);
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), var(--bg-card));
+    }
+
+    .toast.error {
+      border-color: var(--accent-red);
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), var(--bg-card));
+    }
+
+    /* Hidden */
+    .hidden {
+      display: none !important;
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-muted);
+    }
+
+    .empty-state .icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+      opacity: 0.5;
+    }
+
+    /* Debug panel */
+    .debug-panel {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      margin-top: 12px;
+      font-family: monospace;
       font-size: 12px;
-      padding: 6px 10px;
-      margin: 0;
+      max-height: 200px;
+      overflow-y: auto;
     }
 
-    .mesa-badge {
-      display: inline-block;
-      padding: 4px 10px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 700;
-      background: #065f46;
-      color: #d1fae5;
-      border: 1px solid #10b981;
+    .debug-line {
+      padding: 2px 0;
+      color: var(--text-secondary);
+    }
+
+    .debug-line.error {
+      color: var(--accent-red);
+    }
+
+    .debug-line.success {
+      color: var(--accent-green);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .container {
+        padding: 12px;
+      }
+
+      .stats-bar {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .order-footer {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .order-footer .btn {
+        width: 100%;
+      }
+    }
+
+    /* Animations */
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-in {
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes newOrder {
+      0% {
+        box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+      }
+      70% {
+        box-shadow: 0 0 0 10px rgba(245, 158, 11, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(245, 158, 11, 0);
+      }
+    }
+
+    .order-new {
+      animation: newOrder 1.5s ease;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <strong>Pedidos Restaurante</strong>
-    <span id="connection" class="pill">Sin conectar</span>
-    <span id="roleBadge" class="pill"></span>
-    <span id="clientBadge" class="pill"></span>
-    <button id="btnSalir" class="secondary hidden" onclick="salir()">Salir / Cambiar rol</button>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <div class="logo">🍽️</div>
+      <div class="brand">Hostelería <span>Pro</span></div>
+    </div>
+    <div class="header-right">
+      <div class="status-badge">
+        <span class="status-dot" id="connectionDot"></span>
+        <span id="connectionText">Conectando...</span>
+      </div>
+      <span class="role-badge" id="roleBadge">-</span>
+      <button class="btn btn-secondary btn-sm" id="btnSalir" onclick="salir()" style="display:none;">
+        Salir
+      </button>
+    </div>
   </header>
 
-  <main>
+  <div class="container">
 
-    <div id="setupWarning" class="card warning hidden">
-      <strong>Aviso</strong>
-      <div id="setupWarningText" class="small"></div>
+    <!-- Warning -->
+    <div id="setupWarning" class="card hidden" style="border-color: var(--accent-red); background: rgba(239, 68, 68, 0.1);">
+      <div class="card-title" style="color: var(--accent-red);">⚠️ Aviso</div>
+      <div id="setupWarningText" style="margin-top: 8px; color: var(--text-secondary);"></div>
     </div>
 
-    <!-- MENU -->
+    <!-- MENU PANEL -->
     <section id="menuPanel" class="hidden">
-      <div class="card">
-        <h2>Entrar como</h2>
-        <button class="big" onclick="goView('admin')">👔 Administrador</button>
-        <button class="big secondary" onclick="goView('barra')">🍸 Barra</button>
-        <button class="big secondary" onclick="goView('camarero')">🍽️ Camarero</button>
-        <div class="small" style="margin-top:10px;">
-          El dispositivo cliente entra escaneando el QR de la mesa.
+      <div class="menu-panel">
+        <div class="menu-logo">🍽️</div>
+        <h1 class="menu-title">Hostelería Pro</h1>
+        <p class="menu-subtitle">Selecciona tu rol para continuar</p>
+        <div class="menu-buttons">
+          <button class="menu-btn" onclick="goView('admin')">
+            <span class="icon">👔</span>
+            <span>Administrador</span>
+          </button>
+          <button class="menu-btn" onclick="goView('barra')">
+            <span class="icon">🍸</span>
+            <span>Barra</span>
+          </button>
+          <button class="menu-btn" onclick="goView('camarero')">
+            <span class="icon">🍽️</span>
+            <span>Camarero</span>
+          </button>
         </div>
+        <p style="margin-top: 24px; font-size: 13px; color: var(--text-muted);">
+          💡 Los clientes acceden escaneando el QR de su mesa
+        </p>
       </div>
     </section>
 
-    <!-- PANEL STAFF -->
+    <!-- STAFF PANEL -->
     <section id="staffPanel" class="hidden">
-      <div class="card">
-        <h2>🔔 Alertas</h2>
-        <div id="staffAlerts" class="small">Cargando...</div>
+      
+      <!-- Stats -->
+      <div class="stats-bar">
+        <div class="stat-card">
+          <div class="stat-value" id="statPedidos">0</div>
+          <div class="stat-label">Pedidos hoy</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="statPendientes">0</div>
+          <div class="stat-label">Pendientes</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="statAlertas">0</div>
+          <div class="stat-label">Alertas</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="statMesas">0</div>
+          <div class="stat-label">Mesas</div>
+        </div>
       </div>
 
+      <!-- Alerts -->
       <div class="card">
-        <h2>📋 Pedidos</h2>
-        <div id="staffOrders" class="small">Cargando...</div>
+        <div class="card-header">
+          <div class="card-title">
+            <span class="icon">🔔</span>
+            Alertas de clientes
+          </div>
+        </div>
+        <div id="staffAlerts">
+          <div class="empty-state">
+            <div class="icon">🔔</div>
+            <div>No hay alertas</div>
+          </div>
+        </div>
       </div>
+
+      <!-- Orders -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="icon">📋</span>
+            Pedidos en tiempo real
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="forceRefresh()">🔄 Actualizar</button>
+        </div>
+        <div id="staffOrders" class="orders-grid">
+          <div class="empty-state">
+            <div class="icon">📋</div>
+            <div>Esperando pedidos...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Debug -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="icon">🔧</span>
+            Diagnóstico de conexión
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="toggleDebug()">Mostrar/Ocultar</button>
+        </div>
+        <div id="debugPanel" class="debug-panel hidden">
+          <div class="debug-line">Iniciando diagnóstico...</div>
+        </div>
+      </div>
+
     </section>
 
-    <!-- PANEL ADMIN -->
+    <!-- ADMIN PANEL -->
     <section id="adminPanel" class="hidden">
-
+      
+      <!-- QR Section -->
       <div class="card">
-        <h2>📱 Códigos QR de mesas</h2>
-        <div class="small">
-          Cada mesa tiene su propio QR. El cliente escanea y el sistema detecta la mesa automáticamente.
+        <div class="card-header">
+          <div class="card-title">
+            <span class="icon">📱</span>
+            Códigos QR de mesas
+          </div>
         </div>
-
-        <div class="row" style="margin-top:10px;">
-          <button onclick="mostrarTodosQR()">📋 Ver todos los QR</button>
-          <button class="secondary" onclick="imprimirTodosQR()">🖨️ Imprimir todos</button>
+        <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 16px;">
+          Genera e imprime los QR para cada mesa. Los clientes escanean y el sistema detecta automáticamente la mesa.
+        </p>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <button class="btn btn-primary" onclick="mostrarTodosQR()">📋 Ver todos los QR</button>
+          <button class="btn btn-secondary" onclick="imprimirTodosQR()">🖨️ Imprimir todos</button>
         </div>
-
-        <div id="qrPreview" class="hidden" style="margin-top:12px;"></div>
+        <div id="qrPreview" class="hidden" style="margin-top: 20px;"></div>
       </div>
 
+      <!-- Products -->
       <div class="card">
-        <h2>🍽️ Productos</h2>
-
-        <div class="row">
-          <input id="productoNombre" placeholder="Nombre del producto" style="margin:0;" />
-          <input id="productoPrecio" type="number" step="0.01" placeholder="Precio" style="margin:0;" />
+        <div class="card-header">
+          <div class="card-title">
+            <span class="icon">🍽️</span>
+            Productos
+          </div>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+          <input class="input" id="productoNombre" placeholder="Nombre del producto" />
+          <input class="input" id="productoPrecio" type="number" step="0.01" placeholder="Precio (€)" />
+        </div>
+        <input class="input" id="productoDescripcion" placeholder="Descripción (opcional)" style="margin-bottom: 10px;" />
+        
+        <div style="margin-bottom: 10px;">
+          <label style="font-size: 13px; color: var(--text-secondary); display: block; margin-bottom: 6px;">
+            📷 Foto del producto (opcional)
+          </label>
+          <input class="input" id="productoFoto" type="file" accept="image/*" />
+          <div id="productoFotoPreview" style="margin-top: 10px;"></div>
         </div>
 
-        <input id="productoDescripcion" placeholder="Descripción opcional" />
+        <button class="btn btn-primary" onclick="agregarProducto()">➕ Añadir producto</button>
 
-        <label class="small">Foto opcional</label>
-        <input id="productoFoto" type="file" accept="image/*" />
-        <div id="productoFotoPreview" class="row"></div>
-
-        <button onclick="agregarProducto()">Añadir producto</button>
-
-        <div id="productosAdminList" class="small" style="margin-top:12px;">Cargando...</div>
+        <div id="productosAdminList" style="margin-top: 20px;"></div>
       </div>
 
+      <!-- Tables -->
       <div class="card">
-        <h2>🪑 Mesas</h2>
-        <div class="row">
-          <input id="nuevaMesa" placeholder="Nueva mesa" style="margin:0;" />
-          <button onclick="agregarMesa()" style="flex:0 0 auto;">Añadir</button>
+        <div class="card-header">
+          <div class="card-title">
+            <span class="icon">🪑</span>
+            Mesas
+          </div>
         </div>
-        <div id="mesasList" class="small" style="margin-top:10px;">Cargando...</div>
+        <div style="display: flex; gap: 10px; margin-bottom: 16px;">
+          <input class="input" id="nuevaMesa" placeholder="Nombre de la mesa (ej: Mesa 1, Terraza)" style="flex: 1;" />
+          <button class="btn btn-primary" onclick="agregarMesa()">➕ Añadir</button>
+        </div>
+        <div id="mesasList"></div>
       </div>
 
+      <!-- Waiters -->
       <div class="card">
-        <h2>👤 Camareros</h2>
-        <div class="row">
-          <input id="nuevoCamarero" placeholder="Nuevo camarero" style="margin:0;" />
-          <button onclick="agregarCamarero()" style="flex:0 0 auto;">Añadir</button>
+        <div class="card-header">
+          <div class="card-title">
+            <span class="icon">👤</span>
+            Camareros
+          </div>
         </div>
-        <div id="camarerosList" class="small" style="margin-top:10px;">Cargando...</div>
+        <div style="display: flex; gap: 10px; margin-bottom: 16px;">
+          <input class="input" id="nuevoCamarero" placeholder="Nombre del camarero" style="flex: 1;" />
+          <button class="btn btn-primary" onclick="agregarCamarero()">➕ Añadir</button>
+        </div>
+        <div id="camarerosList"></div>
       </div>
 
     </section>
 
-    <!-- PANEL CLIENTE -->
+    <!-- CLIENT PANEL -->
     <section id="clientPanel" class="hidden">
-      <div class="card">
-        <h2>Cliente</h2>
-
-        <div id="mesaDetectada" class="mesa-badge" style="margin-bottom:10px; display:none;"></div>
-
-        <button id="btnPedidos" class="big">🍽️ Pedidos</button>
-        <button id="btnLlamar" class="big secondary">🔔 Llamar al camarero</button>
-        <button id="btnCuenta" class="big secondary">💶 Pedir cuenta</button>
-
-        <div id="clientStatus" class="small" style="margin-top:10px;"></div>
+      
+      <div class="client-header">
+        <h2 style="font-size: 22px; margin-bottom: 4px;">Bienvenido</h2>
+        <p style="color: var(--text-secondary); font-size: 14px;">Escanea, elige y disfruta</p>
+        <div class="client-mesa" id="mesaDetectada" style="display: none;">
+          🪑 Mesa: <span id="mesaDetectadaText"></span>
+        </div>
       </div>
 
+      <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
+        <button class="btn btn-primary btn-block" onclick="toggleClientOrders()">
+          🍽️ Ver carta y pedir
+        </button>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <button class="btn btn-secondary" onclick="enviarAlerta('LLAMAR_CAMARERO')">
+            🔔 Llamar camarero
+          </button>
+          <button class="btn btn-secondary" onclick="enviarAlerta('PEDIR_CUENTA')">
+            💶 Pedir cuenta
+          </button>
+        </div>
+      </div>
+
+      <div id="clientStatus" style="text-align: center; color: var(--text-secondary); font-size: 14px; margin-bottom: 20px;"></div>
+
+      <!-- Client Orders Section -->
       <div id="clientOrdersCard" class="hidden">
-
+        
+        <!-- Menu -->
         <div class="card">
-          <h3>Carta</h3>
-          <div id="productosClienteList" class="small">Cargando...</div>
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">📖</span>
+              Nuestra carta
+            </div>
+          </div>
+          <div id="productosClienteList" class="products-grid">
+            <div class="empty-state" style="grid-column: 1/-1;">
+              <div class="icon">📖</div>
+              <div>Cargando carta...</div>
+            </div>
+          </div>
         </div>
 
+        <!-- Cart -->
         <div class="card">
-          <h3>Tu pedido</h3>
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">🛒</span>
+              Tu pedido
+            </div>
+          </div>
+          
+          <div id="cartList" style="margin-bottom: 16px;">
+            <div class="empty-state">
+              <div class="icon">🛒</div>
+              <div>Tu carrito está vacío</div>
+            </div>
+          </div>
 
-          <input id="mesa" list="mesasDatalist" placeholder="Mesa (si no viene del QR)" />
+          <textarea class="textarea" id="manualItems" placeholder="Notas o pedido manual (opcional)" rows="2"></textarea>
 
-          <div id="cartList" class="small"></div>
+          <button class="btn btn-success btn-block" onclick="crearPedido()" style="margin-top: 12px;">
+            ✅ Enviar pedido
+          </button>
 
-          <textarea id="manualItems" rows="2" placeholder="Nota o pedido manual opcional"></textarea>
-
-          <button id="createOrder">Enviar pedido</button>
-
-          <div id="clientOrders" class="small" style="margin-top:12px;"></div>
+          <div id="clientOrders" style="margin-top: 20px;"></div>
         </div>
 
       </div>
+
     </section>
 
-    <!-- DIAGNOSTICO -->
-    <section class="card">
-      <h3>🔍 Comprobación</h3>
-      <button class="secondary" id="diagnosticsBtn">Comprobar sistema</button>
-      <div id="diagnosticsResults" class="small" style="margin-top:10px;"></div>
-    </section>
+  </div>
 
-  </main>
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
 
-  <datalist id="mesasDatalist"></datalist>
-  <div id="toast"></div>
-
+  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 
   <script>
     // ============================================================
-    // CONFIGURACIÓN FIREBASE
+    // FIREBASE CONFIG
     // ============================================================
     const firebaseConfig = {
       apiKey: "AIzaSyDBwim0SAPEJvqSabaCrDJNvU3J2QeCU5c",
@@ -418,96 +1135,136 @@
     let firebaseReady = false;
     let db = null;
 
-    function initFirebase(cfg) {
+    // ============================================================
+    // DEBUG LOG
+    // ============================================================
+    let debugLogs = [];
+
+    function debugLog(message, type = 'info') {
+      const time = new Date().toLocaleTimeString();
+      debugLogs.push({ time, message, type });
+      console.log(`[${type.toUpperCase()}] ${message}`);
+      
+      const panel = document.getElementById('debugPanel');
+      if (panel && !panel.classList.contains('hidden')) {
+        const line = document.createElement('div');
+        line.className = 'debug-line ' + type;
+        line.textContent = `[${time}] ${message}`;
+        panel.appendChild(line);
+        panel.scrollTop = panel.scrollHeight;
+      }
+    }
+
+    function toggleDebug() {
+      const panel = document.getElementById('debugPanel');
+      panel.classList.toggle('hidden');
+    }
+
+    // ============================================================
+    // INIT FIREBASE
+    // ============================================================
+    function initFirebase() {
       try {
-        firebase.initializeApp(cfg);
+        debugLog('Inicializando Firebase...', 'info');
+        firebase.initializeApp(firebaseConfig);
         db = firebase.database();
         firebaseReady = true;
-        document.getElementById("connection").textContent = "Firebase conectado";
+
+        // Test connection
+        db.ref('.info/connected').on('value', (snap) => {
+          const connected = snap.val() === true;
+          const dot = document.getElementById('connectionDot');
+          const text = document.getElementById('connectionText');
+          
+          if (connected) {
+            dot.classList.add('connected');
+            text.textContent = 'Conectado';
+            debugLog('Conexión a Firebase establecida', 'success');
+          } else {
+            dot.classList.remove('connected');
+            text.textContent = 'Desconectado';
+            debugLog('Desconectado de Firebase', 'error');
+          }
+        });
+
+        debugLog('Firebase inicializado correctamente', 'success');
+        return true;
       } catch (e) {
-        document.getElementById("setupWarning").classList.remove("hidden");
-        document.getElementById("setupWarningText").textContent = "Error Firebase: " + e.message;
+        debugLog('Error Firebase: ' + e.message, 'error');
+        document.getElementById('setupWarning').classList.remove('hidden');
+        document.getElementById('setupWarningText').textContent = 'Error al conectar con Firebase: ' + e.message;
+        return false;
       }
     }
 
     // ============================================================
-    // DETECCIÓN DE ROL POR DISPOSITIVO
+    // ROLE DETECTION
     // ============================================================
-
     const params = new URLSearchParams(location.search);
-    const urlVista = params.get("vista") || "";
-    const urlMesa = params.get("mesa") || "";
-    const urlFijar = params.get("fijar") === "1";
+    const urlVista = params.get('vista') || '';
+    const urlMesa = params.get('mesa') || '';
 
-    // Claves de almacenamiento LOCAL (por dispositivo/navegador)
-    const KEY_ROLE = "hosteleria_role_" + location.hostname;
-    const KEY_CLIENT_ID = "hosteleria_client_id_" + location.hostname;
-    const KEY_MESA = "hosteleria_mesa_" + location.hostname;
+    const KEY_ROLE = 'hosteleria_role';
+    const KEY_CLIENT_ID = 'hosteleria_client_id';
+    const KEY_MESA = 'hosteleria_mesa';
 
-    // Determinar rol: la URL manda, luego localStorage
-    let role = "menu";
+    let role = 'menu';
 
     if (urlMesa) {
-      // QR escaneado: siempre cliente con mesa fija
-      role = "cliente";
+      role = 'cliente';
       localStorage.setItem(KEY_MESA, urlMesa);
-    } else if (["admin", "barra", "camarero"].includes(urlVista)) {
-      // URL explícita de staff
+      debugLog('Cliente detectado desde QR. Mesa: ' + urlMesa, 'success');
+    } else if (['admin', 'barra', 'camarero'].includes(urlVista)) {
       role = urlVista;
       localStorage.setItem(KEY_ROLE, role);
-    } else if (urlVista === "cliente") {
-      role = "cliente";
-      if (urlFijar) localStorage.setItem(KEY_ROLE, "cliente");
+      debugLog('Rol staff desde URL: ' + role, 'info');
+    } else if (urlVista === 'cliente') {
+      role = 'cliente';
+      debugLog('Cliente desde URL', 'info');
     } else {
-      // Sin parámetros: leer rol guardado en ESTE dispositivo
       const saved = localStorage.getItem(KEY_ROLE);
-      if (saved === "cliente" || ["admin", "barra", "camarero"].includes(saved)) {
+      if (saved && ['admin', 'barra', 'camarero', 'cliente'].includes(saved)) {
         role = saved;
+        debugLog('Rol guardado: ' + role, 'info');
       }
     }
 
-    // ID único del cliente (por dispositivo)
     let clientId = localStorage.getItem(KEY_CLIENT_ID);
     if (!clientId) {
-      clientId = "cliente_" + Math.random().toString(36).slice(2) + "_" + Date.now();
+      clientId = 'cliente_' + Math.random().toString(36).slice(2) + '_' + Date.now();
       localStorage.setItem(KEY_CLIENT_ID, clientId);
     }
 
-    // Mesa fija (viene del QR o se guarda)
-    let mesaFija = urlMesa || localStorage.getItem(KEY_MESA) || "";
+    let mesaFija = urlMesa || localStorage.getItem(KEY_MESA) || '';
 
     // ============================================================
-    // DATOS LOCALES
+    // DATA
     // ============================================================
-
     let orders = [];
     let alerts = [];
     let clientOrders = [];
     let clientAlerts = [];
-    let previousClientAlertsMap = {};
-
     let mesas = [];
     let camareros = [];
     let productos = [];
-
     let cart = [];
-    let pendingProductoFoto = "";
+    let pendingProductoFoto = '';
+    let previousOrderIds = new Set();
 
     // ============================================================
-    // UTILIDADES
+    // UTILS
     // ============================================================
-
     function escapeHtml(value) {
-      return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
     }
 
     function escapeHtmlLines(value) {
-      return escapeHtml(value).replace(/\n/g, "<br>");
+      return escapeHtml(value).replace(/\n/g, '<br>');
     }
 
     function nowLocal() {
@@ -516,49 +1273,54 @@
 
     function formatTime(timestamp) {
       try {
-        return new Date(timestamp).toLocaleTimeString("es-ES", {
-          hour: "2-digit",
-          minute: "2-digit"
+        return new Date(timestamp).toLocaleTimeString('es-ES', {
+          hour: '2-digit',
+          minute: '2-digit'
         });
       } catch (e) {
-        return "";
+        return '';
       }
     }
 
     function estadoLabel(estado) {
       const estados = {
-        RECIBIDO: "Recibido",
-        EN_PREPARACION: "En preparación",
-        LISTO: "Listo",
-        ENTREGADO: "Entregado",
-        CANCELADO: "Cancelado"
+        RECIBIDO: '📥 Recibido',
+        EN_PREPARACION: '👨‍🍳 En preparación',
+        LISTO: '✅ Listo',
+        ENTREGADO: '📦 Entregado',
+        CANCELADO: '❌ Cancelado'
       };
       return estados[estado] || estado;
     }
 
-    function alertLabel(tipo) {
-      if (tipo === "PEDIR_CUENTA") return "💶 Cuenta solicitada";
-      return "🔔 Llamar al camarero";
+    function estadoClass(estado) {
+      const classes = {
+        RECIBIDO: 'recibido',
+        EN_PREPARACION: 'preparacion',
+        LISTO: 'listo',
+        ENTREGADO: 'entregado',
+        CANCELADO: 'cancelado'
+      };
+      return classes[estado] || 'recibido';
     }
 
     function formatPrecio(value) {
       const n = Number(value) || 0;
-      return n.toFixed(2).replace(".", ",") + " €";
+      return n.toFixed(2).replace('.', ',') + ' €';
     }
 
-    let toastTimer;
-
-    function showToast(message) {
-      const toast = document.getElementById("toast");
+    function showToast(message, type = '') {
+      const toast = document.getElementById('toast');
       toast.textContent = message;
-      toast.classList.add("show");
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => toast.classList.remove("show"), 2600);
+      toast.className = 'toast show ' + type;
+      setTimeout(() => {
+        toast.className = 'toast';
+      }, 3000);
     }
 
     function requireFirebase() {
       if (!firebaseReady || !db) {
-        showToast("Firebase no está listo");
+        showToast('❌ Firebase no está listo', 'error');
         return false;
       }
       return true;
@@ -569,17 +1331,15 @@
     }
 
     // ============================================================
-    // NAVEGACIÓN
+    // NAVIGATION
     // ============================================================
-
     function goView(view) {
-      // Limpiar URL actual y redirigir con el nuevo rol
-      location.href = location.pathname + "?vista=" + view;
+      location.href = location.pathname + '?vista=' + view;
     }
 
     function salir() {
-      if (role === "cliente") {
-        if (confirm("¿Salir del modo cliente? Se borrará la mesa detectada.")) {
+      if (role === 'cliente') {
+        if (confirm('¿Salir del modo cliente?')) {
           localStorage.removeItem(KEY_CLIENT_ID);
           localStorage.removeItem(KEY_MESA);
           localStorage.removeItem(KEY_ROLE);
@@ -592,152 +1352,145 @@
     }
 
     function applyRole() {
-      const menuPanel = document.getElementById("menuPanel");
-      const staffPanel = document.getElementById("staffPanel");
-      const adminPanel = document.getElementById("adminPanel");
-      const clientPanel = document.getElementById("clientPanel");
-      const btnSalir = document.getElementById("btnSalir");
+      const menuPanel = document.getElementById('menuPanel');
+      const staffPanel = document.getElementById('staffPanel');
+      const adminPanel = document.getElementById('adminPanel');
+      const clientPanel = document.getElementById('clientPanel');
+      const btnSalir = document.getElementById('btnSalir');
+      const roleBadge = document.getElementById('roleBadge');
 
-      menuPanel.classList.add("hidden");
-      staffPanel.classList.add("hidden");
-      adminPanel.classList.add("hidden");
-      clientPanel.classList.add("hidden");
-      btnSalir.classList.add("hidden");
+      menuPanel.classList.add('hidden');
+      staffPanel.classList.add('hidden');
+      adminPanel.classList.add('hidden');
+      clientPanel.classList.add('hidden');
+      btnSalir.style.display = 'none';
 
-      document.getElementById("roleBadge").textContent = role;
+      roleBadge.textContent = role === 'menu' ? '-' : role.toUpperCase();
+      roleBadge.className = 'role-badge' + (role === 'cliente' ? ' cliente' : '');
 
-      if (role === "menu") {
-        menuPanel.classList.remove("hidden");
-        document.getElementById("clientBadge").textContent = "";
-        return;
-      }
-
-      btnSalir.classList.remove("hidden");
-
-      if (role === "cliente") {
-        clientPanel.classList.remove("hidden");
-        document.getElementById("clientBadge").textContent = clientId.slice(0, 16);
-
-        if (mesaFija) {
-          document.getElementById("mesa").value = mesaFija;
-          const badge = document.getElementById("mesaDetectada");
-          badge.textContent = "✓ Mesa: " + mesaFija;
-          badge.style.display = "inline-block";
-          document.getElementById("mesa").readOnly = true;
-
-          setTimeout(() => {
-            document.getElementById("clientOrdersCard").classList.remove("hidden");
-          }, 300);
-        }
+      if (role === 'menu') {
+        menuPanel.classList.remove('hidden');
       } else {
-        staffPanel.classList.remove("hidden");
-        document.getElementById("clientBadge").textContent = "";
+        btnSalir.style.display = 'inline-flex';
 
-        if (role === "admin") {
-          adminPanel.classList.remove("hidden");
+        if (role === 'cliente') {
+          clientPanel.classList.remove('hidden');
+          
+          if (mesaFija) {
+            document.getElementById('mesaDetectada').style.display = 'inline-flex';
+            document.getElementById('mesaDetectadaText').textContent = mesaFija;
+            document.getElementById('clientOrdersCard').classList.remove('hidden');
+          }
+        } else {
+          staffPanel.classList.remove('hidden');
+          
+          if (role === 'admin') {
+            adminPanel.classList.remove('hidden');
+          }
         }
       }
+
+      debugLog('Interfaz aplicada para rol: ' + role, 'info');
     }
 
     // ============================================================
-    // GENERADOR DE QR
+    // QR GENERATOR
     // ============================================================
-
     function urlQR(nombreMesa) {
       const base = location.origin + location.pathname;
-      return base + "?vista=cliente&mesa=" + encodeURIComponent(nombreMesa);
+      return base + '?vista=cliente&mesa=' + encodeURIComponent(nombreMesa);
     }
 
     function generarQREnElemento(container, url) {
-      container.innerHTML = "";
-      if (typeof QRCode === "undefined") {
-        container.innerHTML = '<div class="small">Librería QR no cargada</div>';
+      container.innerHTML = '';
+      if (typeof QRCode === 'undefined') {
+        container.innerHTML = '<div style="color: var(--accent-red); font-size: 12px;">Librería QR no cargada</div>';
         return;
       }
       try {
         new QRCode(container, {
           text: url,
-          width: 150,
-          height: 150,
-          colorDark: "#000000",
-          colorLight: "#ffffff",
+          width: 140,
+          height: 140,
+          colorDark: '#000000',
+          colorLight: '#ffffff',
           correctLevel: QRCode.CorrectLevel.M
         });
       } catch (e) {
-        container.innerHTML = '<div class="small">Error generando QR</div>';
+        container.innerHTML = '<div style="color: var(--accent-red); font-size: 12px;">Error generando QR</div>';
       }
     }
 
     function mostrarTodosQR() {
-      const preview = document.getElementById("qrPreview");
+      const preview = document.getElementById('qrPreview');
 
       if (!mesas.length) {
-        preview.classList.remove("hidden");
-        preview.innerHTML = '<div class="small">Primero añade mesas.</div>';
+        preview.classList.remove('hidden');
+        preview.innerHTML = '<div class="empty-state"><div class="icon">🪑</div><div>Primero añade mesas</div></div>';
         return;
       }
 
-      preview.classList.remove("hidden");
+      preview.classList.remove('hidden');
       preview.innerHTML = '<div class="qr-grid" id="qrGridPreview"></div>';
 
-      const grid = document.getElementById("qrGridPreview");
+      const grid = document.getElementById('qrGridPreview');
 
       mesas.forEach((m, idx) => {
-        const nombre = m.nombre || "";
+        const nombre = m.nombre || '';
         const url = urlQR(nombre);
 
-        const card = document.createElement("div");
-        card.className = "qr-card";
+        const card = document.createElement('div');
+        card.className = 'qr-card animate-in';
         card.innerHTML = `
           <div class="qr-canvas" id="qr-${idx}"></div>
-          <h3>${escapeHtml(nombre)}</h3>
-          <div class="qr-actions">
-            <button onclick="descargarQRMesa('${escapeHtml(nombre).replace(/'/g, "\\'")}', ${idx})">⬇ Descargar</button>
-            <button class="secondary" onclick="copiarURLMesa('${escapeHtml(url).replace(/'/g, "\\'")}')">📋 Copiar URL</button>
+          <h4>${escapeHtml(nombre)}</h4>
+          <div style="display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;">
+            <button class="btn btn-secondary btn-sm" onclick="descargarQRMesa('${escapeHtml(nombre).replace(/'/g, "\\'")}', ${idx})">⬇ Descargar</button>
+            <button class="btn btn-secondary btn-sm" onclick="copiarURLMesa('${escapeHtml(url).replace(/'/g, "\\'")}')">📋 Copiar</button>
           </div>
         `;
         grid.appendChild(card);
 
         setTimeout(() => {
-          const canvasDiv = document.getElementById("qr-" + idx);
+          const canvasDiv = document.getElementById('qr-' + idx);
           if (canvasDiv) generarQREnElemento(canvasDiv, url);
         }, 50);
       });
     }
 
     function descargarQRMesa(nombreMesa, idx) {
-      const canvasDiv = document.getElementById("qr-" + idx);
+      const canvasDiv = document.getElementById('qr-' + idx);
       if (!canvasDiv) {
-        showToast("QR no encontrado");
+        showToast('QR no encontrado', 'error');
         return;
       }
 
-      const canvas = canvasDiv.querySelector("canvas");
-      const img = canvasDiv.querySelector("img");
+      const canvas = canvasDiv.querySelector('canvas');
+      const img = canvasDiv.querySelector('img');
       let dataURL = null;
 
-      if (canvas) dataURL = canvas.toDataURL("image/png");
+      if (canvas) dataURL = canvas.toDataURL('image/png');
       else if (img && img.src) dataURL = img.src;
 
       if (!dataURL) {
-        showToast("No se pudo obtener el QR");
+        showToast('No se pudo obtener el QR', 'error');
         return;
       }
 
-      const link = document.createElement("a");
-      link.download = "QR_" + (nombreMesa || "mesa").replace(/\s+/g, "_") + ".png";
+      const link = document.createElement('a');
+      link.download = 'QR_' + (nombreMesa || 'mesa').replace(/\s+/g, '_') + '.png';
       link.href = dataURL;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
 
-      showToast("QR descargado: " + nombreMesa);
+      showToast('✅ QR descargado', 'success');
     }
 
     function copiarURLMesa(url) {
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(url).then(() => {
-          showToast("URL copiada");
+          showToast('✅ URL copiada', 'success');
         }).catch(() => fallbackCopy(url));
       } else {
         fallbackCopy(url);
@@ -745,35 +1498,35 @@
     }
 
     function fallbackCopy(text) {
-      const textarea = document.createElement("textarea");
+      const textarea = document.createElement('textarea');
       textarea.value = text;
-      textarea.style.position = "fixed";
-      textarea.style.opacity = "0";
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
       document.body.appendChild(textarea);
       textarea.select();
       try {
-        document.execCommand("copy");
-        showToast("URL copiada");
+        document.execCommand('copy');
+        showToast('✅ URL copiada', 'success');
       } catch (e) {
-        showToast("No se pudo copiar");
+        showToast('❌ No se pudo copiar', 'error');
       }
       document.body.removeChild(textarea);
     }
 
     function imprimirTodosQR() {
       if (!mesas.length) {
-        showToast("Primero añade mesas");
+        showToast('Primero añade mesas', 'error');
         return;
       }
 
-      const win = window.open("", "_blank");
+      const win = window.open('', '_blank');
       if (!win) {
-        showToast("Permite ventanas emergentes");
+        showToast('Permite ventanas emergentes', 'error');
         return;
       }
 
       const base = location.origin + location.pathname;
-      const mesasData = JSON.stringify(mesas.map(m => m.nombre || ""));
+      const mesasData = JSON.stringify(mesas.map(m => m.nombre || ''));
 
       const html = `
 <!DOCTYPE html>
@@ -839,9 +1592,8 @@
     }
 
     // ============================================================
-    // COMPRESIÓN DE IMÁGENES
+    // IMAGE COMPRESSION
     // ============================================================
-
     function compressImage(file, maxWidth, quality) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -850,250 +1602,54 @@
           img.onload = function () {
             let width = img.width;
             let height = img.height;
-            if (!width || !height) { reject(new Error("Imagen no válida")); return; }
+            if (!width || !height) { reject(new Error('Imagen no válida')); return; }
             if (width > maxWidth) {
               height = Math.round(height * (maxWidth / width));
               width = maxWidth;
             }
-            const canvas = document.createElement("canvas");
+            const canvas = document.createElement('canvas');
             canvas.width = width;
             canvas.height = height;
-            const ctx = canvas.getContext("2d");
+            const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, width, height);
-            resolve(canvas.toDataURL("image/jpeg", quality));
+            resolve(canvas.toDataURL('image/jpeg', quality));
           };
-          img.onerror = function () { reject(new Error("No se pudo cargar la imagen")); };
+          img.onerror = function () { reject(new Error('No se pudo cargar la imagen')); };
           img.src = reader.result;
         };
-        reader.onerror = function () { reject(new Error("No se pudo leer el archivo")); };
+        reader.onerror = function () { reject(new Error('No se pudo leer el archivo')); };
         reader.readAsDataURL(file);
       });
     }
 
     async function compressImageFile(file) {
-      if (!file || !file.type.startsWith("image/")) return "";
+      if (!file || !file.type.startsWith('image/')) return '';
       try {
         let data = await compressImage(file, 600, 0.62);
         if (data.length > 900000) data = await compressImage(file, 420, 0.45);
         if (data.length > 950000) data = await compressImage(file, 320, 0.35);
         return data;
       } catch (e) {
-        return "";
+        return '';
       }
     }
 
     // ============================================================
-    // RENDER MESAS / CAMAREROS
+    // RENDER FUNCTIONS
     // ============================================================
-
-    function renderMesasDatalist() {
-      const datalist = document.getElementById("mesasDatalist");
-      if (!datalist) return;
-      datalist.innerHTML = mesas.map(m => `<option value="${escapeHtml(m.nombre || "")}">`).join("");
-    }
-
-    function renderMesasAdmin() {
-      const box = document.getElementById("mesasList");
-      if (!box) return;
-
-      if (!mesas.length) {
-        box.innerHTML = '<div class="small">No hay mesas. Añade mesas para generar sus QR.</div>';
-        return;
-      }
-
-      box.innerHTML = mesas.map(m => {
-        return `
-          <div class="order">
-            <div><strong>${escapeHtml(m.nombre || "")}</strong></div>
-            <div class="row">
-              <button class="secondary" onclick="renombrarMesa('${m.id}')">✏️ Renombrar</button>
-              <button class="danger" onclick="eliminarMesa('${m.id}')">🗑️ Eliminar</button>
-            </div>
-          </div>
-        `;
-      }).join("");
-    }
-
-    function renderCamarerosAdmin() {
-      const box = document.getElementById("camarerosList");
-      if (!box) return;
-
-      if (!camareros.length) {
-        box.innerHTML = '<div class="small">No hay camareros.</div>';
-        return;
-      }
-
-      box.innerHTML = camareros.map(c => {
-        return `
-          <div class="order">
-            <div>${escapeHtml(c.nombre || "")}</div>
-            <div class="row">
-              <button class="secondary" onclick="renombrarCamarero('${c.id}')">Renombrar</button>
-              <button class="danger" onclick="eliminarCamarero('${c.id}')">Eliminar</button>
-            </div>
-          </div>
-        `;
-      }).join("");
-    }
-
-    // ============================================================
-    // RENDER PRODUCTOS
-    // ============================================================
-
-    function renderProductosCliente() {
-      const box = document.getElementById("productosClienteList");
-      if (!box) return;
-
-      const visible = productos.filter(p => p.activo !== false);
-
-      if (!visible.length) {
-        box.innerHTML = '<div class="small">No hay productos disponibles.</div>';
-        return;
-      }
-
-      box.innerHTML = '<div class="productos-grid">' + visible.map(p => {
-        const img = p.foto
-          ? `<img class="product-img" src="${p.foto}" onclick="window.open(this.src)">`
-          : `<div class="product-placeholder">🍽️</div>`;
-
-        const precio = Number(p.precio) > 0
-          ? `<div class="small">${formatPrecio(p.precio)}</div>`
-          : "";
-
-        return `
-          <div class="product-card">
-            ${img}
-            <div class="small"><strong>${escapeHtml(p.nombre || "")}</strong></div>
-            ${precio}
-            <button onclick="addCart('${p.id}')">Añadir</button>
-          </div>
-        `;
-      }).join("") + '</div>';
-    }
-
-    function renderProductosAdmin() {
-      const box = document.getElementById("productosAdminList");
-      if (!box) return;
-
-      if (!productos.length) {
-        box.innerHTML = '<div class="small">No hay productos.</div>';
-        return;
-      }
-
-      box.innerHTML = productos.map(p => {
-        const img = p.foto
-          ? `<img class="thumb" src="${p.foto}" onclick="window.open(this.src)">`
-          : `<div class="thumb placeholder">🍽️</div>`;
-
-        return `
-          <div class="order">
-            <div class="row">
-              ${img}
-              <div style="flex:1;">
-                <strong>${escapeHtml(p.nombre || "")}</strong>
-                <div class="small">${formatPrecio(p.precio || 0)}</div>
-              </div>
-            </div>
-            <div class="row">
-              <input type="file" accept="image/*" onchange="subirFotoProducto('${p.id}', this)" />
-            </div>
-            <div class="row">
-              <button class="secondary" onclick="editarProductoNombre('${p.id}')">Renombrar</button>
-              <button class="secondary" onclick="editarProductoPrecio('${p.id}')">Precio</button>
-              <button class="danger" onclick="eliminarProducto('${p.id}')">Eliminar</button>
-            </div>
-          </div>
-        `;
-      }).join("");
-    }
-
-    // ============================================================
-    // RENDER STAFF
-    // ============================================================
-
-    function camareroOptions(selected) {
-      const names = camareros.map(c => c.nombre || "");
-      if (selected && !names.includes(selected)) names.unshift(selected);
-
-      return `
-        <option value="">Sin camarero</option>
-        ${names.map(n => {
-          return `<option value="${escapeHtml(n)}" ${selected === n ? "selected" : ""}>${escapeHtml(n)}</option>`;
-        }).join("")}
-      `;
-    }
-
-    function stateButtons(order) {
-      const states = [
-        ["RECIBIDO", "Recibido"],
-        ["EN_PREPARACION", "En preparación"],
-        ["LISTO", "Listo"],
-        ["ENTREGADO", "Entregado"],
-        ["CANCELADO", "Cancelar"]
-      ];
-
-      return `
-        <div class="row">
-          ${states.map(([value, label]) => {
-            return `
-              <button
-                class="${order.estado === value ? "active" : "secondary"}"
-                onclick="cambiarEstado('${order.id}', '${value}')"
-              >
-                ${label}
-              </button>
-            `;
-          }).join("")}
-        </div>
-      `;
-    }
-
-    function renderStaffOrders() {
-      const box = document.getElementById("staffOrders");
-      if (!box) return;
-
-      if (!orders.length) {
-        box.innerHTML = '<div class="small">No hay pedidos todavía.</div>';
-        return;
-      }
-
-      const sorted = [...orders].sort((a, b) => (b.createdAtLocal || 0) - (a.createdAtLocal || 0));
-
-      box.innerHTML = sorted.map(order => {
-        return `
-          <div class="order">
-            <div>
-              <strong>Pedido ${escapeHtml(order.id.slice(-6))}</strong>
-              · <span class="mesa-badge">Mesa ${escapeHtml(order.mesa || "S/M")}</span>
-              · ${formatTime(order.createdAtLocal)}
-            </div>
-
-            <div style="margin-top:6px;">
-              ${escapeHtmlLines(order.items || "")}
-            </div>
-
-            <div class="small" style="margin-top:6px;">
-              Estado: ${estadoLabel(order.estado)}
-            </div>
-
-            <div class="row">
-              <select onchange="asignarCamarero('${order.id}', this.value)">
-                ${camareroOptions(order.camarero || "")}
-              </select>
-            </div>
-
-            ${stateButtons(order)}
-          </div>
-        `;
-      }).join("");
+    function updateStats() {
+      document.getElementById('statPedidos').textContent = orders.length;
+      document.getElementById('statPendientes').textContent = orders.filter(o => o.estado === 'RECIBIDO').length;
+      document.getElementById('statAlertas').textContent = alerts.filter(a => !a.atendida).length;
+      document.getElementById('statMesas').textContent = mesas.length;
     }
 
     function renderStaffAlerts() {
-      const box = document.getElementById("staffAlerts");
+      const box = document.getElementById('staffAlerts');
       if (!box) return;
 
       if (!alerts.length) {
-        box.innerHTML = '<div class="small">No hay alertas.</div>';
+        box.innerHTML = '<div class="empty-state"><div class="icon">🔔</div><div>No hay alertas</div></div>';
         return;
       }
 
@@ -1103,95 +1659,230 @@
       });
 
       box.innerHTML = sorted.map(alert => {
+        const tipoLabel = alert.tipo === 'PEDIR_CUENTA' ? '💶 Cuenta solicitada' : '🔔 Llamar camarero';
         return `
-          <div class="order">
-            <div>
-              <strong>${alertLabel(alert.tipo)}</strong>
-              · <span class="mesa-badge">Mesa ${escapeHtml(alert.mesa || "S/M")}</span>
-              · ${formatTime(alert.createdAtLocal)}
+          <div class="alert-card ${alert.atendida ? 'atendida' : ''} animate-in">
+            <div class="alert-info">
+              <div class="alert-title">${tipoLabel}</div>
+              <div class="alert-meta">Mesa ${escapeHtml(alert.mesa || 'S/M')} · ${formatTime(alert.createdAtLocal)}</div>
             </div>
-            <div class="small">${alert.atendida ? "✅ Atendida" : "⏳ Pendiente"}</div>
-            ${
-              !alert.atendida
-                ? `<button onclick="atenderAlerta('${alert.id}')">Atender</button>`
-                : ""
-            }
+            ${!alert.atendida ? `<button class="btn btn-success btn-sm" onclick="atenderAlerta('${alert.id}')">Atender</button>` : '<span style="color: var(--accent-green); font-size: 13px;">✅ Atendida</span>'}
           </div>
         `;
-      }).join("");
+      }).join('');
     }
 
-    // ============================================================
-    // RENDER CLIENTE
-    // ============================================================
+    function renderStaffOrders() {
+      const box = document.getElementById('staffOrders');
+      if (!box) return;
+
+      if (!orders.length) {
+        box.innerHTML = '<div class="empty-state"><div class="icon">📋</div><div>Esperando pedidos...</div></div>';
+        return;
+      }
+
+      const sorted = [...orders].sort((a, b) => (b.createdAtLocal || 0) - (a.createdAtLocal || 0));
+
+      box.innerHTML = sorted.map(order => {
+        const isNew = !previousOrderIds.has(order.id);
+        const estadoCls = estadoClass(order.estado);
+        
+        return `
+          <div class="order-card estado-${estadoCls} ${isNew ? 'order-new' : ''} animate-in">
+            <div class="order-header">
+              <span class="order-mesa">🪑 Mesa ${escapeHtml(order.mesa || 'S/M')}</span>
+              <span class="order-time">${formatTime(order.createdAtLocal)}</span>
+            </div>
+            <div class="order-items">${escapeHtmlLines(order.items || '')}</div>
+            <div class="order-footer">
+              <span class="order-status ${estadoCls}">${estadoLabel(order.estado)}</span>
+              <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                ${order.estado === 'RECIBIDO' ? `<button class="btn btn-secondary btn-sm" onclick="cambiarEstado('${order.id}', 'EN_PREPARACION')">👨‍🍳 Preparar</button>` : ''}
+                ${order.estado === 'EN_PREPARACION' ? `<button class="btn btn-success btn-sm" onclick="cambiarEstado('${order.id}', 'LISTO')">✅ Listo</button>` : ''}
+                ${order.estado === 'LISTO' ? `<button class="btn btn-primary btn-sm" onclick="cambiarEstado('${order.id}', 'ENTREGADO')">📦 Entregar</button>` : ''}
+                ${order.estado !== 'CANCELADO' && order.estado !== 'ENTREGADO' ? `<button class="btn btn-danger btn-sm" onclick="cambiarEstado('${order.id}', 'CANCELADO')">❌</button>` : ''}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Update previous IDs
+      previousOrderIds = new Set(orders.map(o => o.id));
+    }
+
+    function renderProductosCliente() {
+      const box = document.getElementById('productosClienteList');
+      if (!box) return;
+
+      const visible = productos.filter(p => p.activo !== false);
+
+      if (!visible.length) {
+        box.innerHTML = '<div class="empty-state" style="grid-column: 1/-1;"><div class="icon">📖</div><div>No hay productos disponibles</div></div>';
+        return;
+      }
+
+      box.innerHTML = visible.map(p => {
+        const img = p.foto
+          ? `<img class="product-img" src="${p.foto}" alt="${escapeHtml(p.nombre)}">`
+          : `<div class="product-img placeholder">🍽️</div>`;
+
+        const precio = Number(p.precio) > 0
+          ? `<div class="product-price">${formatPrecio(p.precio)}</div>`
+          : '';
+
+        return `
+          <div class="product-card animate-in">
+            ${img}
+            <div class="product-info">
+              <div class="product-name">${escapeHtml(p.nombre || '')}</div>
+              ${precio}
+              <button class="product-add" onclick="addCart('${p.id}')">➕ Añadir</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderProductosAdmin() {
+      const box = document.getElementById('productosAdminList');
+      if (!box) return;
+
+      if (!productos.length) {
+        box.innerHTML = '<div class="empty-state"><div class="icon">🍽️</div><div>No hay productos</div></div>';
+        return;
+      }
+
+      box.innerHTML = productos.map(p => {
+        const img = p.foto
+          ? `<img style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;" src="${p.foto}">`
+          : `<div style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; background: var(--bg-secondary); border-radius: 8px; font-size: 24px;">🍽️</div>`;
+
+        return `
+          <div class="order-card animate-in" style="display: flex; gap: 12px; align-items: center; border-left: none;">
+            ${img}
+            <div style="flex: 1;">
+              <div style="font-weight: 600;">${escapeHtml(p.nombre || '')}</div>
+              <div style="font-size: 13px; color: var(--text-secondary);">${formatPrecio(p.precio || 0)}</div>
+            </div>
+            <div style="display: flex; gap: 6px;">
+              <button class="btn btn-secondary btn-sm" onclick="editarProductoNombre('${p.id}')">✏️</button>
+              <button class="btn btn-danger btn-sm" onclick="eliminarProducto('${p.id}')">🗑️</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderMesasAdmin() {
+      const box = document.getElementById('mesasList');
+      if (!box) return;
+
+      if (!mesas.length) {
+        box.innerHTML = '<div class="empty-state"><div class="icon">🪑</div><div>No hay mesas</div></div>';
+        return;
+      }
+
+      box.innerHTML = mesas.map(m => {
+        return `
+          <div class="order-card animate-in" style="display: flex; justify-content: space-between; align-items: center; border-left: none;">
+            <div style="font-weight: 600;">🪑 ${escapeHtml(m.nombre || '')}</div>
+            <div style="display: flex; gap: 6px;">
+              <button class="btn btn-secondary btn-sm" onclick="renombrarMesa('${m.id}')">✏️</button>
+              <button class="btn btn-danger btn-sm" onclick="eliminarMesa('${m.id}')">🗑️</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderCamarerosAdmin() {
+      const box = document.getElementById('camarerosList');
+      if (!box) return;
+
+      if (!camareros.length) {
+        box.innerHTML = '<div class="empty-state"><div class="icon">👤</div><div>No hay camareros</div></div>';
+        return;
+      }
+
+      box.innerHTML = camareros.map(c => {
+        return `
+          <div class="order-card animate-in" style="display: flex; justify-content: space-between; align-items: center; border-left: none;">
+            <div style="font-weight: 600;">👤 ${escapeHtml(c.nombre || '')}</div>
+            <div style="display: flex; gap: 6px;">
+              <button class="btn btn-secondary btn-sm" onclick="renombrarCamarero('${c.id}')">✏️</button>
+              <button class="btn btn-danger btn-sm" onclick="eliminarCamarero('${c.id}')">🗑️</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
 
     function renderCart() {
-      const box = document.getElementById("cartList");
+      const box = document.getElementById('cartList');
       if (!box) return;
 
       if (!cart.length) {
-        box.innerHTML = '<div class="small">No hay productos añadidos.</div>';
+        box.innerHTML = '<div class="empty-state"><div class="icon">🛒</div><div>Tu carrito está vacío</div></div>';
         return;
       }
 
       box.innerHTML = cart.map(item => {
         return `
-          <div class="order">
-            <div>
-              ${item.qty} x ${escapeHtml(item.nombre)}
-              ${item.precio ? " · " + formatPrecio(item.precio * item.qty) : ""}
+          <div class="cart-item">
+            <div class="cart-item-info">
+              <div class="cart-item-name">${item.qty} x ${escapeHtml(item.nombre)}</div>
+              ${item.precio ? `<div class="cart-item-price">${formatPrecio(item.precio * item.qty)}</div>` : ''}
             </div>
-            <button class="danger" onclick="removeCart('${item.id}')">Quitar</button>
+            <button class="cart-item-remove" onclick="removeCart('${item.id}')">✕</button>
           </div>
         `;
-      }).join("");
+      }).join('');
     }
 
     function renderClientOrders() {
-      const box = document.getElementById("clientOrders");
+      const box = document.getElementById('clientOrders');
       if (!box) return;
 
       if (!clientOrders.length) {
-        box.innerHTML = '<div class="small">Todavía no has enviado pedidos.</div>';
+        box.innerHTML = '';
         return;
       }
 
       const sorted = [...clientOrders].sort((a, b) => (b.createdAtLocal || 0) - (a.createdAtLocal || 0));
 
-      box.innerHTML = sorted.map(order => {
+      box.innerHTML = '<h4 style="margin-bottom: 12px; font-size: 14px; color: var(--text-secondary);">📜 Historial de pedidos</h4>' + sorted.map(order => {
         return `
-          <div class="order">
-            <div>${escapeHtmlLines(order.items || "")}</div>
-            <div class="small">Mesa: ${escapeHtml(order.mesa || "S/M")}</div>
-            <div class="small">Estado: ${estadoLabel(order.estado)}</div>
+          <div class="order-card estado-${estadoClass(order.estado)} animate-in" style="margin-bottom: 10px;">
+            <div class="order-items">${escapeHtmlLines(order.items || '')}</div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span class="order-status ${estadoClass(order.estado)}">${estadoLabel(order.estado)}</span>
+              <span class="order-time">${formatTime(order.createdAtLocal)}</span>
+            </div>
           </div>
         `;
-      }).join("");
+      }).join('');
     }
 
     function renderClientStatus() {
-      const box = document.getElementById("clientStatus");
+      const box = document.getElementById('clientStatus');
       if (!box) return;
 
       if (!clientAlerts.length) {
-        box.textContent = "";
+        box.textContent = '';
         return;
       }
 
       const sorted = [...clientAlerts].sort((a, b) => (b.createdAtLocal || 0) - (a.createdAtLocal || 0));
       const latest = sorted[0];
 
-      box.textContent =
-        "Último aviso: " +
-        alertLabel(latest.tipo) +
-        " · " +
-        (latest.atendida ? "✅ Atendido" : "⏳ Pendiente");
+      const tipoLabel = latest.tipo === 'PEDIR_CUENTA' ? '💶 Cuenta' : '🔔 Camarero';
+      box.innerHTML = `Último aviso: ${tipoLabel} · ${latest.atendida ? '✅ Atendido' : '⏳ Pendiente'}`;
     }
 
     // ============================================================
-    // ACCIONES PEDIDOS
+    // ACTIONS
     // ============================================================
-
     function addCart(productoId) {
       const producto = productos.find(p => p.id === productoId);
       if (!producto) return;
@@ -1203,14 +1894,14 @@
       } else {
         cart.push({
           id: producto.id,
-          nombre: producto.nombre || "Producto",
+          nombre: producto.nombre || 'Producto',
           precio: Number(producto.precio) || 0,
           qty: 1
         });
       }
 
       renderCart();
-      showToast("Producto añadido");
+      showToast('✅ Producto añadido', 'success');
     }
 
     function removeCart(productoId) {
@@ -1218,14 +1909,18 @@
       renderCart();
     }
 
+    function toggleClientOrders() {
+      document.getElementById('clientOrdersCard').classList.toggle('hidden');
+    }
+
     async function crearPedido() {
       if (!requireFirebase()) return;
 
-      const mesa = mesaFija || document.getElementById("mesa").value.trim();
-      const manual = document.getElementById("manualItems").value.trim();
+      const mesa = mesaFija || '';
+      const manual = document.getElementById('manualItems').value.trim();
 
       if (!mesa) {
-        showToast("⚠️ Indica la mesa");
+        showToast('⚠️ Mesa no detectada. Escanea el QR de tu mesa.', 'error');
         return;
       }
 
@@ -1235,39 +1930,44 @@
 
       cart.forEach(item => {
         lines.push(
-          item.qty + " x " + item.nombre +
-          (item.precio ? " (" + formatPrecio(item.precio * item.qty) + ")" : "")
+          item.qty + ' x ' + item.nombre +
+          (item.precio ? ' (' + formatPrecio(item.precio * item.qty) + ')' : '')
         );
       });
 
       if (cart.length) {
         const total = cart.reduce((sum, item) => sum + (item.qty * (item.precio || 0)), 0);
-        lines.push("Total: " + formatPrecio(total));
+        lines.push('Total: ' + formatPrecio(total));
       }
 
       if (!lines.length) {
-        showToast("Añade productos o escribe un pedido");
+        showToast('⚠️ Añade productos o escribe un pedido', 'error');
         return;
       }
 
       const id = newId();
+      const pedidoData = {
+        clientId: clientId,
+        mesa: mesa,
+        items: lines.join('\n'),
+        estado: 'RECIBIDO',
+        createdAtLocal: nowLocal(),
+        updatedAtLocal: nowLocal()
+      };
+
+      debugLog('Enviando pedido a Firebase: ' + JSON.stringify(pedidoData), 'info');
 
       try {
-        await db.ref("pedidos/" + id).set({
-          clientId: clientId,
-          mesa: mesa,
-          items: lines.join("\n"),
-          estado: "RECIBIDO",
-          createdAtLocal: nowLocal(),
-          updatedAtLocal: nowLocal()
-        });
-
+        await db.ref('pedidos/' + id).set(pedidoData);
+        debugLog('Pedido enviado correctamente con ID: ' + id, 'success');
+        
         cart = [];
-        document.getElementById("manualItems").value = "";
+        document.getElementById('manualItems').value = '';
         renderCart();
-        showToast("✅ Pedido enviado desde mesa " + mesa);
+        showToast('✅ Pedido enviado desde mesa ' + mesa, 'success');
       } catch (e) {
-        showToast("❌ Error al crear pedido: " + e.message);
+        debugLog('Error al enviar pedido: ' + e.message, 'error');
+        showToast('❌ Error al crear pedido: ' + e.message, 'error');
       }
     }
 
@@ -1275,44 +1975,30 @@
       if (!requireFirebase()) return;
 
       try {
-        await db.ref("pedidos/" + orderId).update({
+        await db.ref('pedidos/' + orderId).update({
           estado: estado,
           updatedAtLocal: nowLocal()
         });
-        showToast("Estado actualizado");
+        showToast('✅ Estado actualizado', 'success');
       } catch (e) {
-        showToast("Error: " + e.message);
-      }
-    }
-
-    async function asignarCamarero(orderId, camarero) {
-      if (!requireFirebase()) return;
-
-      try {
-        await db.ref("pedidos/" + orderId).update({
-          camarero: camarero,
-          updatedAtLocal: nowLocal()
-        });
-        showToast("Camarero asignado");
-      } catch (e) {
-        showToast("Error: " + e.message);
+        showToast('❌ Error: ' + e.message, 'error');
       }
     }
 
     async function enviarAlerta(tipo) {
       if (!requireFirebase()) return;
 
-      const mesa = mesaFija || document.getElementById("mesa").value.trim() || "";
+      const mesa = mesaFija || '';
 
       if (!mesa) {
-        showToast("⚠️ Indica la mesa primero");
+        showToast('⚠️ Mesa no detectada', 'error');
         return;
       }
 
       const id = newId();
 
       try {
-        await db.ref("alertas/" + id).set({
+        await db.ref('alertas/' + id).set({
           clientId: clientId,
           mesa: mesa,
           tipo: tipo,
@@ -1321,13 +2007,13 @@
           updatedAtLocal: nowLocal()
         });
 
-        if (tipo === "PEDIR_CUENTA") {
-          showToast("✅ Cuenta solicitada desde mesa " + mesa);
+        if (tipo === 'PEDIR_CUENTA') {
+          showToast('✅ Cuenta solicitada', 'success');
         } else {
-          showToast("✅ Camarero avisado desde mesa " + mesa);
+          showToast('✅ Camarero avisado', 'success');
         }
       } catch (e) {
-        showToast("❌ Error: " + e.message);
+        showToast('❌ Error: ' + e.message, 'error');
       }
     }
 
@@ -1335,145 +2021,137 @@
       if (!requireFirebase()) return;
 
       try {
-        await db.ref("alertas/" + alertId).update({
+        await db.ref('alertas/' + alertId).update({
           atendida: true,
           updatedAtLocal: nowLocal()
         });
-        showToast("✅ Alerta atendida");
+        showToast('✅ Alerta atendida', 'success');
       } catch (e) {
-        showToast("Error: " + e.message);
+        showToast('❌ Error: ' + e.message, 'error');
       }
     }
-
-    // ============================================================
-    // ACCIONES MESAS / CAMAREROS
-    // ============================================================
 
     async function agregarMesa() {
       if (!requireFirebase()) return;
 
-      const nombre = document.getElementById("nuevaMesa").value.trim();
+      const nombre = document.getElementById('nuevaMesa').value.trim();
       if (!nombre) {
-        showToast("Escribe el nombre de la mesa");
+        showToast('⚠️ Escribe el nombre de la mesa', 'error');
         return;
       }
 
       const id = newId();
 
       try {
-        await db.ref("mesas/" + id).set({
+        await db.ref('mesas/' + id).set({
           nombre: nombre,
           activo: true,
           createdAtLocal: nowLocal()
         });
-        document.getElementById("nuevaMesa").value = "";
-        showToast("✅ Mesa añadida: " + nombre);
+        document.getElementById('nuevaMesa').value = '';
+        showToast('✅ Mesa añadida: ' + nombre, 'success');
       } catch (e) {
-        showToast("Error: " + e.message);
+        showToast('❌ Error: ' + e.message, 'error');
       }
     }
 
     async function renombrarMesa(id) {
       if (!requireFirebase()) return;
       const mesa = mesas.find(m => m.id === id);
-      const nuevo = prompt("Nuevo nombre de la mesa", mesa ? mesa.nombre : "");
+      const nuevo = prompt('Nuevo nombre de la mesa', mesa ? mesa.nombre : '');
       if (!nuevo || !nuevo.trim()) return;
 
       try {
-        await db.ref("mesas/" + id).update({ nombre: nuevo.trim() });
-        showToast("Mesa renombrada");
+        await db.ref('mesas/' + id).update({ nombre: nuevo.trim() });
+        showToast('✅ Mesa renombrada', 'success');
       } catch (e) {
-        showToast("Error: " + e.message);
+        showToast('❌ Error: ' + e.message, 'error');
       }
     }
 
     async function eliminarMesa(id) {
       if (!requireFirebase()) return;
-      if (!confirm("¿Eliminar esta mesa?")) return;
+      if (!confirm('¿Eliminar esta mesa?')) return;
 
       try {
-        await db.ref("mesas/" + id).remove();
-        showToast("Mesa eliminada");
+        await db.ref('mesas/' + id).remove();
+        showToast('✅ Mesa eliminada', 'success');
       } catch (e) {
-        showToast("Error: " + e.message);
+        showToast('❌ Error: ' + e.message, 'error');
       }
     }
 
     async function agregarCamarero() {
       if (!requireFirebase()) return;
-      const nombre = document.getElementById("nuevoCamarero").value.trim();
+      const nombre = document.getElementById('nuevoCamarero').value.trim();
       if (!nombre) {
-        showToast("Escribe el nombre del camarero");
+        showToast('⚠️ Escribe el nombre del camarero', 'error');
         return;
       }
 
       const id = newId();
 
       try {
-        await db.ref("camareros/" + id).set({
+        await db.ref('camareros/' + id).set({
           nombre: nombre,
           activo: true,
           createdAtLocal: nowLocal()
         });
-        document.getElementById("nuevoCamarero").value = "";
-        showToast("Camarero añadido");
+        document.getElementById('nuevoCamarero').value = '';
+        showToast('✅ Camarero añadido', 'success');
       } catch (e) {
-        showToast("Error: " + e.message);
+        showToast('❌ Error: ' + e.message, 'error');
       }
     }
 
     async function renombrarCamarero(id) {
       if (!requireFirebase()) return;
       const camarero = camareros.find(c => c.id === id);
-      const nuevo = prompt("Nuevo nombre del camarero", camarero ? camarero.nombre : "");
+      const nuevo = prompt('Nuevo nombre del camarero', camarero ? camarero.nombre : '');
       if (!nuevo || !nuevo.trim()) return;
 
       try {
-        await db.ref("camareros/" + id).update({ nombre: nuevo.trim() });
-        showToast("Camarero renombrado");
+        await db.ref('camareros/' + id).update({ nombre: nuevo.trim() });
+        showToast('✅ Camarero renombrado', 'success');
       } catch (e) {
-        showToast("Error: " + e.message);
+        showToast('❌ Error: ' + e.message, 'error');
       }
     }
 
     async function eliminarCamarero(id) {
       if (!requireFirebase()) return;
-      if (!confirm("¿Eliminar este camarero?")) return;
+      if (!confirm('¿Eliminar este camarero?')) return;
 
       try {
-        await db.ref("camareros/" + id).remove();
-        showToast("Camarero eliminado");
+        await db.ref('camareros/' + id).remove();
+        showToast('✅ Camarero eliminado', 'success');
       } catch (e) {
-        showToast("Error: " + e.message);
+        showToast('❌ Error: ' + e.message, 'error');
       }
     }
-
-    // ============================================================
-    // ACCIONES PRODUCTOS
-    // ============================================================
 
     async function agregarProducto() {
       if (!requireFirebase()) return;
 
-      const nombre = document.getElementById("productoNombre").value.trim();
-      const precio = Number(document.getElementById("productoPrecio").value) || 0;
-      const descripcion = document.getElementById("productoDescripcion").value.trim();
-      const foto = pendingProductoFoto || "";
+      const nombre = document.getElementById('productoNombre').value.trim();
+      const precio = Number(document.getElementById('productoPrecio').value) || 0;
+      const descripcion = document.getElementById('productoDescripcion').value.trim();
+      const foto = pendingProductoFoto || '';
 
       if (!nombre) {
-        showToast("Escribe el nombre del producto");
+        showToast('⚠️ Escribe el nombre del producto', 'error');
         return;
       }
 
       if (foto && foto.length > 950000) {
-        showToast("La foto es demasiado grande");
+        showToast('⚠️ La foto es demasiado grande', 'error');
         return;
       }
 
       const id = newId();
 
       try {
-        await db.ref("productos/" + id).set({
+        await db.ref('productos/' + id).set({
           nombre: nombre,
           precio: precio,
           descripcion: descripcion,
@@ -1483,16 +2161,16 @@
           updatedAtLocal: nowLocal()
         });
 
-        document.getElementById("productoNombre").value = "";
-        document.getElementById("productoPrecio").value = "";
-        document.getElementById("productoDescripcion").value = "";
-        document.getElementById("productoFoto").value = "";
-        pendingProductoFoto = "";
-        document.getElementById("productoFotoPreview").innerHTML = "";
+        document.getElementById('productoNombre').value = '';
+        document.getElementById('productoPrecio').value = '';
+        document.getElementById('productoDescripcion').value = '';
+        document.getElementById('productoFoto').value = '';
+        pendingProductoFoto = '';
+        document.getElementById('productoFotoPreview').innerHTML = '';
 
-        showToast("✅ Producto añadido");
+        showToast('✅ Producto añadido', 'success');
       } catch (e) {
-        showToast("Error: " + e.message);
+        showToast('❌ Error: ' + e.message, 'error');
       }
     }
 
@@ -1501,331 +2179,203 @@
       const file = input.files && input.files[0];
       if (!file) return;
 
-      showToast("Procesando foto...");
+      showToast('Procesando foto...', '');
       const foto = await compressImageFile(file);
 
       if (!foto) {
-        showToast("No se pudo procesar la foto");
+        showToast('❌ No se pudo procesar la foto', 'error');
         return;
       }
 
       if (foto.length > 950000) {
-        showToast("La foto es demasiado grande");
+        showToast('⚠️ La foto es demasiado grande', 'error');
         return;
       }
 
       try {
-        await db.ref("productos/" + productoId).update({
+        await db.ref('productos/' + productoId).update({
           foto: foto,
           updatedAtLocal: nowLocal()
         });
-        input.value = "";
-        showToast("Foto actualizada");
+        input.value = '';
+        showToast('✅ Foto actualizada', 'success');
       } catch (e) {
-        showToast("Error: " + e.message);
+        showToast('❌ Error: ' + e.message, 'error');
       }
     }
 
     async function editarProductoNombre(id) {
       if (!requireFirebase()) return;
       const producto = productos.find(p => p.id === id);
-      const nuevo = prompt("Nuevo nombre del producto", producto ? producto.nombre : "");
+      const nuevo = prompt('Nuevo nombre del producto', producto ? producto.nombre : '');
       if (!nuevo || !nuevo.trim()) return;
 
       try {
-        await db.ref("productos/" + id).update({
+        await db.ref('productos/' + id).update({
           nombre: nuevo.trim(),
           updatedAtLocal: nowLocal()
         });
-        showToast("Producto renombrado");
+        showToast('✅ Producto renombrado', 'success');
       } catch (e) {
-        showToast("Error: " + e.message);
-      }
-    }
-
-    async function editarProductoPrecio(id) {
-      if (!requireFirebase()) return;
-      const producto = productos.find(p => p.id === id);
-      const actual = producto && producto.precio ? producto.precio : 0;
-      const nuevo = prompt("Nuevo precio", String(actual));
-      if (nuevo === null) return;
-
-      const precio = parseFloat(String(nuevo).replace(",", "."));
-
-      try {
-        await db.ref("productos/" + id).update({
-          precio: isNaN(precio) ? 0 : precio,
-          updatedAtLocal: nowLocal()
-        });
-        showToast("Precio actualizado");
-      } catch (e) {
-        showToast("Error: " + e.message);
+        showToast('❌ Error: ' + e.message, 'error');
       }
     }
 
     async function eliminarProducto(id) {
       if (!requireFirebase()) return;
-      if (!confirm("¿Eliminar este producto?")) return;
+      if (!confirm('¿Eliminar este producto?')) return;
 
       try {
-        await db.ref("productos/" + id).remove();
-        showToast("Producto eliminado");
+        await db.ref('productos/' + id).remove();
+        showToast('✅ Producto eliminado', 'success');
       } catch (e) {
-        showToast("Error: " + e.message);
+        showToast('❌ Error: ' + e.message, 'error');
       }
     }
 
-    // ============================================================
-    // SUSCRIPCIONES FIREBASE
-    // ============================================================
-
-    function subscribeMesas() {
-      db.ref("mesas").on("value", snapshot => {
-        const data = snapshot.val() || {};
-        mesas = Object.keys(data).map(id => ({ id, ...data[id] }));
-        mesas.sort((a, b) => String(a.nombre || "").localeCompare(String(b.nombre || "")));
-        renderMesasDatalist();
-        if (role === "admin") renderMesasAdmin();
-      }, error => {
-        console.error("Error mesas:", error);
-      });
-    }
-
-    function subscribeCamareros() {
-      db.ref("camareros").on("value", snapshot => {
-        const data = snapshot.val() || {};
-        camareros = Object.keys(data).map(id => ({ id, ...data[id] }));
-        camareros.sort((a, b) => String(a.nombre || "").localeCompare(String(b.nombre || "")));
-        if (role === "admin") renderCamarerosAdmin();
-        if (role !== "cliente") renderStaffOrders();
-      }, error => {
-        console.error("Error camareros:", error);
-      });
-    }
-
-    function subscribeProductos() {
-      db.ref("productos").on("value", snapshot => {
-        const data = snapshot.val() || {};
-        productos = Object.keys(data).map(id => ({ id, ...data[id] }));
-        productos.sort((a, b) => String(a.nombre || "").localeCompare(String(b.nombre || "")));
-
-        if (role === "cliente") renderProductosCliente();
-        if (role === "admin") renderProductosAdmin();
-      }, error => {
-        console.error("Error productos:", error);
-      });
-    }
-
-    function subscribeStaff() {
-      db.ref("pedidos").on("value", snapshot => {
+    function forceRefresh() {
+      if (!requireFirebase()) return;
+      
+      debugLog('Forzando actualización de datos...', 'info');
+      
+      // Re-subscribe to force refresh
+      db.ref('pedidos').once('value').then(snapshot => {
         const data = snapshot.val() || {};
         orders = Object.keys(data).map(id => ({ id, ...data[id] }));
         renderStaffOrders();
-      }, error => {
-        console.error("Error pedidos staff:", error);
-        document.getElementById("staffOrders").innerHTML =
-          '<div class="small">Error: ' + escapeHtml(error.message) + "</div>";
-      });
-
-      db.ref("alertas").on("value", snapshot => {
-        const data = snapshot.val() || {};
-        alerts = Object.keys(data).map(id => ({ id, ...data[id] }));
-        renderStaffAlerts();
-      }, error => {
-        console.error("Error alertas staff:", error);
+        updateStats();
+        debugLog('Datos actualizados manualmente. Pedidos: ' + orders.length, 'success');
+        showToast('✅ Datos actualizados', 'success');
+      }).catch(e => {
+        debugLog('Error al actualizar: ' + e.message, 'error');
+        showToast('❌ Error al actualizar', 'error');
       });
     }
 
-    function subscribeClient() {
-      db.ref("pedidos").on("value", snapshot => {
-        const data = snapshot.val() || {};
-        clientOrders = Object.keys(data)
-          .map(id => ({ id, ...data[id] }))
-          .filter(o => o.clientId === clientId);
-        renderClientOrders();
-      }, error => {
-        console.error("Error pedidos cliente:", error);
-      });
-
-      db.ref("alertas").on("value", snapshot => {
-        const data = snapshot.val() || {};
-        clientAlerts = Object.keys(data)
-          .map(id => ({ id, ...data[id] }))
-          .filter(a => a.clientId === clientId);
-
-        const sorted = [...clientAlerts].sort((a, b) => (b.createdAtLocal || 0) - (a.createdAtLocal || 0));
-
-        sorted.forEach(alert => {
-          const prev = previousClientAlertsMap[alert.id];
-          if (prev && prev.atendida === false && alert.atendida === true) {
-            if (alert.tipo === "PEDIR_CUENTA") {
-              showToast("✅ La cuenta está en proceso");
-            } else {
-              showToast("✅ El camarero ha atendido tu aviso");
-            }
-          }
-        });
-
-        previousClientAlertsMap = {};
-        sorted.forEach(alert => {
-          previousClientAlertsMap[alert.id] = {
-            atendida: alert.atendida,
-            tipo: alert.tipo
-          };
-        });
-
-        renderClientStatus();
-      }, error => {
-        console.error("Error alertas cliente:", error);
-      });
-    }
-
-    function startRealtime() {
-      if (!firebaseReady || !db) return;
-
-      // Mesas siempre
-      subscribeMesas();
-
-      // Productos para cliente y admin
-      if (role === "cliente" || role === "admin") {
-        subscribeProductos();
-      }
-
-      // Pedidos según rol
-      if (role === "cliente") {
-        subscribeClient();
-      } else if (role === "admin" || role === "barra" || role === "camarero") {
-        subscribeStaff();
-        subscribeCamareros();
-      }
-    }
-
     // ============================================================
-    // DIAGNOSTICO
+    // FIREBASE SUBSCRIPTIONS
     // ============================================================
-
-    async function runDiagnostic() {
-      const results = [];
-
-      function addResult(name, ok, error = "") {
-        results.push({ name, ok, error });
-      }
-
-      addResult("Firebase JS cargado", typeof firebase !== "undefined");
-      addResult("Firebase inicializado", firebaseReady);
-      addResult("Base de datos lista", !!db);
-      addResult("Librería QR cargada", typeof QRCode !== "undefined");
-      addResult("Rol actual", true, "Rol: " + role);
-      addResult("Client ID", true, clientId.slice(0, 20) + "...");
-
-      if (mesaFija) {
-        addResult("Mesa fija", true, mesaFija);
-      }
-
-      try {
-        localStorage.setItem("test_local", "1");
-        localStorage.removeItem("test_local");
-        addResult("LocalStorage disponible", true);
-      } catch (e) {
-        addResult("LocalStorage disponible", false, e.message);
-      }
-
-      if (firebaseReady && db) {
-        try {
-          const testId = newId();
-          await db.ref("diagnosticos/" + testId).set({
-            test: true,
-            createdAtLocal: nowLocal()
-          });
-
-          const snap = await db.ref("diagnosticos/" + testId).once("value");
-          await db.ref("diagnosticos/" + testId).remove();
-
-          addResult("Escritura/lectura en Firebase", snap.exists());
-        } catch (e) {
-          addResult("Escritura/lectura en Firebase", false, e.message);
-        }
-      } else {
-        addResult("Escritura/lectura en Firebase", false, "Firebase no está listo");
-      }
-
-      const box = document.getElementById("diagnosticsResults");
-      const failures = results.filter(r => !r.ok);
-
-      box.innerHTML = results.map(r => {
-        return `
-          <div class="order">
-            ${r.ok ? "✅" : "❌"} ${escapeHtml(r.name)}
-            ${r.error ? `<div class="small">${escapeHtml(r.error)}</div>` : ""}
-          </div>
-        `;
-      }).join("");
-
-      if (!failures.length) {
-        showToast("✅ Diagnóstico correcto: 0 fallos");
-      } else {
-        showToast("❌ Diagnóstico con " + failures.length + " fallos");
-      }
-    }
-
-    // ============================================================
-    // EVENTOS
-    // ============================================================
-
-    document.getElementById("btnPedidos").addEventListener("click", () => {
-      document.getElementById("clientOrdersCard").classList.toggle("hidden");
-    });
-
-    document.getElementById("btnLlamar").addEventListener("click", () => {
-      enviarAlerta("LLAMAR_CAMARERO");
-    });
-
-    document.getElementById("btnCuenta").addEventListener("click", () => {
-      enviarAlerta("PEDIR_CUENTA");
-    });
-
-    document.getElementById("createOrder").addEventListener("click", () => {
-      crearPedido();
-    });
-
-    document.getElementById("diagnosticsBtn").addEventListener("click", () => {
-      runDiagnostic();
-    });
-
-    document.getElementById("productoFoto").addEventListener("change", async function () {
-      const file = this.files && this.files[0];
-      const preview = document.getElementById("productoFotoPreview");
-
-      if (!file) {
-        pendingProductoFoto = "";
-        preview.innerHTML = "";
+    function subscribeAll() {
+      if (!firebaseReady || !db) {
+        debugLog('No se pueden iniciar suscripciones: Firebase no está listo', 'error');
         return;
       }
 
-      preview.innerHTML = '<div class="small">Procesando foto...</div>';
-      pendingProductoFoto = await compressImageFile(file);
+      debugLog('Iniciando suscripciones para rol: ' + role, 'info');
 
-      if (pendingProductoFoto) {
-        preview.innerHTML = `<img class="thumb" src="${pendingProductoFoto}">`;
-      } else {
-        preview.innerHTML = '<div class="small">No se pudo procesar la foto.</div>';
+      // Mesas - always subscribe
+      db.ref('mesas').on('value', snapshot => {
+        const data = snapshot.val() || {};
+        mesas = Object.keys(data).map(id => ({ id, ...data[id] }));
+        mesas.sort((a, b) => String(a.nombre || '').localeCompare(String(b.nombre || '')));
+        debugLog('Mesas actualizadas: ' + mesas.length, 'info');
+        updateStats();
+        if (role === 'admin') renderMesasAdmin();
+      }, error => {
+        debugLog('Error en suscripción mesas: ' + error.message, 'error');
+      });
+
+      // Productos - for client and admin
+      if (role === 'cliente' || role === 'admin') {
+        db.ref('productos').on('value', snapshot => {
+          const data = snapshot.val() || {};
+          productos = Object.keys(data).map(id => ({ id, ...data[id] }));
+          productos.sort((a, b) => String(a.nombre || '').localeCompare(String(b.nombre || '')));
+          debugLog('Productos actualizados: ' + productos.length, 'info');
+          if (role === 'cliente') renderProductosCliente();
+          if (role === 'admin') renderProductosAdmin();
+        }, error => {
+          debugLog('Error en suscripción productos: ' + error.message, 'error');
+        });
       }
-    });
+
+      // Pedidos - according to role
+      if (role === 'cliente') {
+        db.ref('pedidos').on('value', snapshot => {
+          const data = snapshot.val() || {};
+          const allOrders = Object.keys(data).map(id => ({ id, ...data[id] }));
+          clientOrders = allOrders.filter(o => o.clientId === clientId);
+          debugLog('Pedidos cliente actualizados: ' + clientOrders.length, 'info');
+          renderClientOrders();
+        }, error => {
+          debugLog('Error en suscripción pedidos cliente: ' + error.message, 'error');
+        });
+
+        db.ref('alertas').on('value', snapshot => {
+          const data = snapshot.val() || {};
+          const allAlerts = Object.keys(data).map(id => ({ id, ...data[id] }));
+          clientAlerts = allAlerts.filter(a => a.clientId === clientId);
+          renderClientStatus();
+        }, error => {
+          debugLog('Error en suscripción alertas cliente: ' + error.message, 'error');
+        });
+
+      } else if (role === 'admin' || role === 'barra' || role === 'camarero') {
+        db.ref('pedidos').on('value', snapshot => {
+          const data = snapshot.val() || {};
+          const newOrders = Object.keys(data).map(id => ({ id, ...data[id] }));
+          
+          // Check for new orders
+          const newCount = newOrders.filter(o => !previousOrderIds.has(o.id)).length;
+          if (newCount > 0 && previousOrderIds.size > 0) {
+            debugLog('🔔 ¡Nuevo pedido recibido!', 'success');
+            showToast('🔔 ¡Nuevo pedido!', 'success');
+          }
+          
+          orders = newOrders;
+          debugLog('Pedidos staff actualizados: ' + orders.length, 'info');
+          renderStaffOrders();
+          updateStats();
+        }, error => {
+          debugLog('Error en suscripción pedidos staff: ' + error.message, 'error');
+        });
+
+        db.ref('alertas').on('value', snapshot => {
+          const data = snapshot.val() || {};
+          alerts = Object.keys(data).map(id => ({ id, ...data[id] }));
+          debugLog('Alertas actualizadas: ' + alerts.length, 'info');
+          renderStaffAlerts();
+          updateStats();
+        }, error => {
+          debugLog('Error en suscripción alertas: ' + error.message, 'error');
+        });
+
+        db.ref('camareros').on('value', snapshot => {
+          const data = snapshot.val() || {};
+          camareros = Object.keys(data).map(id => ({ id, ...data[id] }));
+          camareros.sort((a, b) => String(a.nombre || '').localeCompare(String(b.nombre || '')));
+          debugLog('Camareros actualizados: ' + camareros.length, 'info');
+          if (role === 'admin') renderCamarerosAdmin();
+        }, error => {
+          debugLog('Error en suscripción camareros: ' + error.message, 'error');
+        });
+      }
+
+      debugLog('Suscripciones iniciadas correctamente', 'success');
+    }
 
     // ============================================================
-    // ARRANQUE
+    // INIT
     // ============================================================
-
     function boot() {
-      applyRole();
-      initFirebase(firebaseConfig);
+      debugLog('=== INICIANDO APLICACIÓN ===', 'info');
+      debugLog('Rol detectado: ' + role, 'info');
+      debugLog('Client ID: ' + clientId, 'info');
+      if (mesaFija) debugLog('Mesa fija: ' + mesaFija, 'info');
 
-      if (firebaseReady) {
-        startRealtime();
+      applyRole();
+
+      if (initFirebase()) {
+        subscribeAll();
       }
     }
 
-    boot();
+    // Start when DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', boot);
+    } else {
+      boot();
+    }
   </script>
 </body>
 </html>
