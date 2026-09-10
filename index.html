@@ -31,11 +31,7 @@
       --radius-xl: 20px;
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -46,72 +42,39 @@
     }
 
     .header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(10, 10, 15, 0.85);
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(10,10,15,0.85);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
       padding: 12px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 10px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 10px;
     }
 
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
+    .header-left { display: flex; align-items: center; gap: 12px; }
 
     .logo {
-      width: 36px;
-      height: 36px;
+      width: 36px; height: 36px;
       background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-dark));
       border-radius: var(--radius-sm);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       font-size: 20px;
     }
 
-    .brand {
-      font-size: 18px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-    }
+    .brand { font-size: 18px; font-weight: 700; letter-spacing: -0.5px; }
+    .brand span { color: var(--accent-gold); }
 
-    .brand span {
-      color: var(--accent-gold);
-    }
-
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
+    .header-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 
     .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+      display: inline-flex; align-items: center; gap: 6px;
       padding: 6px 12px;
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 20px;
-      font-size: 12px;
-      color: var(--text-secondary);
+      border-radius: 20px; font-size: 12px; color: var(--text-secondary);
     }
 
-    .status-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--accent-red);
-    }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent-red); }
 
     .status-dot.connected {
       background: var(--accent-green);
@@ -119,279 +82,135 @@
       animation: pulse 2s infinite;
     }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.6; }
-    }
+    @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.6;} }
 
     .role-badge {
       padding: 6px 12px;
       background: linear-gradient(135deg, var(--accent-purple), #7c3aed);
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      border-radius: 20px; font-size: 12px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.5px;
     }
 
-    .role-badge.cliente {
-      background: linear-gradient(135deg, var(--accent-green), var(--accent-green-dark));
-    }
+    .role-badge.cliente { background: linear-gradient(135deg, var(--accent-green), var(--accent-green-dark)); }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-    }
+    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
 
     .card {
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      padding: 20px;
-      margin-bottom: 16px;
+      padding: 20px; margin-bottom: 16px;
       box-shadow: var(--shadow-md);
       transition: all 0.2s ease;
     }
 
-    .card:hover {
-      box-shadow: var(--shadow-lg);
-    }
+    .card:hover { box-shadow: var(--shadow-lg); }
 
     .card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
-      padding-bottom: 12px;
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 16px; padding-bottom: 12px;
       border-bottom: 1px solid var(--border);
-      flex-wrap: wrap;
-      gap: 10px;
+      flex-wrap: wrap; gap: 10px;
     }
 
-    .card-title {
-      font-size: 16px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .card-title .icon {
-      font-size: 20px;
-    }
+    .card-title { font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+    .card-title .icon { font-size: 20px; }
 
     .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 10px 16px;
-      border: none;
-      border-radius: var(--radius-sm);
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      text-decoration: none;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 10px 16px; border: none; border-radius: var(--radius-sm);
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      transition: all 0.2s ease; text-decoration: none;
     }
 
-    .btn:active {
-      transform: scale(0.97);
-    }
+    .btn:active { transform: scale(0.97); }
 
-    .btn-primary {
-      background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-dark));
-      color: #000;
-    }
+    .btn-primary { background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-dark)); color: #000; }
+    .btn-primary:hover { box-shadow: 0 4px 12px rgba(245,158,11,0.4); transform: translateY(-1px); }
 
-    .btn-primary:hover {
-      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
-      transform: translateY(-1px);
-    }
+    .btn-secondary { background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border); }
+    .btn-secondary:hover { background: var(--bg-card-hover); border-color: var(--text-muted); }
 
-    .btn-secondary {
-      background: var(--bg-secondary);
-      color: var(--text-primary);
-      border: 1px solid var(--border);
-    }
+    .btn-success { background: linear-gradient(135deg, var(--accent-green), var(--accent-green-dark)); color: white; }
+    .btn-success:hover { box-shadow: 0 4px 12px rgba(16,185,129,0.4); transform: translateY(-1px); }
 
-    .btn-secondary:hover {
-      background: var(--bg-card-hover);
-      border-color: var(--text-muted);
-    }
+    .btn-danger { background: linear-gradient(135deg, var(--accent-red), #dc2626); color: white; }
+    .btn-danger:hover { box-shadow: 0 4px 12px rgba(239,68,68,0.4); }
 
-    .btn-success {
-      background: linear-gradient(135deg, var(--accent-green), var(--accent-green-dark));
-      color: white;
-    }
-
-    .btn-success:hover {
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
-      transform: translateY(-1px);
-    }
-
-    .btn-danger {
-      background: linear-gradient(135deg, var(--accent-red), #dc2626);
-      color: white;
-    }
-
-    .btn-danger:hover {
-      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
-    }
-
-    .btn-sm {
-      padding: 6px 12px;
-      font-size: 12px;
-    }
-
-    .btn-block {
-      width: 100%;
-      padding: 14px;
-      font-size: 16px;
-    }
+    .btn-sm { padding: 6px 12px; font-size: 12px; }
+    .btn-block { width: 100%; padding: 14px; font-size: 16px; }
 
     .input, .textarea, .select {
-      width: 100%;
-      padding: 12px 14px;
+      width: 100%; padding: 12px 14px;
       background: var(--bg-secondary);
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
-      color: var(--text-primary);
-      font-size: 14px;
+      color: var(--text-primary); font-size: 14px;
       transition: all 0.2s ease;
     }
 
     .input:focus, .textarea:focus, .select:focus {
-      outline: none;
-      border-color: var(--accent-gold);
-      box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
+      outline: none; border-color: var(--accent-gold);
+      box-shadow: 0 0 0 3px rgba(245,158,11,0.15);
     }
 
-    .input::placeholder, .textarea::placeholder {
-      color: var(--text-muted);
-    }
+    .input::placeholder, .textarea::placeholder { color: var(--text-muted); }
+    .textarea { resize: vertical; min-height: 80px; }
 
-    .textarea {
-      resize: vertical;
-      min-height: 80px;
-    }
-
-    .menu-panel {
-      max-width: 400px;
-      margin: 60px auto;
-      text-align: center;
-    }
+    .menu-panel { max-width: 400px; margin: 60px auto; text-align: center; }
 
     .menu-logo {
-      width: 80px;
-      height: 80px;
+      width: 80px; height: 80px;
       background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-dark));
       border-radius: var(--radius-lg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 40px;
-      margin: 0 auto 20px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 40px; margin: 0 auto 20px;
       box-shadow: var(--shadow-xl);
     }
 
-    .menu-title {
-      font-size: 28px;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
+    .menu-title { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+    .menu-subtitle { color: var(--text-secondary); margin-bottom: 32px; }
 
-    .menu-subtitle {
-      color: var(--text-secondary);
-      margin-bottom: 32px;
-    }
-
-    .menu-buttons {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
+    .menu-buttons { display: flex; flex-direction: column; gap: 12px; }
 
     .menu-btn {
-      display: flex;
-      align-items: center;
-      gap: 14px;
+      display: flex; align-items: center; gap: 14px;
       padding: 16px 20px;
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
-      color: var(--text-primary);
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      text-align: left;
+      color: var(--text-primary); font-size: 16px; font-weight: 600;
+      cursor: pointer; transition: all 0.2s ease; text-align: left;
     }
 
-    .menu-btn:hover {
-      background: var(--bg-card-hover);
-      border-color: var(--accent-gold);
-      transform: translateX(4px);
-    }
+    .menu-btn:hover { background: var(--bg-card-hover); border-color: var(--accent-gold); transform: translateX(4px); }
 
     .menu-btn .icon {
-      font-size: 24px;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--bg-secondary);
-      border-radius: var(--radius-sm);
+      font-size: 24px; width: 40px; height: 40px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--bg-secondary); border-radius: var(--radius-sm);
     }
 
-    .stats-bar {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 12px;
-      margin-bottom: 20px;
-    }
+    .stats-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); gap: 12px; margin-bottom: 20px; }
 
     .stat-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 16px;
-      text-align: center;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 16px; text-align: center;
     }
 
-    .stat-value {
-      font-size: 28px;
-      font-weight: 700;
-      color: var(--accent-gold);
-    }
+    .stat-value { font-size: 28px; font-weight: 700; color: var(--accent-gold); }
+    .stat-label { font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
 
-    .stat-label {
-      font-size: 12px;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-top: 4px;
-    }
-
-    .orders-grid {
-      display: grid;
-      gap: 12px;
-    }
+    .orders-grid { display: grid; gap: 12px; }
 
     .order-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 16px;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 16px;
       border-left: 4px solid var(--accent-blue);
       transition: all 0.2s ease;
     }
 
-    .order-card:hover {
-      background: var(--bg-card-hover);
-    }
+    .order-card:hover { background: var(--bg-card-hover); }
 
     .order-card.estado-recibido { border-left-color: var(--accent-blue); }
     .order-card.estado-preparacion { border-left-color: var(--accent-gold); }
@@ -400,389 +219,174 @@
     .order-card.estado-cancelado { border-left-color: var(--accent-red); opacity: 0.7; }
     .order-card.estado-pagado { border-left-color: var(--accent-purple); opacity: 0.7; }
 
-    .order-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 10px;
-    }
+    .order-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
 
     .order-mesa {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+      display: inline-flex; align-items: center; gap: 6px;
       padding: 4px 10px;
-      background: rgba(245, 158, 11, 0.15);
-      border: 1px solid rgba(245, 158, 11, 0.3);
-      border-radius: 6px;
-      font-size: 13px;
-      font-weight: 700;
+      background: rgba(245,158,11,0.15);
+      border: 1px solid rgba(245,158,11,0.3);
+      border-radius: 6px; font-size: 13px; font-weight: 700;
       color: var(--accent-gold);
     }
 
-    .order-time {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
+    .order-time { font-size: 12px; color: var(--text-muted); }
 
-    .order-items {
-      font-size: 14px;
-      color: var(--text-secondary);
-      margin-bottom: 12px;
-      white-space: pre-line;
-    }
+    .order-items { font-size: 14px; color: var(--text-secondary); margin-bottom: 12px; white-space: pre-line; }
 
-    .order-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
+    .order-footer { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
 
-    .order-status {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: 600;
-    }
+    .order-status { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; }
 
-    .order-status.recibido { background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); }
-    .order-status.preparacion { background: rgba(245, 158, 11, 0.15); color: var(--accent-gold); }
-    .order-status.listo { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); }
-    .order-status.entregado { background: rgba(113, 113, 122, 0.15); color: var(--text-muted); }
-    .order-status.cancelado { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); }
-    .order-status.pagado { background: rgba(139, 92, 246, 0.15); color: var(--accent-purple); }
+    .order-status.recibido { background: rgba(59,130,246,0.15); color: var(--accent-blue); }
+    .order-status.preparacion { background: rgba(245,158,11,0.15); color: var(--accent-gold); }
+    .order-status.listo { background: rgba(16,185,129,0.15); color: var(--accent-green); }
+    .order-status.entregado { background: rgba(113,113,122,0.15); color: var(--text-muted); }
+    .order-status.cancelado { background: rgba(239,68,68,0.15); color: var(--accent-red); }
+    .order-status.pagado { background: rgba(139,92,246,0.15); color: var(--accent-purple); }
 
     .alert-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 14px 16px;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 14px 16px; margin-bottom: 10px;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
       border-left: 4px solid var(--accent-red);
     }
 
-    .alert-card.atendida {
-      border-left-color: var(--accent-green);
-      opacity: 0.6;
-    }
+    .alert-card.atendida { border-left-color: var(--accent-green); opacity: 0.6; }
+    .alert-card.cuenta-mesa { border-left-color: var(--accent-gold); }
 
-    .alert-info {
-      flex: 1;
-    }
+    .alert-info { flex: 1; }
+    .alert-title { font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+    .alert-meta { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
 
-    .alert-title {
-      font-weight: 600;
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .alert-meta {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-top: 2px;
-    }
-
-    .products-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 12px;
-    }
+    .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px,1fr)); gap: 12px; }
 
     .product-card {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      overflow: hidden;
-      transition: all 0.2s ease;
-      cursor: pointer;
+      background: var(--bg-secondary); border: 1px solid var(--border);
+      border-radius: var(--radius-md); overflow: hidden;
+      transition: all 0.2s ease; cursor: pointer;
     }
 
-    .product-card:hover {
-      transform: translateY(-2px);
-      border-color: var(--accent-gold);
-      box-shadow: var(--shadow-md);
-    }
+    .product-card:hover { transform: translateY(-2px); border-color: var(--accent-gold); box-shadow: var(--shadow-md); }
 
-    .product-img {
-      width: 100%;
-      height: 100px;
-      object-fit: cover;
-      background: var(--bg-card);
-    }
+    .product-img { width: 100%; height: 100px; object-fit: cover; background: var(--bg-card); }
 
     .product-img.placeholder {
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       font-size: 36px;
       background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
     }
 
-    .product-info {
-      padding: 12px;
-    }
-
-    .product-name {
-      font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    .product-price {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--accent-gold);
-    }
+    .product-info { padding: 12px; }
+    .product-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .product-price { font-size: 15px; font-weight: 700; color: var(--accent-gold); }
 
     .product-add {
-      width: 100%;
-      margin-top: 10px;
-      padding: 8px;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
+      width: 100%; margin-top: 10px; padding: 8px;
+      background: var(--bg-card); border: 1px solid var(--border);
       border-radius: var(--radius-sm);
-      color: var(--text-primary);
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
+      color: var(--text-primary); font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: all 0.2s ease;
     }
 
-    .product-add:hover {
-      background: var(--accent-gold);
-      color: #000;
-      border-color: var(--accent-gold);
-    }
+    .product-add:hover { background: var(--accent-gold); color: #000; border-color: var(--accent-gold); }
 
-    .cart-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 0;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .cart-item:last-child {
-      border-bottom: none;
-    }
-
-    .cart-item-info {
-      flex: 1;
-    }
-
-    .cart-item-name {
-      font-weight: 600;
-      font-size: 14px;
-    }
-
-    .cart-item-price {
-      font-size: 13px;
-      color: var(--text-secondary);
-    }
-
-    .cart-item-remove {
-      background: none;
-      border: none;
-      color: var(--accent-red);
-      cursor: pointer;
-      font-size: 18px;
-      padding: 4px 8px;
-    }
+    .cart-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .cart-item:last-child { border-bottom: none; }
+    .cart-item-info { flex: 1; }
+    .cart-item-name { font-weight: 600; font-size: 14px; }
+    .cart-item-price { font-size: 13px; color: var(--text-secondary); }
+    .cart-item-remove { background: none; border: none; color: var(--accent-red); cursor: pointer; font-size: 18px; padding: 4px 8px; }
 
     .client-header {
-      text-align: center;
-      padding: 20px;
-      background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.05));
-      border-radius: var(--radius-lg);
-      margin-bottom: 20px;
-      border: 1px solid rgba(245, 158, 11, 0.2);
+      text-align: center; padding: 20px;
+      background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(217,119,6,0.05));
+      border-radius: var(--radius-lg); margin-bottom: 20px;
+      border: 1px solid rgba(245,158,11,0.2);
     }
 
     .client-mesa {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
+      display: inline-flex; align-items: center; gap: 8px;
       padding: 10px 20px;
       background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-dark));
-      border-radius: 30px;
-      font-size: 18px;
-      font-weight: 700;
-      color: #000;
+      border-radius: 30px; font-size: 18px; font-weight: 700; color: #000;
       margin-top: 10px;
     }
 
-    .qr-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 16px;
-    }
+    .qr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px,1fr)); gap: 16px; }
 
-    .qr-card {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 16px;
-      text-align: center;
-    }
+    .qr-card { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; text-align: center; }
 
     .qr-card canvas, .qr-card img {
-      width: 140px !important;
-      height: 140px !important;
-      background: white;
-      padding: 8px;
-      border-radius: var(--radius-sm);
+      width: 140px !important; height: 140px !important;
+      background: white; padding: 8px; border-radius: var(--radius-sm);
     }
 
-    .qr-card h4 {
-      margin: 12px 0 8px;
-      font-size: 15px;
-    }
+    .qr-card h4 { margin: 12px 0 8px; font-size: 15px; }
 
     .toast {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
+      position: fixed; bottom: 24px; left: 50%;
       transform: translateX(-50%) translateY(100px);
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 14px 24px;
-      box-shadow: var(--shadow-xl);
-      z-index: 1000;
-      opacity: 0;
-      transition: all 0.3s ease;
-      max-width: 90%;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 14px 24px;
+      box-shadow: var(--shadow-xl); z-index: 1000;
+      opacity: 0; transition: all 0.3s ease; max-width: 90%;
     }
 
-    .toast.show {
-      transform: translateX(-50%) translateY(0);
-      opacity: 1;
-    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    .toast.success { border-color: var(--accent-green); background: linear-gradient(135deg, rgba(16,185,129,0.15), var(--bg-card)); }
+    .toast.error { border-color: var(--accent-red); background: linear-gradient(135deg, rgba(239,68,68,0.15), var(--bg-card)); }
 
-    .toast.success {
-      border-color: var(--accent-green);
-      background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), var(--bg-card));
-    }
+    .hidden { display: none !important; }
 
-    .toast.error {
-      border-color: var(--accent-red);
-      background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), var(--bg-card));
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 40px 20px;
-      color: var(--text-muted);
-    }
-
-    .empty-state .icon {
-      font-size: 48px;
-      margin-bottom: 12px;
-      opacity: 0.5;
-    }
+    .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); }
+    .empty-state .icon { font-size: 48px; margin-bottom: 12px; opacity: 0.5; }
 
     .debug-panel {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 12px;
-      margin-top: 12px;
-      font-family: monospace;
-      font-size: 12px;
-      max-height: 200px;
-      overflow-y: auto;
+      background: var(--bg-secondary); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 12px; margin-top: 12px;
+      font-family: monospace; font-size: 12px;
+      max-height: 200px; overflow-y: auto;
     }
 
-    .debug-line {
-      padding: 2px 0;
-      color: var(--text-secondary);
-    }
-
+    .debug-line { padding: 2px 0; color: var(--text-secondary); }
     .debug-line.error { color: var(--accent-red); }
     .debug-line.success { color: var(--accent-green); }
 
-    /* Modal */
     .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(4px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 200;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center; z-index: 200;
     }
 
     .modal-content {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 24px;
-      width: 90%;
-      max-width: 400px;
-      box-shadow: var(--shadow-xl);
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 24px;
+      width: 90%; max-width: 400px; box-shadow: var(--shadow-xl);
     }
 
-    /* Total mesa */
     .total-mesa-card {
-      background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), var(--bg-card));
-      border-color: rgba(245, 158, 11, 0.3);
-      text-align: center;
+      background: linear-gradient(135deg, rgba(245,158,11,0.1), var(--bg-card));
+      border-color: rgba(245,158,11,0.3); text-align: center;
     }
 
-    .total-mesa-value {
-      font-size: 32px;
-      font-weight: 700;
-      color: var(--accent-gold);
-      margin-top: 4px;
-    }
+    .total-mesa-value { font-size: 32px; font-weight: 700; color: var(--accent-gold); margin-top: 4px; }
 
-    /* Cuenta mesas */
-    .cuenta-mesa-card {
-      border-left-color: var(--accent-gold);
-    }
-
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .animate-in {
-      animation: slideIn 0.3s ease;
-    }
+    @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .animate-in { animation: slideIn 0.3s ease; }
 
     @keyframes newOrder {
-      0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
-      70% { box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+      0% { box-shadow: 0 0 0 0 rgba(245,158,11,0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(245,158,11,0); }
+      100% { box-shadow: 0 0 0 0 rgba(245,158,11,0); }
     }
 
-    .order-new {
-      animation: newOrder 1.5s ease;
-    }
+    .order-new { animation: newOrder 1.5s ease; }
 
     @media (max-width: 768px) {
       .container { padding: 12px; }
-      .stats-bar { grid-template-columns: repeat(2, 1fr); }
-      .products-grid { grid-template-columns: repeat(2, 1fr); }
+      .stats-bar { grid-template-columns: repeat(2,1fr); }
+      .products-grid { grid-template-columns: repeat(2,1fr); }
       .order-footer { flex-direction: column; align-items: stretch; }
       .order-footer .btn { width: 100%; }
     }
@@ -807,7 +411,7 @@
 
   <div class="container">
 
-    <div id="setupWarning" class="card hidden" style="border-color: var(--accent-red); background: rgba(239, 68, 68, 0.1);">
+    <div id="setupWarning" class="card hidden" style="border-color: var(--accent-red); background: rgba(239,68,68,0.1);">
       <div class="card-title" style="color: var(--accent-red);">⚠️ Aviso</div>
       <div id="setupWarningText" style="margin-top: 8px; color: var(--text-secondary);"></div>
     </div>
@@ -855,7 +459,7 @@
 
     <!-- STAFF PANEL -->
     <section id="staffPanel" class="hidden">
-      
+
       <div class="stats-bar">
         <div class="stat-card">
           <div class="stat-value" id="statPedidos">0</div>
@@ -875,13 +479,13 @@
         </div>
       </div>
 
-      <!-- Cuentas por mesa -->
       <div class="card">
         <div class="card-header">
           <div class="card-title">
             <span class="icon">💰</span>
             Cuentas por mesa
           </div>
+          <button class="btn btn-secondary btn-sm" onclick="forceRefreshCuentas()">🔄 Actualizar</button>
         </div>
         <div id="cuentasMesas">
           <div class="empty-state">
@@ -891,7 +495,6 @@
         </div>
       </div>
 
-      <!-- Alerts -->
       <div class="card">
         <div class="card-header">
           <div class="card-title">
@@ -907,7 +510,6 @@
         </div>
       </div>
 
-      <!-- Orders -->
       <div class="card">
         <div class="card-header">
           <div class="card-title">
@@ -924,7 +526,6 @@
         </div>
       </div>
 
-      <!-- Debug -->
       <div class="card">
         <div class="card-header">
           <div class="card-title">
@@ -942,8 +543,7 @@
 
     <!-- ADMIN PANEL -->
     <section id="adminPanel" class="hidden">
-      
-      <!-- Contabilidad -->
+
       <div class="card">
         <div class="card-header">
           <div class="card-title">
@@ -952,7 +552,7 @@
           </div>
           <button class="btn btn-primary btn-sm" onclick="exportarExcel()">📥 Exportar Excel</button>
         </div>
-        
+
         <div class="stats-bar">
           <div class="stat-card">
             <div class="stat-value" id="contDia" style="font-size: 20px;">0,00 €</div>
@@ -971,13 +571,12 @@
             <div class="stat-label">Total histórico</div>
           </div>
         </div>
-        
+
         <div style="margin-top: 16px;">
           <button class="btn btn-secondary btn-sm" onclick="cambiarPasswordAdmin()">🔑 Cambiar contraseña</button>
         </div>
       </div>
 
-      <!-- QR Section -->
       <div class="card">
         <div class="card-header">
           <div class="card-title">
@@ -995,7 +594,6 @@
         <div id="qrPreview" class="hidden" style="margin-top: 20px;"></div>
       </div>
 
-      <!-- Products -->
       <div class="card">
         <div class="card-header">
           <div class="card-title">
@@ -1003,13 +601,13 @@
             Productos
           </div>
         </div>
-        
+
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
           <input class="input" id="productoNombre" placeholder="Nombre del producto" />
           <input class="input" id="productoPrecio" type="number" step="0.01" placeholder="Precio (€)" />
         </div>
         <input class="input" id="productoDescripcion" placeholder="Descripción (opcional)" style="margin-bottom: 10px;" />
-        
+
         <div style="margin-bottom: 10px;">
           <label style="font-size: 13px; color: var(--text-secondary); display: block; margin-bottom: 6px;">
             📷 Foto del producto (opcional)
@@ -1023,7 +621,6 @@
         <div id="productosAdminList" style="margin-top: 20px;"></div>
       </div>
 
-      <!-- Tables -->
       <div class="card">
         <div class="card-header">
           <div class="card-title">
@@ -1038,7 +635,6 @@
         <div id="mesasList"></div>
       </div>
 
-      <!-- Waiters -->
       <div class="card">
         <div class="card-header">
           <div class="card-title">
@@ -1057,7 +653,7 @@
 
     <!-- CLIENT PANEL -->
     <section id="clientPanel" class="hidden">
-      
+
       <div class="client-header">
         <h2 style="font-size: 22px; margin-bottom: 4px;">Bienvenido</h2>
         <p style="color: var(--text-secondary); font-size: 14px;">Escanea, elige y disfruta</p>
@@ -1066,7 +662,6 @@
         </div>
       </div>
 
-      <!-- Total mesa -->
       <div id="totalMesaCard" class="card total-mesa-card" style="display: none;">
         <div style="font-size: 13px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">Total de tu cuenta</div>
         <div class="total-mesa-value" id="totalMesaValue">0,00 €</div>
@@ -1088,10 +683,8 @@
 
       <div id="clientStatus" style="text-align: center; color: var(--text-secondary); font-size: 14px; margin-bottom: 20px;"></div>
 
-      <!-- Client Orders Section -->
       <div id="clientOrdersCard" class="hidden">
-        
-        <!-- Menu -->
+
         <div class="card">
           <div class="card-header">
             <div class="card-title">
@@ -1107,7 +700,6 @@
           </div>
         </div>
 
-        <!-- Cart -->
         <div class="card">
           <div class="card-header">
             <div class="card-title">
@@ -1115,7 +707,7 @@
               Tu pedido
             </div>
           </div>
-          
+
           <div id="cartList" style="margin-bottom: 16px;">
             <div class="empty-state">
               <div class="icon">🛒</div>
@@ -1138,10 +730,8 @@
 
   </div>
 
-  <!-- Toast -->
   <div class="toast" id="toast"></div>
 
-  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
@@ -1167,34 +757,32 @@
     // ============================================================
     // DEBUG LOG
     // ============================================================
-    let debugLogs = [];
+    function debugLog(message, type) {
+      type = type || 'info';
+      var time = new Date().toLocaleTimeString();
+      console.log('[' + type.toUpperCase() + '] ' + message);
 
-    function debugLog(message, type = 'info') {
-      const time = new Date().toLocaleTimeString();
-      debugLogs.push({ time, message, type });
-      console.log(`[${type.toUpperCase()}] ${message}`);
-      
-      const panel = document.getElementById('debugPanel');
+      var panel = document.getElementById('debugPanel');
       if (panel && !panel.classList.contains('hidden')) {
-        const line = document.createElement('div');
+        var line = document.createElement('div');
         line.className = 'debug-line ' + type;
-        line.textContent = `[${time}] ${message}`;
+        line.textContent = '[' + time + '] ' + message;
         panel.appendChild(line);
         panel.scrollTop = panel.scrollHeight;
       }
     }
 
     function toggleDebug() {
-      const panel = document.getElementById('debugPanel');
-      panel.classList.toggle('hidden');
+      var panel = document.getElementById('debugPanel');
+      if (panel) panel.classList.toggle('hidden');
     }
 
     // ============================================================
     // PASSWORD HASH
     // ============================================================
     function hashPassword(password) {
-      let hash = 5381;
-      for (let i = 0; i < password.length; i++) {
+      var hash = 5381;
+      for (var i = 0; i < password.length; i++) {
         hash = ((hash << 5) + hash) + password.charCodeAt(i);
         hash = hash & 0x7fffffff;
       }
@@ -1211,18 +799,18 @@
         db = firebase.database();
         firebaseReady = true;
 
-        db.ref('.info/connected').on('value', (snap) => {
-          const connected = snap.val() === true;
-          const dot = document.getElementById('connectionDot');
-          const text = document.getElementById('connectionText');
-          
+        db.ref('.info/connected').on('value', function(snap) {
+          var connected = snap.val() === true;
+          var dot = document.getElementById('connectionDot');
+          var text = document.getElementById('connectionText');
+
           if (connected) {
-            dot.classList.add('connected');
-            text.textContent = 'Conectado';
+            if (dot) dot.classList.add('connected');
+            if (text) text.textContent = 'Conectado';
             debugLog('Conexión a Firebase establecida', 'success');
           } else {
-            dot.classList.remove('connected');
-            text.textContent = 'Desconectado';
+            if (dot) dot.classList.remove('connected');
+            if (text) text.textContent = 'Desconectado';
             debugLog('Desconectado de Firebase', 'error');
           }
         });
@@ -1231,8 +819,10 @@
         return true;
       } catch (e) {
         debugLog('Error Firebase: ' + e.message, 'error');
-        document.getElementById('setupWarning').classList.remove('hidden');
-        document.getElementById('setupWarningText').textContent = 'Error al conectar con Firebase: ' + e.message;
+        var w = document.getElementById('setupWarning');
+        var wt = document.getElementById('setupWarningText');
+        if (w) w.classList.remove('hidden');
+        if (wt) wt.textContent = 'Error al conectar con Firebase: ' + e.message;
         return false;
       }
     }
@@ -1240,21 +830,21 @@
     // ============================================================
     // ROLE DETECTION
     // ============================================================
-    const params = new URLSearchParams(location.search);
-    const urlVista = params.get('vista') || '';
-    const urlMesa = params.get('mesa') || '';
+    var params = new URLSearchParams(location.search);
+    var urlVista = params.get('vista') || '';
+    var urlMesa = params.get('mesa') || '';
 
-    const KEY_ROLE = 'hosteleria_role';
-    const KEY_CLIENT_ID = 'hosteleria_client_id';
-    const KEY_MESA = 'hosteleria_mesa';
+    var KEY_ROLE = 'hosteleria_role';
+    var KEY_CLIENT_ID = 'hosteleria_client_id';
+    var KEY_MESA = 'hosteleria_mesa';
 
-    let role = 'menu';
+    var role = 'menu';
 
     if (urlMesa) {
       role = 'cliente';
       localStorage.setItem(KEY_MESA, urlMesa);
       debugLog('Cliente detectado desde QR. Mesa: ' + urlMesa, 'success');
-    } else if (['admin', 'barra', 'camarero'].includes(urlVista)) {
+    } else if (['admin', 'barra', 'camarero'].indexOf(urlVista) !== -1) {
       role = urlVista;
       localStorage.setItem(KEY_ROLE, role);
       debugLog('Rol staff desde URL: ' + role, 'info');
@@ -1262,41 +852,42 @@
       role = 'cliente';
       debugLog('Cliente desde URL', 'info');
     } else {
-      const saved = localStorage.getItem(KEY_ROLE);
-      if (saved && ['admin', 'barra', 'camarero', 'cliente'].includes(saved)) {
+      var saved = localStorage.getItem(KEY_ROLE);
+      if (saved && ['admin', 'barra', 'camarero', 'cliente'].indexOf(saved) !== -1) {
         role = saved;
         debugLog('Rol guardado: ' + role, 'info');
       }
     }
 
-    let clientId = localStorage.getItem(KEY_CLIENT_ID);
+    var clientId = localStorage.getItem(KEY_CLIENT_ID);
     if (!clientId) {
       clientId = 'cliente_' + Math.random().toString(36).slice(2) + '_' + Date.now();
       localStorage.setItem(KEY_CLIENT_ID, clientId);
     }
 
-    let mesaFija = urlMesa || localStorage.getItem(KEY_MESA) || '';
+    var mesaFija = urlMesa || localStorage.getItem(KEY_MESA) || '';
 
     // ============================================================
     // DATA
     // ============================================================
-    let orders = [];
-    let alerts = [];
-    let clientOrders = [];
-    let clientAlerts = [];
-    let mesas = [];
-    let camareros = [];
-    let productos = [];
-    let pagos = [];
-    let cart = [];
-    let pendingProductoFoto = '';
-    let previousOrderIds = new Set();
+    var orders = [];
+    var alerts = [];
+    var clientOrders = [];
+    var clientAlerts = [];
+    var mesas = [];
+    var camareros = [];
+    var productos = [];
+    var pagos = [];
+    var cart = [];
+    var pendingProductoFoto = '';
+    var previousOrderIds = {};
 
     // ============================================================
     // UTILS
     // ============================================================
     function escapeHtml(value) {
-      return String(value ?? '')
+      if (value === null || value === undefined) return '';
+      return String(value)
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
@@ -1305,6 +896,7 @@
     }
 
     function escapeHtmlLines(value) {
+      if (!value) return '';
       return escapeHtml(value).replace(/\n/g, '<br>');
     }
 
@@ -1324,7 +916,7 @@
     }
 
     function estadoLabel(estado) {
-      const estados = {
+      var estados = {
         RECIBIDO: '📥 Recibido',
         EN_PREPARACION: '👨‍🍳 En preparación',
         LISTO: '✅ Listo',
@@ -1336,7 +928,7 @@
     }
 
     function estadoClass(estado) {
-      const classes = {
+      var classes = {
         RECIBIDO: 'recibido',
         EN_PREPARACION: 'preparacion',
         LISTO: 'listo',
@@ -1348,24 +940,25 @@
     }
 
     function formatPrecio(value) {
-      const n = Number(value) || 0;
+      var n = Number(value) || 0;
       return n.toFixed(2).replace('.', ',') + ' €';
     }
 
     function extraerTotalPedido(items) {
       if (!items) return 0;
-      const match = items.match(/Total:\s*([\d.,]+)\s*€/);
+      var match = items.match(/Total:\s*([\d.,]+)\s*€/);
       if (match) {
         return parseFloat(match[1].replace(',', '.'));
       }
       return 0;
     }
 
-    function showToast(message, type = '') {
-      const toast = document.getElementById('toast');
+    function showToast(message, type) {
+      var toast = document.getElementById('toast');
+      if (!toast) return;
       toast.textContent = message;
-      toast.className = 'toast show ' + type;
-      setTimeout(() => {
+      toast.className = 'toast show ' + (type || '');
+      setTimeout(function() {
         toast.className = 'toast';
       }, 3000);
     }
@@ -1408,45 +1001,49 @@
     }
 
     function applyRole() {
-      const menuPanel = document.getElementById('menuPanel');
-      const staffPanel = document.getElementById('staffPanel');
-      const adminPanel = document.getElementById('adminPanel');
-      const clientPanel = document.getElementById('clientPanel');
-      const btnSalir = document.getElementById('btnSalir');
-      const roleBadge = document.getElementById('roleBadge');
+      var menuPanel = document.getElementById('menuPanel');
+      var staffPanel = document.getElementById('staffPanel');
+      var adminPanel = document.getElementById('adminPanel');
+      var clientPanel = document.getElementById('clientPanel');
+      var btnSalir = document.getElementById('btnSalir');
+      var roleBadge = document.getElementById('roleBadge');
 
-      menuPanel.classList.add('hidden');
-      staffPanel.classList.add('hidden');
-      adminPanel.classList.add('hidden');
-      clientPanel.classList.add('hidden');
-      btnSalir.style.display = 'none';
+      if (menuPanel) menuPanel.classList.add('hidden');
+      if (staffPanel) staffPanel.classList.add('hidden');
+      if (adminPanel) adminPanel.classList.add('hidden');
+      if (clientPanel) clientPanel.classList.add('hidden');
+      if (btnSalir) btnSalir.style.display = 'none';
 
-      roleBadge.textContent = role === 'menu' ? '-' : role.toUpperCase();
-      roleBadge.className = 'role-badge' + (role === 'cliente' ? ' cliente' : '');
+      if (roleBadge) {
+        roleBadge.textContent = role === 'menu' ? '-' : role.toUpperCase();
+        roleBadge.className = 'role-badge' + (role === 'cliente' ? ' cliente' : '');
+      }
 
       if (role === 'menu') {
-        menuPanel.classList.remove('hidden');
+        if (menuPanel) menuPanel.classList.remove('hidden');
       } else {
-        btnSalir.style.display = 'inline-flex';
+        if (btnSalir) btnSalir.style.display = 'inline-flex';
 
         if (role === 'cliente') {
-          clientPanel.classList.remove('hidden');
-          
+          if (clientPanel) clientPanel.classList.remove('hidden');
+
           if (mesaFija) {
-            document.getElementById('mesaDetectada').style.display = 'inline-flex';
-            document.getElementById('mesaDetectadaText').textContent = mesaFija;
-            document.getElementById('clientOrdersCard').classList.remove('hidden');
+            var md = document.getElementById('mesaDetectada');
+            var mdt = document.getElementById('mesaDetectadaText');
+            if (md) md.style.display = 'inline-flex';
+            if (mdt) mdt.textContent = mesaFija;
+            var coc = document.getElementById('clientOrdersCard');
+            if (coc) coc.classList.remove('hidden');
           }
         } else if (role === 'admin') {
-          // Verificar autenticación de admin
           if (!sessionStorage.getItem('admin_auth')) {
             mostrarLoginAdmin();
             return;
           }
-          staffPanel.classList.remove('hidden');
-          adminPanel.classList.remove('hidden');
+          if (staffPanel) staffPanel.classList.remove('hidden');
+          if (adminPanel) adminPanel.classList.remove('hidden');
         } else {
-          staffPanel.classList.remove('hidden');
+          if (staffPanel) staffPanel.classList.remove('hidden');
         }
       }
 
@@ -1457,39 +1054,46 @@
     // ADMIN LOGIN
     // ============================================================
     function mostrarLoginAdmin() {
-      const bloqueado = checkBloqueo();
-      if (bloqueado > 0) {
-        document.getElementById('loginError').textContent = `Bloqueado. Espera ${bloqueado} segundos.`;
+      var bloqueado = checkBloqueo();
+      var errElem = document.getElementById('loginError');
+      if (bloqueado > 0 && errElem) {
+        errElem.textContent = 'Bloqueado. Espera ' + bloqueado + ' segundos.';
       }
-      document.getElementById('loginModal').classList.remove('hidden');
-      document.getElementById('loginUsuario').focus();
+      var modal = document.getElementById('loginModal');
+      if (modal) modal.classList.remove('hidden');
+      var inp = document.getElementById('loginUsuario');
+      if (inp) inp.focus();
     }
 
     function cerrarLogin() {
-      document.getElementById('loginModal').classList.add('hidden');
-      document.getElementById('loginUsuario').value = '';
-      document.getElementById('loginPassword').value = '';
-      document.getElementById('loginError').textContent = '';
+      var modal = document.getElementById('loginModal');
+      if (modal) modal.classList.add('hidden');
+      var u = document.getElementById('loginUsuario');
+      var p = document.getElementById('loginPassword');
+      var e = document.getElementById('loginError');
+      if (u) u.value = '';
+      if (p) p.value = '';
+      if (e) e.textContent = '';
     }
 
     function checkBloqueo() {
-      const intentos = parseInt(localStorage.getItem('admin_intentos') || '0');
-      const ultimoFallo = parseInt(localStorage.getItem('admin_ultimo_fallo') || '0');
-      const ahora = Date.now();
-      
+      var intentos = parseInt(localStorage.getItem('admin_intentos') || '0');
+      var ultimoFallo = parseInt(localStorage.getItem('admin_ultimo_fallo') || '0');
+      var ahora = Date.now();
+
       if (intentos >= 3 && (ahora - ultimoFallo) < 60000) {
         return Math.ceil((60000 - (ahora - ultimoFallo)) / 1000);
       }
-      
+
       if (intentos >= 3 && (ahora - ultimoFallo) >= 60000) {
         localStorage.setItem('admin_intentos', '0');
       }
-      
+
       return 0;
     }
 
     function registrarFallo() {
-      const intentos = parseInt(localStorage.getItem('admin_intentos') || '0') + 1;
+      var intentos = parseInt(localStorage.getItem('admin_intentos') || '0') + 1;
       localStorage.setItem('admin_intentos', intentos.toString());
       localStorage.setItem('admin_ultimo_fallo', Date.now().toString());
     }
@@ -1498,101 +1102,106 @@
       localStorage.setItem('admin_intentos', '0');
     }
 
-    async function intentarLogin() {
-      const usuario = document.getElementById('loginUsuario').value.trim();
-      const password = document.getElementById('loginPassword').value;
-      const errorElem = document.getElementById('loginError');
+    function intentarLogin() {
+      var usuario = document.getElementById('loginUsuario').value.trim();
+      var password = document.getElementById('loginPassword').value;
+      var errorElem = document.getElementById('loginError');
 
-      const bloqueado = checkBloqueo();
+      var bloqueado = checkBloqueo();
       if (bloqueado > 0) {
-        errorElem.textContent = `Bloqueado. Espera ${bloqueado} segundos.`;
+        if (errorElem) errorElem.textContent = 'Bloqueado. Espera ' + bloqueado + ' segundos.';
         return;
       }
 
       if (!usuario || !password) {
-        errorElem.textContent = 'Introduce usuario y contraseña.';
+        if (errorElem) errorElem.textContent = 'Introduce usuario y contraseña.';
         return;
       }
 
       if (!requireFirebase()) return;
 
-      try {
-        debugLog('Intentando login admin: ' + usuario, 'info');
-        
-        const snapshot = await db.ref('config/admin').once('value');
-        let config = snapshot.val();
+      db.ref('config/admin').once('value').then(function(snapshot) {
+        var config = snapshot.val();
 
         if (!config) {
           debugLog('Creando credenciales admin por defecto', 'info');
-          const defaultHash = hashPassword('admin123');
-          await db.ref('config/admin').set({
+          var defaultHash = hashPassword('admin123');
+          db.ref('config/admin').set({
             usuario: 'admin',
             passwordHash: defaultHash
+          }).then(function() {
+            config = { usuario: 'admin', passwordHash: defaultHash };
+            verificarLogin(usuario, password, config, errorElem);
           });
-          config = { usuario: 'admin', passwordHash: defaultHash };
-        }
-
-        const inputHash = hashPassword(password);
-
-        if (usuario === config.usuario && inputHash === config.passwordHash) {
-          debugLog('Login admin correcto', 'success');
-          resetFallos();
-          sessionStorage.setItem('admin_auth', '1');
-          localStorage.setItem(KEY_ROLE, 'admin');
-          cerrarLogin();
-          location.href = location.pathname + '?vista=admin';
         } else {
-          debugLog('Login admin fallido', 'error');
-          registrarFallo();
-          const restante = 3 - parseInt(localStorage.getItem('admin_intentos') || '0');
-          errorElem.textContent = `Credenciales incorrectas. ${restante > 0 ? restante + ' intentos restantes.' : ''}`;
+          verificarLogin(usuario, password, config, errorElem);
         }
-      } catch (e) {
+      }).catch(function(e) {
         debugLog('Error en login: ' + e.message, 'error');
-        errorElem.textContent = 'Error: ' + e.message;
+        if (errorElem) errorElem.textContent = 'Error: ' + e.message;
+      });
+    }
+
+    function verificarLogin(usuario, password, config, errorElem) {
+      var inputHash = hashPassword(password);
+
+      if (usuario === config.usuario && inputHash === config.passwordHash) {
+        debugLog('Login admin correcto', 'success');
+        resetFallos();
+        sessionStorage.setItem('admin_auth', '1');
+        localStorage.setItem(KEY_ROLE, 'admin');
+        cerrarLogin();
+        location.href = location.pathname + '?vista=admin';
+      } else {
+        debugLog('Login admin fallido', 'error');
+        registrarFallo();
+        var restante = 3 - parseInt(localStorage.getItem('admin_intentos') || '0');
+        if (errorElem) {
+          errorElem.textContent = 'Credenciales incorrectas. ' + (restante > 0 ? restante + ' intentos restantes.' : '');
+        }
       }
     }
 
-    async function cambiarPasswordAdmin() {
+    function cambiarPasswordAdmin() {
       if (!requireFirebase()) return;
 
-      const actual = prompt('Contraseña actual:');
+      var actual = prompt('Contraseña actual:');
       if (!actual) return;
 
-      try {
-        const snapshot = await db.ref('config/admin').once('value');
-        const config = snapshot.val();
+      db.ref('config/admin').once('value').then(function(snapshot) {
+        var config = snapshot.val();
 
         if (!config || hashPassword(actual) !== config.passwordHash) {
           showToast('❌ Contraseña actual incorrecta', 'error');
           return;
         }
 
-        const nueva = prompt('Nueva contraseña (mínimo 4 caracteres):');
+        var nueva = prompt('Nueva contraseña (mínimo 4 caracteres):');
         if (!nueva || nueva.length < 4) {
           showToast('❌ La nueva contraseña debe tener al menos 4 caracteres', 'error');
           return;
         }
 
-        await db.ref('config/admin').update({
+        db.ref('config/admin').update({
           passwordHash: hashPassword(nueva)
+        }).then(function() {
+          showToast('✅ Contraseña actualizada', 'success');
+        }).catch(function(e) {
+          showToast('❌ Error: ' + e.message, 'error');
         });
-
-        showToast('✅ Contraseña actualizada', 'success');
-      } catch (e) {
-        showToast('❌ Error: ' + e.message, 'error');
-      }
+      });
     }
 
     // ============================================================
     // QR GENERATOR
     // ============================================================
     function urlQR(nombreMesa) {
-      const base = location.origin + location.pathname;
+      var base = location.origin + location.pathname;
       return base + '?vista=cliente&mesa=' + encodeURIComponent(nombreMesa);
     }
 
     function generarQREnElemento(container, url) {
+      if (!container) return;
       container.innerHTML = '';
       if (typeof QRCode === 'undefined') {
         container.innerHTML = '<div style="color: var(--accent-red); font-size: 12px;">Librería QR no cargada</div>';
@@ -1613,7 +1222,8 @@
     }
 
     function mostrarTodosQR() {
-      const preview = document.getElementById('qrPreview');
+      var preview = document.getElementById('qrPreview');
+      if (!preview) return;
 
       if (!mesas.length) {
         preview.classList.remove('hidden');
@@ -1624,41 +1234,42 @@
       preview.classList.remove('hidden');
       preview.innerHTML = '<div class="qr-grid" id="qrGridPreview"></div>';
 
-      const grid = document.getElementById('qrGridPreview');
+      var grid = document.getElementById('qrGridPreview');
+      if (!grid) return;
 
-      mesas.forEach((m, idx) => {
-        const nombre = m.nombre || '';
-        const url = urlQR(nombre);
+      mesas.forEach(function(m, idx) {
+        var nombre = m.nombre || '';
+        var url = urlQR(nombre);
 
-        const card = document.createElement('div');
+        var card = document.createElement('div');
         card.className = 'qr-card animate-in';
-        card.innerHTML = `
-          <div class="qr-canvas" id="qr-${idx}"></div>
-          <h4>${escapeHtml(nombre)}</h4>
-          <div style="display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;">
-            <button class="btn btn-secondary btn-sm" onclick="descargarQRMesa('${escapeHtml(nombre).replace(/'/g, "\\'")}', ${idx})">⬇ Descargar</button>
-            <button class="btn btn-secondary btn-sm" onclick="copiarURLMesa('${escapeHtml(url).replace(/'/g, "\\'")}')">📋 Copiar</button>
-          </div>
-        `;
+        card.innerHTML =
+          '<div class="qr-canvas" id="qr-' + idx + '"></div>' +
+          '<h4>' + escapeHtml(nombre) + '</h4>' +
+          '<div style="display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;">' +
+          '<button class="btn btn-secondary btn-sm" onclick="descargarQRMesa(\'' + encodeURIComponent(nombre) + '\', ' + idx + ')">⬇ Descargar</button>' +
+          '<button class="btn btn-secondary btn-sm" onclick="copiarURLMesa(\'' + encodeURIComponent(url) + '\')">📋 Copiar</button>' +
+          '</div>';
         grid.appendChild(card);
 
-        setTimeout(() => {
-          const canvasDiv = document.getElementById('qr-' + idx);
+        setTimeout(function() {
+          var canvasDiv = document.getElementById('qr-' + idx);
           if (canvasDiv) generarQREnElemento(canvasDiv, url);
         }, 50);
       });
     }
 
-    function descargarQRMesa(nombreMesa, idx) {
-      const canvasDiv = document.getElementById('qr-' + idx);
+    function descargarQRMesa(nombreEncoded, idx) {
+      var nombreMesa = decodeURIComponent(nombreEncoded);
+      var canvasDiv = document.getElementById('qr-' + idx);
       if (!canvasDiv) {
         showToast('QR no encontrado', 'error');
         return;
       }
 
-      const canvas = canvasDiv.querySelector('canvas');
-      const img = canvasDiv.querySelector('img');
-      let dataURL = null;
+      var canvas = canvasDiv.querySelector('canvas');
+      var img = canvasDiv.querySelector('img');
+      var dataURL = null;
 
       if (canvas) dataURL = canvas.toDataURL('image/png');
       else if (img && img.src) dataURL = img.src;
@@ -1668,7 +1279,7 @@
         return;
       }
 
-      const link = document.createElement('a');
+      var link = document.createElement('a');
       link.download = 'QR_' + (nombreMesa || 'mesa').replace(/\s+/g, '_') + '.png';
       link.href = dataURL;
       document.body.appendChild(link);
@@ -1678,18 +1289,21 @@
       showToast('✅ QR descargado', 'success');
     }
 
-    function copiarURLMesa(url) {
+    function copiarURLMesa(urlEncoded) {
+      var url = decodeURIComponent(urlEncoded);
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(url).then(() => {
+        navigator.clipboard.writeText(url).then(function() {
           showToast('✅ URL copiada', 'success');
-        }).catch(() => fallbackCopy(url));
+        }).catch(function() {
+          fallbackCopy(url);
+        });
       } else {
         fallbackCopy(url);
       }
     }
 
     function fallbackCopy(text) {
-      const textarea = document.createElement('textarea');
+      var textarea = document.createElement('textarea');
       textarea.value = text;
       textarea.style.position = 'fixed';
       textarea.style.opacity = '0';
@@ -1710,72 +1324,35 @@
         return;
       }
 
-      const win = window.open('', '_blank');
+      var win = window.open('', '_blank');
       if (!win) {
         showToast('Permite ventanas emergentes', 'error');
         return;
       }
 
-      const base = location.origin + location.pathname;
-      const mesasData = JSON.stringify(mesas.map(m => m.nombre || ''));
+      var base = location.origin + location.pathname;
+      var mesasData = JSON.stringify(mesas.map(function(m) { return m.nombre || ''; }));
 
-      const html = `
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<title>QR Mesas</title>
-<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"><\/script>
-<style>
-  body { font-family: Arial, sans-serif; padding: 20px; background: white; color: black; }
-  h1 { text-align: center; margin-bottom: 20px; }
-  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; }
-  .qr-card {
-    border: 3px dashed #888;
-    border-radius: 16px;
-    padding: 24px;
-    text-align: center;
-    page-break-inside: avoid;
-  }
-  .qr-canvas { display: inline-block; }
-  .qr-card h2 { margin: 16px 0 4px 0; font-size: 26px; }
-  .qr-card .sub { font-size: 16px; color: #555; }
-  @media print { body { padding: 0; } }
-</style>
-</head>
-<body>
-<h1>🍽️ Códigos QR de Mesas</h1>
-<div class="grid" id="grid"></div>
-<script>
-  const mesas = ${mesasData};
-  const base = "${base}";
-  const grid = document.getElementById("grid");
-
-  mesas.forEach((nombre, idx) => {
-    const url = base + "?vista=cliente&mesa=" + encodeURIComponent(nombre);
-    const card = document.createElement("div");
-    card.className = "qr-card";
-    card.innerHTML =
-      '<div class="qr-canvas"></div>' +
-      '<h2>' + nombre + '</h2>' +
-      '<div class="sub">Escanea para pedir</div>';
-    grid.appendChild(card);
-
-    new QRCode(card.querySelector(".qr-canvas"), {
-      text: url,
-      width: 220,
-      height: 220,
-      colorDark: "#000000",
-      colorLight: "#ffffff",
-      correctLevel: QRCode.CorrectLevel.M
-    });
-  });
-
-  setTimeout(() => window.print(), 1000);
-<\/script>
-</body>
-</html>
-      `;
+      var html = '<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>QR Mesas</title>' +
+        '<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"><\/script>' +
+        '<style>body{font-family:Arial,sans-serif;padding:20px;background:white;color:black;}' +
+        'h1{text-align:center;margin-bottom:20px;}' +
+        '.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:30px;}' +
+        '.qr-card{border:3px dashed #888;border-radius:16px;padding:24px;text-align:center;page-break-inside:avoid;}' +
+        '.qr-canvas{display:inline-block;}' +
+        '.qr-card h2{margin:16px 0 4px 0;font-size:26px;}' +
+        '.qr-card .sub{font-size:16px;color:#555;}' +
+        '@media print{body{padding:0;}}</style></head><body>' +
+        '<h1>🍽️ Códigos QR de Mesas</h1><div class="grid" id="grid"></div>' +
+        '<script>var mesas=' + mesasData + ';var base="' + base + '";' +
+        'var grid=document.getElementById("grid");' +
+        'mesas.forEach(function(nombre,idx){' +
+        'var url=base+"?vista=cliente&mesa="+encodeURIComponent(nombre);' +
+        'var card=document.createElement("div");card.className="qr-card";' +
+        'card.innerHTML=\'<div class="qr-canvas"></div><h2>\'+nombre+\'</h2><div class="sub">Escanea para pedir</div>\';' +
+        'grid.appendChild(card);' +
+        'new QRCode(card.querySelector(".qr-canvas"),{text:url,width:220,height:220,colorDark:"#000000",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.M});' +
+        '});setTimeout(function(){window.print();},1000);<\/script></body></html>';
 
       win.document.open();
       win.document.write(html);
@@ -1786,98 +1363,108 @@
     // IMAGE COMPRESSION
     // ============================================================
     function compressImage(file, maxWidth, quality) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = function () {
-          const img = new Image();
-          img.onload = function () {
-            let width = img.width;
-            let height = img.height;
+      return new Promise(function(resolve, reject) {
+        var reader = new FileReader();
+        reader.onload = function() {
+          var img = new Image();
+          img.onload = function() {
+            var width = img.width;
+            var height = img.height;
             if (!width || !height) { reject(new Error('Imagen no válida')); return; }
             if (width > maxWidth) {
               height = Math.round(height * (maxWidth / width));
               width = maxWidth;
             }
-            const canvas = document.createElement('canvas');
+            var canvas = document.createElement('canvas');
             canvas.width = width;
             canvas.height = height;
-            const ctx = canvas.getContext('2d');
+            var ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, width, height);
             resolve(canvas.toDataURL('image/jpeg', quality));
           };
-          img.onerror = function () { reject(new Error('No se pudo cargar la imagen')); };
+          img.onerror = function() { reject(new Error('No se pudo cargar la imagen')); };
           img.src = reader.result;
         };
-        reader.onerror = function () { reject(new Error('No se pudo leer el archivo')); };
+        reader.onerror = function() { reject(new Error('No se pudo leer el archivo')); };
         reader.readAsDataURL(file);
       });
     }
 
-    async function compressImageFile(file) {
-      if (!file || !file.type.startsWith('image/')) return '';
-      try {
-        let data = await compressImage(file, 600, 0.62);
-        if (data.length > 900000) data = await compressImage(file, 420, 0.45);
-        if (data.length > 950000) data = await compressImage(file, 320, 0.35);
+    function compressImageFile(file) {
+      if (!file || !file.type.startsWith('image/')) return Promise.resolve('');
+      return compressImage(file, 600, 0.62).then(function(data) {
+        if (data.length > 900000) return compressImage(file, 420, 0.45);
         return data;
-      } catch (e) {
+      }).then(function(data) {
+        if (data.length > 950000) return compressImage(file, 320, 0.35);
+        return data;
+      }).catch(function() {
         return '';
-      }
+      });
     }
 
     // ============================================================
     // RENDER FUNCTIONS
     // ============================================================
     function updateStats() {
-      document.getElementById('statPedidos').textContent = orders.length;
-      document.getElementById('statPendientes').textContent = orders.filter(o => o.estado === 'RECIBIDO').length;
-      document.getElementById('statAlertas').textContent = alerts.filter(a => !a.atendida).length;
-      document.getElementById('statMesas').textContent = mesas.length;
-    }
+      var e1 = document.getElementById('statPedidos');
+      var e2 = document.getElementById('statPendientes');
+      var e3 = document.getElementById('statAlertas');
+      var e4 = document.getElementById('statMesas');
 
-    function calcularTotalMesa(mesa, ordersList) {
-      return ordersList
-        .filter(o => o.mesa === mesa && o.estado !== 'CANCELADO' && o.estado !== 'PAGADO')
-        .reduce((sum, o) => sum + (o.totalPedido || extraerTotalPedido(o.items)), 0);
+      if (e1) e1.textContent = orders.length;
+      if (e2) e2.textContent = orders.filter(function(o) { return o.estado === 'RECIBIDO'; }).length;
+      if (e3) e3.textContent = alerts.filter(function(a) { return !a.atendida; }).length;
+      if (e4) e4.textContent = mesas.length;
     }
 
     function renderCuentasMesas() {
-      const box = document.getElementById('cuentasMesas');
-      if (!box) return;
+      var box = document.getElementById('cuentasMesas');
+      if (!box) {
+        debugLog('renderCuentasMesas: no se encontró el elemento cuentasMesas', 'error');
+        return;
+      }
 
-      const mesasActivas = {};
-      orders.forEach(o => {
+      var mesasActivas = {};
+      orders.forEach(function(o) {
         if (o.estado !== 'CANCELADO' && o.estado !== 'PAGADO') {
-          if (!mesasActivas[o.mesa]) {
-            mesasActivas[o.mesa] = { total: 0, numPedidos: 0 };
+          var nombreMesa = o.mesa || 'Sin mesa';
+          if (!mesasActivas[nombreMesa]) {
+            mesasActivas[nombreMesa] = { total: 0, numPedidos: 0 };
           }
-          mesasActivas[o.mesa].total += o.totalPedido || extraerTotalPedido(o.items);
-          mesasActivas[o.mesa].numPedidos++;
+          var totalPedido = o.totalPedido || extraerTotalPedido(o.items);
+          mesasActivas[nombreMesa].total += totalPedido;
+          mesasActivas[nombreMesa].numPedidos++;
         }
       });
 
-      const keys = Object.keys(mesasActivas);
+      var keys = Object.keys(mesasActivas);
+      debugLog('renderCuentasMesas: ' + keys.length + ' mesas activas encontradas', 'info');
+
       if (!keys.length) {
         box.innerHTML = '<div class="empty-state"><div class="icon">💰</div><div>No hay cuentas abiertas</div></div>';
         return;
       }
 
-      box.innerHTML = keys.map(mesa => {
-        const info = mesasActivas[mesa];
-        return `
-          <div class="alert-card cuenta-mesa-card animate-in">
-            <div class="alert-info">
-              <div class="alert-title">🪑 Mesa ${escapeHtml(mesa)}</div>
-              <div class="alert-meta">${info.numPedidos} pedido(s) · ${formatPrecio(info.total)}</div>
-            </div>
-            <button class="btn btn-success btn-sm" onclick="cobrarMesa('${escapeHtml(mesa).replace(/'/g, "\\'")}')">💰 Cobrar</button>
-          </div>
-        `;
-      }).join('');
+      var html = '';
+      keys.forEach(function(mesa) {
+        var info = mesasActivas[mesa];
+        var mesaEncoded = encodeURIComponent(mesa);
+        html += '<div class="alert-card cuenta-mesa animate-in">' +
+          '<div class="alert-info">' +
+          '<div class="alert-title">🪑 Mesa ' + escapeHtml(mesa) + '</div>' +
+          '<div class="alert-meta">' + info.numPedidos + ' pedido(s) · ' + formatPrecio(info.total) + '</div>' +
+          '</div>' +
+          '<button class="btn btn-success btn-sm" onclick="cobrarMesa(\'' + mesaEncoded + '\')">💰 Cobrar</button>' +
+          '</div>';
+      });
+
+      box.innerHTML = html;
+      debugLog('renderCuentasMesas: renderizado completado', 'success');
     }
 
     function renderStaffAlerts() {
-      const box = document.getElementById('staffAlerts');
+      var box = document.getElementById('staffAlerts');
       if (!box) return;
 
       if (!alerts.length) {
@@ -1885,27 +1472,28 @@
         return;
       }
 
-      const sorted = [...alerts].sort((a, b) => {
+      var sorted = alerts.slice().sort(function(a, b) {
         if (!!a.atendida !== !!b.atendida) return a.atendida ? 1 : -1;
         return (b.createdAtLocal || 0) - (a.createdAtLocal || 0);
       });
 
-      box.innerHTML = sorted.map(alert => {
-        const tipoLabel = alert.tipo === 'PEDIR_CUENTA' ? '💶 Cuenta solicitada' : '🔔 Llamar camarero';
-        return `
-          <div class="alert-card ${alert.atendida ? 'atendida' : ''} animate-in">
-            <div class="alert-info">
-              <div class="alert-title">${tipoLabel}</div>
-              <div class="alert-meta">Mesa ${escapeHtml(alert.mesa || 'S/M')} · ${formatTime(alert.createdAtLocal)}</div>
-            </div>
-            ${!alert.atendida ? `<button class="btn btn-success btn-sm" onclick="atenderAlerta('${alert.id}')">Atender</button>` : '<span style="color: var(--accent-green); font-size: 13px;">✅ Atendida</span>'}
-          </div>
-        `;
-      }).join('');
+      var html = '';
+      sorted.forEach(function(alert) {
+        var tipoLabel = alert.tipo === 'PEDIR_CUENTA' ? '💶 Cuenta solicitada' : '🔔 Llamar camarero';
+        html += '<div class="alert-card ' + (alert.atendida ? 'atendida' : '') + ' animate-in">' +
+          '<div class="alert-info">' +
+          '<div class="alert-title">' + tipoLabel + '</div>' +
+          '<div class="alert-meta">Mesa ' + escapeHtml(alert.mesa || 'S/M') + ' · ' + formatTime(alert.createdAtLocal) + '</div>' +
+          '</div>' +
+          (!alert.atendida ? '<button class="btn btn-success btn-sm" onclick="atenderAlerta(\'' + alert.id + '\')">Atender</button>' : '<span style="color: var(--accent-green); font-size: 13px;">✅ Atendida</span>') +
+          '</div>';
+      });
+
+      box.innerHTML = html;
     }
 
     function renderStaffOrders() {
-      const box = document.getElementById('staffOrders');
+      var box = document.getElementById('staffOrders');
       if (!box) return;
 
       if (!orders.length) {
@@ -1913,70 +1501,82 @@
         return;
       }
 
-      const sorted = [...orders].sort((a, b) => (b.createdAtLocal || 0) - (a.createdAtLocal || 0));
+      var sorted = orders.slice().sort(function(a, b) {
+        return (b.createdAtLocal || 0) - (a.createdAtLocal || 0);
+      });
 
-      box.innerHTML = sorted.map(order => {
-        const isNew = !previousOrderIds.has(order.id);
-        const estadoCls = estadoClass(order.estado);
-        
-        return `
-          <div class="order-card estado-${estadoCls} ${isNew ? 'order-new' : ''} animate-in">
-            <div class="order-header">
-              <span class="order-mesa">🪑 Mesa ${escapeHtml(order.mesa || 'S/M')}</span>
-              <span class="order-time">${formatTime(order.createdAtLocal)}</span>
-            </div>
-            <div class="order-items">${escapeHtmlLines(order.items || '')}</div>
-            <div class="order-footer">
-              <span class="order-status ${estadoCls}">${estadoLabel(order.estado)}</span>
-              <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-                ${order.estado === 'RECIBIDO' ? `<button class="btn btn-secondary btn-sm" onclick="cambiarEstado('${order.id}', 'EN_PREPARACION')">👨‍🍳 Preparar</button>` : ''}
-                ${order.estado === 'EN_PREPARACION' ? `<button class="btn btn-success btn-sm" onclick="cambiarEstado('${order.id}', 'LISTO')">✅ Listo</button>` : ''}
-                ${order.estado === 'LISTO' ? `<button class="btn btn-primary btn-sm" onclick="cambiarEstado('${order.id}', 'ENTREGADO')">📦 Entregar</button>` : ''}
-                ${order.estado !== 'CANCELADO' && order.estado !== 'ENTREGADO' && order.estado !== 'PAGADO' ? `<button class="btn btn-danger btn-sm" onclick="cambiarEstado('${order.id}', 'CANCELADO')">❌</button>` : ''}
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
+      var html = '';
+      sorted.forEach(function(order) {
+        var isNew = !previousOrderIds[order.id];
+        var estadoCls = estadoClass(order.estado);
 
-      previousOrderIds = new Set(orders.map(o => o.id));
+        var botones = '';
+        if (order.estado === 'RECIBIDO') {
+          botones += '<button class="btn btn-secondary btn-sm" onclick="cambiarEstado(\'' + order.id + '\', \'EN_PREPARACION\')">👨‍🍳 Preparar</button>';
+        }
+        if (order.estado === 'EN_PREPARACION') {
+          botones += '<button class="btn btn-success btn-sm" onclick="cambiarEstado(\'' + order.id + '\', \'LISTO\')">✅ Listo</button>';
+        }
+        if (order.estado === 'LISTO') {
+          botones += '<button class="btn btn-primary btn-sm" onclick="cambiarEstado(\'' + order.id + '\', \'ENTREGADO\')">📦 Entregar</button>';
+        }
+        if (order.estado !== 'CANCELADO' && order.estado !== 'ENTREGADO' && order.estado !== 'PAGADO') {
+          botones += '<button class="btn btn-danger btn-sm" onclick="cambiarEstado(\'' + order.id + '\', \'CANCELADO\')">❌</button>';
+        }
+
+        html += '<div class="order-card estado-' + estadoCls + (isNew ? ' order-new' : '') + ' animate-in">' +
+          '<div class="order-header">' +
+          '<span class="order-mesa">🪑 Mesa ' + escapeHtml(order.mesa || 'S/M') + '</span>' +
+          '<span class="order-time">' + formatTime(order.createdAtLocal) + '</span>' +
+          '</div>' +
+          '<div class="order-items">' + escapeHtmlLines(order.items || '') + '</div>' +
+          '<div class="order-footer">' +
+          '<span class="order-status ' + estadoCls + '">' + estadoLabel(order.estado) + '</span>' +
+          '<div style="display: flex; gap: 6px; flex-wrap: wrap;">' + botones + '</div>' +
+          '</div></div>';
+      });
+
+      box.innerHTML = html;
+
+      previousOrderIds = {};
+      orders.forEach(function(o) { previousOrderIds[o.id] = true; });
     }
 
     function renderProductosCliente() {
-      const box = document.getElementById('productosClienteList');
+      var box = document.getElementById('productosClienteList');
       if (!box) return;
 
-      const visible = productos.filter(p => p.activo !== false);
+      var visible = productos.filter(function(p) { return p.activo !== false; });
 
       if (!visible.length) {
         box.innerHTML = '<div class="empty-state" style="grid-column: 1/-1;"><div class="icon">📖</div><div>No hay productos disponibles</div></div>';
         return;
       }
 
-      box.innerHTML = visible.map(p => {
-        const img = p.foto
-          ? `<img class="product-img" src="${p.foto}" alt="${escapeHtml(p.nombre)}">`
-          : `<div class="product-img placeholder">🍽️</div>`;
+      var html = '';
+      visible.forEach(function(p) {
+        var img = p.foto
+          ? '<img class="product-img" src="' + p.foto + '" alt="' + escapeHtml(p.nombre) + '">'
+          : '<div class="product-img placeholder">🍽️</div>';
 
-        const precio = Number(p.precio) > 0
-          ? `<div class="product-price">${formatPrecio(p.precio)}</div>`
+        var precio = Number(p.precio) > 0
+          ? '<div class="product-price">' + formatPrecio(p.precio) + '</div>'
           : '';
 
-        return `
-          <div class="product-card animate-in">
-            ${img}
-            <div class="product-info">
-              <div class="product-name">${escapeHtml(p.nombre || '')}</div>
-              ${precio}
-              <button class="product-add" onclick="addCart('${p.id}')">➕ Añadir</button>
-            </div>
-          </div>
-        `;
-      }).join('');
+        html += '<div class="product-card animate-in">' +
+          img +
+          '<div class="product-info">' +
+          '<div class="product-name">' + escapeHtml(p.nombre || '') + '</div>' +
+          precio +
+          '<button class="product-add" onclick="addCart(\'' + p.id + '\')">➕ Añadir</button>' +
+          '</div></div>';
+      });
+
+      box.innerHTML = html;
     }
 
     function renderProductosAdmin() {
-      const box = document.getElementById('productosAdminList');
+      var box = document.getElementById('productosAdminList');
       if (!box) return;
 
       if (!productos.length) {
@@ -1984,29 +1584,29 @@
         return;
       }
 
-      box.innerHTML = productos.map(p => {
-        const img = p.foto
-          ? `<img style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;" src="${p.foto}">`
-          : `<div style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; background: var(--bg-secondary); border-radius: 8px; font-size: 24px;">🍽️</div>`;
+      var html = '';
+      productos.forEach(function(p) {
+        var img = p.foto
+          ? '<img style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;" src="' + p.foto + '">'
+          : '<div style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; background: var(--bg-secondary); border-radius: 8px; font-size: 24px;">🍽️</div>';
 
-        return `
-          <div class="order-card animate-in" style="display: flex; gap: 12px; align-items: center; border-left: none;">
-            ${img}
-            <div style="flex: 1;">
-              <div style="font-weight: 600;">${escapeHtml(p.nombre || '')}</div>
-              <div style="font-size: 13px; color: var(--text-secondary);">${formatPrecio(p.precio || 0)}</div>
-            </div>
-            <div style="display: flex; gap: 6px;">
-              <button class="btn btn-secondary btn-sm" onclick="editarProductoNombre('${p.id}')">✏️</button>
-              <button class="btn btn-danger btn-sm" onclick="eliminarProducto('${p.id}')">🗑️</button>
-            </div>
-          </div>
-        `;
-      }).join('');
+        html += '<div class="order-card animate-in" style="display: flex; gap: 12px; align-items: center; border-left: none;">' +
+          img +
+          '<div style="flex: 1;">' +
+          '<div style="font-weight: 600;">' + escapeHtml(p.nombre || '') + '</div>' +
+          '<div style="font-size: 13px; color: var(--text-secondary);">' + formatPrecio(p.precio || 0) + '</div>' +
+          '</div>' +
+          '<div style="display: flex; gap: 6px;">' +
+          '<button class="btn btn-secondary btn-sm" onclick="editarProductoNombre(\'' + p.id + '\')">✏️</button>' +
+          '<button class="btn btn-danger btn-sm" onclick="eliminarProducto(\'' + p.id + '\')">🗑️</button>' +
+          '</div></div>';
+      });
+
+      box.innerHTML = html;
     }
 
     function renderMesasAdmin() {
-      const box = document.getElementById('mesasList');
+      var box = document.getElementById('mesasList');
       if (!box) return;
 
       if (!mesas.length) {
@@ -2014,21 +1614,21 @@
         return;
       }
 
-      box.innerHTML = mesas.map(m => {
-        return `
-          <div class="order-card animate-in" style="display: flex; justify-content: space-between; align-items: center; border-left: none;">
-            <div style="font-weight: 600;">🪑 ${escapeHtml(m.nombre || '')}</div>
-            <div style="display: flex; gap: 6px;">
-              <button class="btn btn-secondary btn-sm" onclick="renombrarMesa('${m.id}')">✏️</button>
-              <button class="btn btn-danger btn-sm" onclick="eliminarMesa('${m.id}')">🗑️</button>
-            </div>
-          </div>
-        `;
-      }).join('');
+      var html = '';
+      mesas.forEach(function(m) {
+        html += '<div class="order-card animate-in" style="display: flex; justify-content: space-between; align-items: center; border-left: none;">' +
+          '<div style="font-weight: 600;">🪑 ' + escapeHtml(m.nombre || '') + '</div>' +
+          '<div style="display: flex; gap: 6px;">' +
+          '<button class="btn btn-secondary btn-sm" onclick="renombrarMesa(\'' + m.id + '\')">✏️</button>' +
+          '<button class="btn btn-danger btn-sm" onclick="eliminarMesa(\'' + m.id + '\')">🗑️</button>' +
+          '</div></div>';
+      });
+
+      box.innerHTML = html;
     }
 
     function renderCamarerosAdmin() {
-      const box = document.getElementById('camarerosList');
+      var box = document.getElementById('camarerosList');
       if (!box) return;
 
       if (!camareros.length) {
@@ -2036,21 +1636,21 @@
         return;
       }
 
-      box.innerHTML = camareros.map(c => {
-        return `
-          <div class="order-card animate-in" style="display: flex; justify-content: space-between; align-items: center; border-left: none;">
-            <div style="font-weight: 600;">👤 ${escapeHtml(c.nombre || '')}</div>
-            <div style="display: flex; gap: 6px;">
-              <button class="btn btn-secondary btn-sm" onclick="renombrarCamarero('${c.id}')">✏️</button>
-              <button class="btn btn-danger btn-sm" onclick="eliminarCamarero('${c.id}')">🗑️</button>
-            </div>
-          </div>
-        `;
-      }).join('');
+      var html = '';
+      camareros.forEach(function(c) {
+        html += '<div class="order-card animate-in" style="display: flex; justify-content: space-between; align-items: center; border-left: none;">' +
+          '<div style="font-weight: 600;">👤 ' + escapeHtml(c.nombre || '') + '</div>' +
+          '<div style="display: flex; gap: 6px;">' +
+          '<button class="btn btn-secondary btn-sm" onclick="renombrarCamarero(\'' + c.id + '\')">✏️</button>' +
+          '<button class="btn btn-danger btn-sm" onclick="eliminarCamarero(\'' + c.id + '\')">🗑️</button>' +
+          '</div></div>';
+      });
+
+      box.innerHTML = html;
     }
 
     function renderCart() {
-      const box = document.getElementById('cartList');
+      var box = document.getElementById('cartList');
       if (!box) return;
 
       if (!cart.length) {
@@ -2058,21 +1658,22 @@
         return;
       }
 
-      box.innerHTML = cart.map(item => {
-        return `
-          <div class="cart-item">
-            <div class="cart-item-info">
-              <div class="cart-item-name">${item.qty} x ${escapeHtml(item.nombre)}</div>
-              ${item.precio ? `<div class="cart-item-price">${formatPrecio(item.precio * item.qty)}</div>` : ''}
-            </div>
-            <button class="cart-item-remove" onclick="removeCart('${item.id}')">✕</button>
-          </div>
-        `;
-      }).join('');
+      var html = '';
+      cart.forEach(function(item) {
+        html += '<div class="cart-item">' +
+          '<div class="cart-item-info">' +
+          '<div class="cart-item-name">' + item.qty + ' x ' + escapeHtml(item.nombre) + '</div>' +
+          (item.precio ? '<div class="cart-item-price">' + formatPrecio(item.precio * item.qty) + '</div>' : '') +
+          '</div>' +
+          '<button class="cart-item-remove" onclick="removeCart(\'' + item.id + '\')">✕</button>' +
+          '</div>';
+      });
+
+      box.innerHTML = html;
     }
 
     function renderClientOrders() {
-      const box = document.getElementById('clientOrders');
+      var box = document.getElementById('clientOrders');
       if (!box) return;
 
       if (!clientOrders.length) {
@@ -2080,23 +1681,25 @@
         return;
       }
 
-      const sorted = [...clientOrders].sort((a, b) => (b.createdAtLocal || 0) - (a.createdAtLocal || 0));
+      var sorted = clientOrders.slice().sort(function(a, b) {
+        return (b.createdAtLocal || 0) - (a.createdAtLocal || 0);
+      });
 
-      box.innerHTML = '<h4 style="margin-bottom: 12px; font-size: 14px; color: var(--text-secondary);">📜 Historial de pedidos</h4>' + sorted.map(order => {
-        return `
-          <div class="order-card estado-${estadoClass(order.estado)} animate-in" style="margin-bottom: 10px;">
-            <div class="order-items">${escapeHtmlLines(order.items || '')}</div>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <span class="order-status ${estadoClass(order.estado)}">${estadoLabel(order.estado)}</span>
-              <span class="order-time">${formatTime(order.createdAtLocal)}</span>
-            </div>
-          </div>
-        `;
-      }).join('');
+      var html = '<h4 style="margin-bottom: 12px; font-size: 14px; color: var(--text-secondary);">📜 Historial de pedidos</h4>';
+      sorted.forEach(function(order) {
+        html += '<div class="order-card estado-' + estadoClass(order.estado) + ' animate-in" style="margin-bottom: 10px;">' +
+          '<div class="order-items">' + escapeHtmlLines(order.items || '') + '</div>' +
+          '<div style="display: flex; justify-content: space-between; align-items: center;">' +
+          '<span class="order-status ' + estadoClass(order.estado) + '">' + estadoLabel(order.estado) + '</span>' +
+          '<span class="order-time">' + formatTime(order.createdAtLocal) + '</span>' +
+          '</div></div>';
+      });
+
+      box.innerHTML = html;
     }
 
     function renderClientStatus() {
-      const box = document.getElementById('clientStatus');
+      var box = document.getElementById('clientStatus');
       if (!box) return;
 
       if (!clientAlerts.length) {
@@ -2104,70 +1707,92 @@
         return;
       }
 
-      const sorted = [...clientAlerts].sort((a, b) => (b.createdAtLocal || 0) - (a.createdAtLocal || 0));
-      const latest = sorted[0];
+      var sorted = clientAlerts.slice().sort(function(a, b) {
+        return (b.createdAtLocal || 0) - (a.createdAtLocal || 0);
+      });
+      var latest = sorted[0];
 
-      const tipoLabel = latest.tipo === 'PEDIR_CUENTA' ? '💶 Cuenta' : '🔔 Camarero';
-      box.innerHTML = `Último aviso: ${tipoLabel} · ${latest.atendida ? '✅ Atendido' : '⏳ Pendiente'}`;
+      var tipoLabel = latest.tipo === 'PEDIR_CUENTA' ? '💶 Cuenta' : '🔔 Camarero';
+      box.innerHTML = 'Último aviso: ' + tipoLabel + ' · ' + (latest.atendida ? '✅ Atendido' : '⏳ Pendiente');
     }
 
     function actualizarTotalMesaCliente() {
-      const total = clientOrders
-        .filter(o => o.estado !== 'CANCELADO' && o.estado !== 'PAGADO')
-        .reduce((sum, o) => sum + (o.totalPedido || extraerTotalPedido(o.items)), 0);
+      var total = 0;
+      clientOrders.forEach(function(o) {
+        if (o.estado !== 'CANCELADO' && o.estado !== 'PAGADO') {
+          total += o.totalPedido || extraerTotalPedido(o.items);
+        }
+      });
 
-      const elem = document.getElementById('totalMesaCard');
-      const valueElem = document.getElementById('totalMesaValue');
+      var elem = document.getElementById('totalMesaCard');
+      var valueElem = document.getElementById('totalMesaValue');
 
-      if (total > 0) {
-        elem.style.display = 'block';
-        valueElem.textContent = formatPrecio(total);
-      } else {
-        elem.style.display = 'none';
+      if (elem && valueElem) {
+        if (total > 0) {
+          elem.style.display = 'block';
+          valueElem.textContent = formatPrecio(total);
+        } else {
+          elem.style.display = 'none';
+        }
       }
     }
 
     function renderContabilidad() {
-      const now = new Date();
-      const hoy = now.toISOString().slice(0, 10);
+      debugLog('renderContabilidad: iniciando con ' + pagos.length + ' pagos', 'info');
 
-      const inicioSemana = new Date(now);
-      const diaSemana = now.getDay() || 7;
+      var now = new Date();
+      var hoy = now.toISOString().slice(0, 10);
+
+      var inicioSemana = new Date(now);
+      var diaSemana = now.getDay() || 7;
       inicioSemana.setDate(now.getDate() - diaSemana + 1);
-      const fechaInicioSemana = inicioSemana.toISOString().slice(0, 10);
+      var fechaInicioSemana = inicioSemana.toISOString().slice(0, 10);
 
-      const inicioMes = new Date(now.getFullYear(), now.getMonth(), 1);
-      const fechaInicioMes = inicioMes.toISOString().slice(0, 10);
+      var inicioMes = new Date(now.getFullYear(), now.getMonth(), 1);
+      var fechaInicioMes = inicioMes.toISOString().slice(0, 10);
 
-      let totalHistorico = 0;
-      let totalDia = 0;
-      let totalSemana = 0;
-      let totalMes = 0;
+      var totalHistorico = 0;
+      var totalDia = 0;
+      var totalSemana = 0;
+      var totalMes = 0;
 
-      pagos.forEach(p => {
-        const total = p.total || 0;
+      pagos.forEach(function(p) {
+        var total = Number(p.total) || 0;
         totalHistorico += total;
         if (p.fecha === hoy) totalDia += total;
         if (p.fecha >= fechaInicioSemana) totalSemana += total;
         if (p.fecha >= fechaInicioMes) totalMes += total;
       });
 
-      document.getElementById('contDia').textContent = formatPrecio(totalDia);
-      document.getElementById('contSemana').textContent = formatPrecio(totalSemana);
-      document.getElementById('contMes').textContent = formatPrecio(totalMes);
-      document.getElementById('contTotal').textContent = formatPrecio(totalHistorico);
+      debugLog('renderContabilidad: Dia=' + totalDia + ' Semana=' + totalSemana + ' Mes=' + totalMes + ' Total=' + totalHistorico, 'info');
 
-      debugLog(`Contabilidad: Día=${formatPrecio(totalDia)}, Semana=${formatPrecio(totalSemana)}, Mes=${formatPrecio(totalMes)}, Total=${formatPrecio(totalHistorico)}`, 'info');
+      var e1 = document.getElementById('contDia');
+      var e2 = document.getElementById('contSemana');
+      var e3 = document.getElementById('contMes');
+      var e4 = document.getElementById('contTotal');
+
+      if (e1) e1.textContent = formatPrecio(totalDia);
+      if (e2) e2.textContent = formatPrecio(totalSemana);
+      if (e3) e3.textContent = formatPrecio(totalMes);
+      if (e4) e4.textContent = formatPrecio(totalHistorico);
+
+      debugLog('renderContabilidad: renderizado completado', 'success');
     }
 
     // ============================================================
     // ACTIONS
     // ============================================================
     function addCart(productoId) {
-      const producto = productos.find(p => p.id === productoId);
+      var producto = null;
+      for (var i = 0; i < productos.length; i++) {
+        if (productos[i].id === productoId) { producto = productos[i]; break; }
+      }
       if (!producto) return;
 
-      const existing = cart.find(item => item.id === productoId);
+      var existing = null;
+      for (var j = 0; j < cart.length; j++) {
+        if (cart[j].id === productoId) { existing = cart[j]; break; }
+      }
 
       if (existing) {
         existing.qty += 1;
@@ -2185,40 +1810,40 @@
     }
 
     function removeCart(productoId) {
-      cart = cart.filter(item => item.id !== productoId);
+      cart = cart.filter(function(item) { return item.id !== productoId; });
       renderCart();
     }
 
     function toggleClientOrders() {
-      document.getElementById('clientOrdersCard').classList.toggle('hidden');
+      var elem = document.getElementById('clientOrdersCard');
+      if (elem) elem.classList.toggle('hidden');
     }
 
-    async function crearPedido() {
+    function crearPedido() {
       if (!requireFirebase()) return;
 
-      const mesa = mesaFija || '';
-      const manual = document.getElementById('manualItems').value.trim();
+      var mesa = mesaFija || '';
+      var manual = document.getElementById('manualItems') ? document.getElementById('manualItems').value.trim() : '';
 
       if (!mesa) {
         showToast('⚠️ Mesa no detectada. Escanea el QR de tu mesa.', 'error');
         return;
       }
 
-      const lines = [];
+      var lines = [];
 
       if (manual) lines.push(manual);
 
-      cart.forEach(item => {
+      var totalPedido = 0;
+      cart.forEach(function(item) {
         lines.push(
           item.qty + ' x ' + item.nombre +
           (item.precio ? ' (' + formatPrecio(item.precio * item.qty) + ')' : '')
         );
+        totalPedido += item.qty * (item.precio || 0);
       });
 
-      let totalPedido = 0;
-
       if (cart.length) {
-        totalPedido = cart.reduce((sum, item) => sum + (item.qty * (item.precio || 0)), 0);
         lines.push('Total: ' + formatPrecio(totalPedido));
       }
 
@@ -2227,8 +1852,8 @@
         return;
       }
 
-      const id = newId();
-      const pedidoData = {
+      var id = newId();
+      var pedidoData = {
         clientId: clientId,
         mesa: mesa,
         items: lines.join('\n'),
@@ -2240,237 +1865,278 @@
 
       debugLog('Enviando pedido a Firebase: ' + JSON.stringify(pedidoData), 'info');
 
-      try {
-        await db.ref('pedidos/' + id).set(pedidoData);
+      db.ref('pedidos/' + id).set(pedidoData).then(function() {
         debugLog('Pedido enviado correctamente con ID: ' + id, 'success');
-        
+
         cart = [];
-        document.getElementById('manualItems').value = '';
+        var mi = document.getElementById('manualItems');
+        if (mi) mi.value = '';
         renderCart();
         showToast('✅ Pedido enviado desde mesa ' + mesa, 'success');
-      } catch (e) {
+      }).catch(function(e) {
         debugLog('Error al enviar pedido: ' + e.message, 'error');
         showToast('❌ Error al crear pedido: ' + e.message, 'error');
-      }
+      });
     }
 
-    async function cambiarEstado(orderId, estado) {
+    function cambiarEstado(orderId, estado) {
       if (!requireFirebase()) return;
 
-      try {
-        await db.ref('pedidos/' + orderId).update({
-          estado: estado,
-          updatedAtLocal: nowLocal()
-        });
+      db.ref('pedidos/' + orderId).update({
+        estado: estado,
+        updatedAtLocal: nowLocal()
+      }).then(function() {
         showToast('✅ Estado actualizado', 'success');
-      } catch (e) {
+      }).catch(function(e) {
         showToast('❌ Error: ' + e.message, 'error');
-      }
+      });
     }
 
-    async function cobrarMesa(mesa) {
+    function cobrarMesa(mesaEncoded) {
+      var mesa = decodeURIComponent(mesaEncoded);
+      debugLog('cobrarMesa: iniciando cobro para mesa "' + mesa + '"', 'info');
+
       if (!requireFirebase()) return;
 
-      const pedidosMesa = orders.filter(o =>
-        o.mesa === mesa &&
-        o.estado !== 'CANCELADO' &&
-        o.estado !== 'PAGADO'
-      );
+      var pedidosMesa = orders.filter(function(o) {
+        return o.mesa === mesa &&
+          o.estado !== 'CANCELADO' &&
+          o.estado !== 'PAGADO';
+      });
+
+      debugLog('cobrarMesa: ' + pedidosMesa.length + ' pedidos encontrados para mesa "' + mesa + '"', 'info');
 
       if (!pedidosMesa.length) {
         showToast('No hay pedidos pendientes en esta mesa', 'error');
         return;
       }
 
-      const total = pedidosMesa.reduce((sum, o) => {
-        return sum + (o.totalPedido || extraerTotalPedido(o.items));
-      }, 0);
+      var total = 0;
+      pedidosMesa.forEach(function(o) {
+        var t = o.totalPedido || extraerTotalPedido(o.items);
+        debugLog('cobrarMesa: pedido ' + o.id + ' total=' + t, 'info');
+        total += t;
+      });
 
-      if (!confirm(`Cobrar mesa ${mesa}: ${formatPrecio(total)}\n${pedidosMesa.length} pedido(s)\n¿Confirmar?`)) return;
+      debugLog('cobrarMesa: total calculado=' + formatPrecio(total), 'info');
 
-      const now = new Date();
-      const pagoId = newId();
+      if (!confirm('Cobrar mesa ' + mesa + ': ' + formatPrecio(total) + '\n' + pedidosMesa.length + ' pedido(s)\n¿Confirmar?')) {
+        debugLog('cobrarMesa: cobro cancelado por el usuario', 'info');
+        return;
+      }
 
-      try {
-        // Crear registro de pago
-        await db.ref('pagos/' + pagoId).set({
-          fecha: now.toISOString().slice(0, 10),
-          hora: now.toTimeString().slice(0, 5),
-          timestamp: now.getTime(),
-          mesa: mesa,
-          total: Math.round(total * 100) / 100,
-          numPedidos: pedidosMesa.length
+      var now = new Date();
+      var pagoId = newId();
+
+      var pagoData = {
+        fecha: now.toISOString().slice(0, 10),
+        hora: now.toTimeString().slice(0, 5),
+        timestamp: now.getTime(),
+        mesa: mesa,
+        total: Math.round(total * 100) / 100,
+        numPedidos: pedidosMesa.length
+      };
+
+      debugLog('cobrarMesa: registrando pago ' + pagoId + ': ' + JSON.stringify(pagoData), 'info');
+
+      db.ref('pagos/' + pagoId).set(pagoData).then(function() {
+        debugLog('cobrarMesa: pago registrado correctamente', 'success');
+
+        var updates = {};
+        pedidosMesa.forEach(function(pedido) {
+          updates[pedido.id] = {
+            estado: 'PAGADO',
+            updatedAtLocal: nowLocal()
+          };
         });
 
-        debugLog(`Pago registrado: Mesa ${mesa}, Total ${formatPrecio(total)}`, 'success');
-
-        // Marcar pedidos como PAGADO
-        for (const pedido of pedidosMesa) {
-          await db.ref('pedidos/' + pedido.id).update({
+        var promises = pedidosMesa.map(function(pedido) {
+          return db.ref('pedidos/' + pedido.id).update({
             estado: 'PAGADO',
             updatedAtLocal: nowLocal()
           });
-        }
+        });
 
+        return Promise.all(promises);
+      }).then(function() {
+        debugLog('cobrarMesa: todos los pedidos marcados como PAGADO', 'success');
         showToast('✅ Mesa cobrada: ' + formatPrecio(total), 'success');
-      } catch (e) {
-        debugLog('Error al cobrar mesa: ' + e.message, 'error');
+      }).catch(function(e) {
+        debugLog('cobrarMesa: ERROR - ' + e.message, 'error');
         showToast('❌ Error al cobrar: ' + e.message, 'error');
-      }
+      });
     }
 
-    async function enviarAlerta(tipo) {
+    function forceRefreshCuentas() {
       if (!requireFirebase()) return;
 
-      const mesa = mesaFija || '';
+      db.ref('pedidos').once('value').then(function(snapshot) {
+        var data = snapshot.val() || {};
+        orders = Object.keys(data).map(function(id) {
+          var item = data[id];
+          item.id = id;
+          return item;
+        });
+        renderStaffOrders();
+        renderCuentasMesas();
+        updateStats();
+        showToast('✅ Cuentas actualizadas', 'success');
+      }).catch(function(e) {
+        showToast('❌ Error al actualizar', 'error');
+      });
+    }
+
+    function enviarAlerta(tipo) {
+      if (!requireFirebase()) return;
+
+      var mesa = mesaFija || '';
 
       if (!mesa) {
         showToast('⚠️ Mesa no detectada', 'error');
         return;
       }
 
-      const id = newId();
+      var id = newId();
 
-      try {
-        await db.ref('alertas/' + id).set({
-          clientId: clientId,
-          mesa: mesa,
-          tipo: tipo,
-          atendida: false,
-          createdAtLocal: nowLocal(),
-          updatedAtLocal: nowLocal()
-        });
-
+      db.ref('alertas/' + id).set({
+        clientId: clientId,
+        mesa: mesa,
+        tipo: tipo,
+        atendida: false,
+        createdAtLocal: nowLocal(),
+        updatedAtLocal: nowLocal()
+      }).then(function() {
         if (tipo === 'PEDIR_CUENTA') {
           showToast('✅ Cuenta solicitada', 'success');
         } else {
           showToast('✅ Camarero avisado', 'success');
         }
-      } catch (e) {
+      }).catch(function(e) {
         showToast('❌ Error: ' + e.message, 'error');
-      }
+      });
     }
 
-    async function atenderAlerta(alertId) {
+    function atenderAlerta(alertId) {
       if (!requireFirebase()) return;
 
-      try {
-        await db.ref('alertas/' + alertId).update({
-          atendida: true,
-          updatedAtLocal: nowLocal()
-        });
+      db.ref('alertas/' + alertId).update({
+        atendida: true,
+        updatedAtLocal: nowLocal()
+      }).then(function() {
         showToast('✅ Alerta atendida', 'success');
-      } catch (e) {
+      }).catch(function(e) {
         showToast('❌ Error: ' + e.message, 'error');
-      }
+      });
     }
 
-    async function agregarMesa() {
+    function agregarMesa() {
       if (!requireFirebase()) return;
 
-      const nombre = document.getElementById('nuevaMesa').value.trim();
+      var nombre = document.getElementById('nuevaMesa') ? document.getElementById('nuevaMesa').value.trim() : '';
       if (!nombre) {
         showToast('⚠️ Escribe el nombre de la mesa', 'error');
         return;
       }
 
-      const id = newId();
+      var id = newId();
 
-      try {
-        await db.ref('mesas/' + id).set({
-          nombre: nombre,
-          activo: true,
-          createdAtLocal: nowLocal()
-        });
-        document.getElementById('nuevaMesa').value = '';
+      db.ref('mesas/' + id).set({
+        nombre: nombre,
+        activo: true,
+        createdAtLocal: nowLocal()
+      }).then(function() {
+        var inp = document.getElementById('nuevaMesa');
+        if (inp) inp.value = '';
         showToast('✅ Mesa añadida: ' + nombre, 'success');
-      } catch (e) {
+      }).catch(function(e) {
         showToast('❌ Error: ' + e.message, 'error');
-      }
+      });
     }
 
-    async function renombrarMesa(id) {
+    function renombrarMesa(id) {
       if (!requireFirebase()) return;
-      const mesa = mesas.find(m => m.id === id);
-      const nuevo = prompt('Nuevo nombre de la mesa', mesa ? mesa.nombre : '');
+      var mesa = null;
+      for (var i = 0; i < mesas.length; i++) {
+        if (mesas[i].id === id) { mesa = mesas[i]; break; }
+      }
+      var nuevo = prompt('Nuevo nombre de la mesa', mesa ? mesa.nombre : '');
       if (!nuevo || !nuevo.trim()) return;
 
-      try {
-        await db.ref('mesas/' + id).update({ nombre: nuevo.trim() });
+      db.ref('mesas/' + id).update({ nombre: nuevo.trim() }).then(function() {
         showToast('✅ Mesa renombrada', 'success');
-      } catch (e) {
+      }).catch(function(e) {
         showToast('❌ Error: ' + e.message, 'error');
-      }
+      });
     }
 
-    async function eliminarMesa(id) {
+    function eliminarMesa(id) {
       if (!requireFirebase()) return;
       if (!confirm('¿Eliminar esta mesa?')) return;
 
-      try {
-        await db.ref('mesas/' + id).remove();
+      db.ref('mesas/' + id).remove().then(function() {
         showToast('✅ Mesa eliminada', 'success');
-      } catch (e) {
+      }).catch(function(e) {
         showToast('❌ Error: ' + e.message, 'error');
-      }
+      });
     }
 
-    async function agregarCamarero() {
+    function agregarCamarero() {
       if (!requireFirebase()) return;
-      const nombre = document.getElementById('nuevoCamarero').value.trim();
+      var nombre = document.getElementById('nuevoCamarero') ? document.getElementById('nuevoCamarero').value.trim() : '';
       if (!nombre) {
         showToast('⚠️ Escribe el nombre del camarero', 'error');
         return;
       }
 
-      const id = newId();
+      var id = newId();
 
-      try {
-        await db.ref('camareros/' + id).set({
-          nombre: nombre,
-          activo: true,
-          createdAtLocal: nowLocal()
-        });
-        document.getElementById('nuevoCamarero').value = '';
+      db.ref('camareros/' + id).set({
+        nombre: nombre,
+        activo: true,
+        createdAtLocal: nowLocal()
+      }).then(function() {
+        var inp = document.getElementById('nuevoCamarero');
+        if (inp) inp.value = '';
         showToast('✅ Camarero añadido', 'success');
-      } catch (e) {
+      }).catch(function(e) {
         showToast('❌ Error: ' + e.message, 'error');
-      }
+      });
     }
 
-    async function renombrarCamarero(id) {
+    function renombrarCamarero(id) {
       if (!requireFirebase()) return;
-      const camarero = camareros.find(c => c.id === id);
-      const nuevo = prompt('Nuevo nombre del camarero', camarero ? camarero.nombre : '');
+      var camarero = null;
+      for (var i = 0; i < camareros.length; i++) {
+        if (camareros[i].id === id) { camarero = camareros[i]; break; }
+      }
+      var nuevo = prompt('Nuevo nombre del camarero', camarero ? camarero.nombre : '');
       if (!nuevo || !nuevo.trim()) return;
 
-      try {
-        await db.ref('camareros/' + id).update({ nombre: nuevo.trim() });
+      db.ref('camareros/' + id).update({ nombre: nuevo.trim() }).then(function() {
         showToast('✅ Camarero renombrado', 'success');
-      } catch (e) {
+      }).catch(function(e) {
         showToast('❌ Error: ' + e.message, 'error');
-      }
+      });
     }
 
-    async function eliminarCamarero(id) {
+    function eliminarCamarero(id) {
       if (!requireFirebase()) return;
       if (!confirm('¿Eliminar este camarero?')) return;
 
-      try {
-        await db.ref('camareros/' + id).remove();
+      db.ref('camareros/' + id).remove().then(function() {
         showToast('✅ Camarero eliminado', 'success');
-      } catch (e) {
+      }).catch(function(e) {
         showToast('❌ Error: ' + e.message, 'error');
-      }
+      });
     }
 
-    async function agregarProducto() {
+    function agregarProducto() {
       if (!requireFirebase()) return;
 
-      const nombre = document.getElementById('productoNombre').value.trim();
-      const precio = Number(document.getElementById('productoPrecio').value) || 0;
-      const descripcion = document.getElementById('productoDescripcion').value.trim();
-      const foto = pendingProductoFoto || '';
+      var nombre = document.getElementById('productoNombre') ? document.getElementById('productoNombre').value.trim() : '';
+      var precio = Number(document.getElementById('productoPrecio') ? document.getElementById('productoPrecio').value : 0) || 0;
+      var descripcion = document.getElementById('productoDescripcion') ? document.getElementById('productoDescripcion').value.trim() : '';
+      var foto = pendingProductoFoto || '';
 
       if (!nombre) {
         showToast('⚠️ Escribe el nombre del producto', 'error');
@@ -2482,75 +2148,83 @@
         return;
       }
 
-      const id = newId();
+      var id = newId();
 
-      try {
-        await db.ref('productos/' + id).set({
-          nombre: nombre,
-          precio: precio,
-          descripcion: descripcion,
-          foto: foto,
-          activo: true,
-          createdAtLocal: nowLocal(),
-          updatedAtLocal: nowLocal()
-        });
-
-        document.getElementById('productoNombre').value = '';
-        document.getElementById('productoPrecio').value = '';
-        document.getElementById('productoDescripcion').value = '';
-        document.getElementById('productoFoto').value = '';
+      db.ref('productos/' + id).set({
+        nombre: nombre,
+        precio: precio,
+        descripcion: descripcion,
+        foto: foto,
+        activo: true,
+        createdAtLocal: nowLocal(),
+        updatedAtLocal: nowLocal()
+      }).then(function() {
+        var e1 = document.getElementById('productoNombre');
+        var e2 = document.getElementById('productoPrecio');
+        var e3 = document.getElementById('productoDescripcion');
+        var e4 = document.getElementById('productoFoto');
+        var e5 = document.getElementById('productoFotoPreview');
+        if (e1) e1.value = '';
+        if (e2) e2.value = '';
+        if (e3) e3.value = '';
+        if (e4) e4.value = '';
+        if (e5) e5.innerHTML = '';
         pendingProductoFoto = '';
-        document.getElementById('productoFotoPreview').innerHTML = '';
 
         showToast('✅ Producto añadido', 'success');
-      } catch (e) {
+      }).catch(function(e) {
         showToast('❌ Error: ' + e.message, 'error');
-      }
+      });
     }
 
-    async function editarProductoNombre(id) {
+    function editarProductoNombre(id) {
       if (!requireFirebase()) return;
-      const producto = productos.find(p => p.id === id);
-      const nuevo = prompt('Nuevo nombre del producto', producto ? producto.nombre : '');
+      var producto = null;
+      for (var i = 0; i < productos.length; i++) {
+        if (productos[i].id === id) { producto = productos[i]; break; }
+      }
+      var nuevo = prompt('Nuevo nombre del producto', producto ? producto.nombre : '');
       if (!nuevo || !nuevo.trim()) return;
 
-      try {
-        await db.ref('productos/' + id).update({
-          nombre: nuevo.trim(),
-          updatedAtLocal: nowLocal()
-        });
+      db.ref('productos/' + id).update({
+        nombre: nuevo.trim(),
+        updatedAtLocal: nowLocal()
+      }).then(function() {
         showToast('✅ Producto renombrado', 'success');
-      } catch (e) {
+      }).catch(function(e) {
         showToast('❌ Error: ' + e.message, 'error');
-      }
+      });
     }
 
-    async function eliminarProducto(id) {
+    function eliminarProducto(id) {
       if (!requireFirebase()) return;
       if (!confirm('¿Eliminar este producto?')) return;
 
-      try {
-        await db.ref('productos/' + id).remove();
+      db.ref('productos/' + id).remove().then(function() {
         showToast('✅ Producto eliminado', 'success');
-      } catch (e) {
+      }).catch(function(e) {
         showToast('❌ Error: ' + e.message, 'error');
-      }
+      });
     }
 
     function forceRefresh() {
       if (!requireFirebase()) return;
-      
+
       debugLog('Forzando actualización de datos...', 'info');
-      
-      db.ref('pedidos').once('value').then(snapshot => {
-        const data = snapshot.val() || {};
-        orders = Object.keys(data).map(id => ({ id, ...data[id] }));
+
+      db.ref('pedidos').once('value').then(function(snapshot) {
+        var data = snapshot.val() || {};
+        orders = Object.keys(data).map(function(id) {
+          var item = data[id];
+          item.id = id;
+          return item;
+        });
         renderStaffOrders();
         renderCuentasMesas();
         updateStats();
         debugLog('Datos actualizados manualmente. Pedidos: ' + orders.length, 'success');
         showToast('✅ Datos actualizados', 'success');
-      }).catch(e => {
+      }).catch(function(e) {
         debugLog('Error al actualizar: ' + e.message, 'error');
         showToast('❌ Error al actualizar', 'error');
       });
@@ -2570,20 +2244,22 @@
         return;
       }
 
-      const data = pagos.map(p => ({
-        'Fecha': p.fecha,
-        'Hora': p.hora,
-        'Mesa': p.mesa,
-        'Nº Pedidos': p.numPedidos,
-        'Total (€)': p.total
-      }));
+      var data = pagos.map(function(p) {
+        return {
+          'Fecha': p.fecha,
+          'Hora': p.hora,
+          'Mesa': p.mesa,
+          'Nº Pedidos': p.numPedidos,
+          'Total (€)': p.total
+        };
+      });
 
-      const ws = XLSX.utils.json_to_sheet(data);
-      const wb = XLSX.utils.book_new();
+      var ws = XLSX.utils.json_to_sheet(data);
+      var wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, 'Contabilidad');
 
-      const fecha = new Date().toISOString().slice(0, 10);
-      XLSX.writeFile(wb, `contabilidad_${fecha}.xlsx`);
+      var fecha = new Date().toISOString().slice(0, 10);
+      XLSX.writeFile(wb, 'contabilidad_' + fecha + '.xlsx');
 
       showToast('✅ Excel exportado', 'success');
       debugLog('Excel exportado con ' + pagos.length + ' pagos', 'success');
@@ -2600,106 +2276,150 @@
 
       debugLog('Iniciando suscripciones para rol: ' + role, 'info');
 
-      // Mesas - always subscribe
-      db.ref('mesas').on('value', snapshot => {
-        const data = snapshot.val() || {};
-        mesas = Object.keys(data).map(id => ({ id, ...data[id] }));
-        mesas.sort((a, b) => String(a.nombre || '').localeCompare(String(b.nombre || '')));
+      // Mesas
+      db.ref('mesas').on('value', function(snapshot) {
+        var data = snapshot.val() || {};
+        mesas = Object.keys(data).map(function(id) {
+          var item = data[id];
+          item.id = id;
+          return item;
+        });
+        mesas.sort(function(a, b) {
+          return String(a.nombre || '').localeCompare(String(b.nombre || ''));
+        });
         debugLog('Mesas actualizadas: ' + mesas.length, 'info');
         updateStats();
         if (role === 'admin') renderMesasAdmin();
-      }, error => {
+      }, function(error) {
         debugLog('Error en suscripción mesas: ' + error.message, 'error');
       });
 
-      // Productos - for client and admin
+      // Productos
       if (role === 'cliente' || role === 'admin') {
-        db.ref('productos').on('value', snapshot => {
-          const data = snapshot.val() || {};
-          productos = Object.keys(data).map(id => ({ id, ...data[id] }));
-          productos.sort((a, b) => String(a.nombre || '').localeCompare(String(b.nombre || '')));
+        db.ref('productos').on('value', function(snapshot) {
+          var data = snapshot.val() || {};
+          productos = Object.keys(data).map(function(id) {
+            var item = data[id];
+            item.id = id;
+            return item;
+          });
+          productos.sort(function(a, b) {
+            return String(a.nombre || '').localeCompare(String(b.nombre || ''));
+          });
           debugLog('Productos actualizados: ' + productos.length, 'info');
           if (role === 'cliente') renderProductosCliente();
           if (role === 'admin') renderProductosAdmin();
-        }, error => {
+        }, function(error) {
           debugLog('Error en suscripción productos: ' + error.message, 'error');
         });
       }
 
-      // Pedidos - according to role
+      // Pedidos
       if (role === 'cliente') {
-        db.ref('pedidos').on('value', snapshot => {
-          const data = snapshot.val() || {};
-          const allOrders = Object.keys(data).map(id => ({ id, ...data[id] }));
-          clientOrders = allOrders.filter(o => o.clientId === clientId);
+        db.ref('pedidos').on('value', function(snapshot) {
+          var data = snapshot.val() || {};
+          var allOrders = Object.keys(data).map(function(id) {
+            var item = data[id];
+            item.id = id;
+            return item;
+          });
+          clientOrders = allOrders.filter(function(o) { return o.clientId === clientId; });
           debugLog('Pedidos cliente actualizados: ' + clientOrders.length, 'info');
           renderClientOrders();
           actualizarTotalMesaCliente();
-        }, error => {
+        }, function(error) {
           debugLog('Error en suscripción pedidos cliente: ' + error.message, 'error');
         });
 
-        db.ref('alertas').on('value', snapshot => {
-          const data = snapshot.val() || {};
-          const allAlerts = Object.keys(data).map(id => ({ id, ...data[id] }));
-          clientAlerts = allAlerts.filter(a => a.clientId === clientId);
+        db.ref('alertas').on('value', function(snapshot) {
+          var data = snapshot.val() || {};
+          var allAlerts = Object.keys(data).map(function(id) {
+            var item = data[id];
+            item.id = id;
+            return item;
+          });
+          clientAlerts = allAlerts.filter(function(a) { return a.clientId === clientId; });
           renderClientStatus();
-        }, error => {
+        }, function(error) {
           debugLog('Error en suscripción alertas cliente: ' + error.message, 'error');
         });
 
       } else if (role === 'admin' || role === 'barra' || role === 'camarero') {
-        db.ref('pedidos').on('value', snapshot => {
-          const data = snapshot.val() || {};
-          const newOrders = Object.keys(data).map(id => ({ id, ...data[id] }));
-          
-          const newCount = newOrders.filter(o => !previousOrderIds.has(o.id)).length;
-          if (newCount > 0 && previousOrderIds.size > 0) {
+        db.ref('pedidos').on('value', function(snapshot) {
+          var data = snapshot.val() || {};
+          var newOrders = Object.keys(data).map(function(id) {
+            var item = data[id];
+            item.id = id;
+            return item;
+          });
+
+          var newCount = 0;
+          newOrders.forEach(function(o) {
+            if (!previousOrderIds[o.id]) newCount++;
+          });
+
+          if (newCount > 0 && Object.keys(previousOrderIds).length > 0) {
             debugLog('🔔 ¡Nuevo pedido recibido!', 'success');
             showToast('🔔 ¡Nuevo pedido!', 'success');
           }
-          
+
           orders = newOrders;
           debugLog('Pedidos staff actualizados: ' + orders.length, 'info');
           renderStaffOrders();
           renderCuentasMesas();
           updateStats();
-        }, error => {
+        }, function(error) {
           debugLog('Error en suscripción pedidos staff: ' + error.message, 'error');
         });
 
-        db.ref('alertas').on('value', snapshot => {
-          const data = snapshot.val() || {};
-          alerts = Object.keys(data).map(id => ({ id, ...data[id] }));
+        db.ref('alertas').on('value', function(snapshot) {
+          var data = snapshot.val() || {};
+          alerts = Object.keys(data).map(function(id) {
+            var item = data[id];
+            item.id = id;
+            return item;
+          });
           debugLog('Alertas actualizadas: ' + alerts.length, 'info');
           renderStaffAlerts();
           updateStats();
-        }, error => {
+        }, function(error) {
           debugLog('Error en suscripción alertas: ' + error.message, 'error');
         });
 
-        db.ref('camareros').on('value', snapshot => {
-          const data = snapshot.val() || {};
-          camareros = Object.keys(data).map(id => ({ id, ...data[id] }));
-          camareros.sort((a, b) => String(a.nombre || '').localeCompare(String(b.nombre || '')));
+        db.ref('camareros').on('value', function(snapshot) {
+          var data = snapshot.val() || {};
+          camareros = Object.keys(data).map(function(id) {
+            var item = data[id];
+            item.id = id;
+            return item;
+          });
+          camareros.sort(function(a, b) {
+            return String(a.nombre || '').localeCompare(String(b.nombre || ''));
+          });
           debugLog('Camareros actualizados: ' + camareros.length, 'info');
           if (role === 'admin') renderCamarerosAdmin();
-        }, error => {
+        }, function(error) {
           debugLog('Error en suscripción camareros: ' + error.message, 'error');
         });
 
-        // Pagos - only for admin
-        if (role === 'admin') {
-          db.ref('pagos').on('value', snapshot => {
-            const data = snapshot.val() || {};
-            pagos = Object.keys(data).map(id => ({ id, ...data[id] }));
-            pagos.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-            debugLog('Pagos actualizados: ' + pagos.length, 'info');
-            renderContabilidad();
-          }, error => {
-            debugLog('Error en suscripción pagos: ' + error.message, 'error');
+        // Pagos - para admin, barra y camarero
+        db.ref('pagos').on('value', function(snapshot) {
+          var data = snapshot.val() || {};
+          pagos = Object.keys(data).map(function(id) {
+            var item = data[id];
+            item.id = id;
+            return item;
           });
-        }
+          pagos.sort(function(a, b) {
+            return (b.timestamp || 0) - (a.timestamp || 0);
+          });
+          debugLog('Pagos actualizados: ' + pagos.length, 'info');
+          if (role === 'admin') {
+            renderContabilidad();
+          }
+        }, function(error) {
+          debugLog('Error en suscripción pagos: ' + error.message, 'error');
+        });
       }
 
       debugLog('Suscripciones iniciadas correctamente', 'success');
@@ -2721,7 +2441,6 @@
       }
     }
 
-    // Start when DOM is ready
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', boot);
     } else {
