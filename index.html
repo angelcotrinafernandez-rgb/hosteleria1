@@ -137,6 +137,9 @@
     .btn-danger { background: linear-gradient(135deg, var(--accent-red), #dc2626); color: white; }
     .btn-danger:hover { box-shadow: 0 4px 12px rgba(239,68,68,0.4); }
 
+    .btn-pagado { background: linear-gradient(135deg, var(--accent-purple), #7c3aed); color: white; }
+    .btn-pagado:hover { box-shadow: 0 4px 12px rgba(139,92,246,0.4); transform: translateY(-1px); }
+
     .btn-sm { padding: 6px 12px; font-size: 12px; }
     .btn-block { width: 100%; padding: 14px; font-size: 16px; }
 
@@ -741,7 +744,7 @@
     // ============================================================
     // FIREBASE CONFIG
     // ============================================================
-    const firebaseConfig = {
+    var firebaseConfig = {
       apiKey: "AIzaSyDBwim0SAPEJvqSabaCrDJNvU3J2QeCU5c",
       authDomain: "hosteleria-41fe7.firebaseapp.com",
       databaseURL: "https://hosteleria-41fe7-default-rtdb.europe-west1.firebasedatabase.app",
@@ -751,8 +754,8 @@
       appId: "1:966603143880:web:3b2a6b7a903992079bc3fd"
     };
 
-    let firebaseReady = false;
-    let db = null;
+    var firebaseReady = false;
+    var db = null;
 
     // ============================================================
     // DEBUG LOG
@@ -852,9 +855,9 @@
       role = 'cliente';
       debugLog('Cliente desde URL', 'info');
     } else {
-      var saved = localStorage.getItem(KEY_ROLE);
-      if (saved && ['admin', 'barra', 'camarero', 'cliente'].indexOf(saved) !== -1) {
-        role = saved;
+      var savedRole = localStorage.getItem(KEY_ROLE);
+      if (savedRole && ['admin', 'barra', 'camarero', 'cliente'].indexOf(savedRole) !== -1) {
+        role = savedRole;
         debugLog('Rol guardado: ' + role, 'info');
       }
     }
@@ -1511,15 +1514,24 @@
         var estadoCls = estadoClass(order.estado);
 
         var botones = '';
+
         if (order.estado === 'RECIBIDO') {
           botones += '<button class="btn btn-secondary btn-sm" onclick="cambiarEstado(\'' + order.id + '\', \'EN_PREPARACION\')">👨‍🍳 Preparar</button>';
         }
+
         if (order.estado === 'EN_PREPARACION') {
           botones += '<button class="btn btn-success btn-sm" onclick="cambiarEstado(\'' + order.id + '\', \'LISTO\')">✅ Listo</button>';
         }
+
         if (order.estado === 'LISTO') {
           botones += '<button class="btn btn-primary btn-sm" onclick="cambiarEstado(\'' + order.id + '\', \'ENTREGADO\')">📦 Entregar</button>';
+          botones += '<button class="btn btn-pagado btn-sm" onclick="cambiarEstado(\'' + order.id + '\', \'PAGADO\')">💰 Pagado</button>';
         }
+
+        if (order.estado === 'ENTREGADO') {
+          botones += '<button class="btn btn-pagado btn-sm" onclick="cambiarEstado(\'' + order.id + '\', \'PAGADO\')">💰 Pagado</button>';
+        }
+
         if (order.estado !== 'CANCELADO' && order.estado !== 'ENTREGADO' && order.estado !== 'PAGADO') {
           botones += '<button class="btn btn-danger btn-sm" onclick="cambiarEstado(\'' + order.id + '\', \'CANCELADO\')">❌</button>';
         }
@@ -1532,7 +1544,7 @@
           '<div class="order-items">' + escapeHtmlLines(order.items || '') + '</div>' +
           '<div class="order-footer">' +
           '<span class="order-status ' + estadoCls + '">' + estadoLabel(order.estado) + '</span>' +
-          '<div style="display: flex; gap: 6px; flex-wrap: wrap;">' + botones + '</div>' +
+          '<div style="display:flex;gap:6px;flex-wrap:wrap;">' + botones + '</div>' +
           '</div></div>';
       });
 
@@ -1882,12 +1894,16 @@
     function cambiarEstado(orderId, estado) {
       if (!requireFirebase()) return;
 
+      debugLog('cambiarEstado: pedido ' + orderId + ' -> ' + estado, 'info');
+
       db.ref('pedidos/' + orderId).update({
         estado: estado,
         updatedAtLocal: nowLocal()
       }).then(function() {
-        showToast('✅ Estado actualizado', 'success');
+        debugLog('cambiarEstado: estado actualizado correctamente', 'success');
+        showToast('✅ Estado actualizado a ' + estadoLabel(estado), 'success');
       }).catch(function(e) {
+        debugLog('cambiarEstado: ERROR - ' + e.message, 'error');
         showToast('❌ Error: ' + e.message, 'error');
       });
     }
@@ -1941,14 +1957,6 @@
 
       db.ref('pagos/' + pagoId).set(pagoData).then(function() {
         debugLog('cobrarMesa: pago registrado correctamente', 'success');
-
-        var updates = {};
-        pedidosMesa.forEach(function(pedido) {
-          updates[pedido.id] = {
-            estado: 'PAGADO',
-            updatedAtLocal: nowLocal()
-          };
-        });
 
         var promises = pedidosMesa.map(function(pedido) {
           return db.ref('pedidos/' + pedido.id).update({
@@ -2402,7 +2410,7 @@
           debugLog('Error en suscripción camareros: ' + error.message, 'error');
         });
 
-        // Pagos - para admin, barra y camarero
+        // Pagos
         db.ref('pagos').on('value', function(snapshot) {
           var data = snapshot.val() || {};
           pagos = Object.keys(data).map(function(id) {
