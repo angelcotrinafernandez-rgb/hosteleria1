@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pedidos Restaurante Firebase Realtime</title>
+  <title>Pedidos Restaurante QR</title>
   <style>
     body {
       margin: 0;
@@ -191,6 +191,29 @@
       font-size: 30px;
       margin-bottom: 6px;
     }
+
+    .qr-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .qr-card {
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 10px;
+      text-align: center;
+      background: #020617;
+    }
+
+    .qr-card canvas, .qr-card img {
+      width: 140px;
+      height: 140px;
+      background: white;
+      padding: 6px;
+      border-radius: 8px;
+    }
   </style>
 </head>
 <body>
@@ -218,7 +241,7 @@
         <button class="big secondary" onclick="goView('barra')">Barra</button>
         <button class="big secondary" onclick="goView('camarero')">Camarero</button>
         <div class="small" style="margin-top:10px;">
-          El dispositivo cliente se configura con su URL especial.
+          El dispositivo cliente entra escaneando el QR de la mesa.
         </div>
       </div>
     </section>
@@ -238,6 +261,18 @@
 
     <!-- PANEL ADMIN -->
     <section id="adminPanel" class="hidden">
+
+      <div class="card">
+        <h2>Códigos QR de mesas</h2>
+        <div class="small">
+          Cada mesa tiene su propio QR. El cliente escanea y el sistema detecta la mesa automáticamente.
+        </div>
+        <div class="row" style="margin-top:10px;">
+          <button onclick="imprimirTodosQR()">Imprimir todos los QR</button>
+          <button class="secondary" onclick="mostrarQRPanel()">Ver QR</button>
+        </div>
+        <div id="qrPreview" class="hidden" style="margin-top:10px;"></div>
+      </div>
 
       <div class="card">
         <h2>Productos</h2>
@@ -283,6 +318,8 @@
       <div class="card">
         <h2>Cliente</h2>
 
+        <div id="mesaDetectada" class="pill" style="margin-bottom:10px; display:none;"></div>
+
         <button id="btnPedidos" class="big">Pedidos</button>
         <button id="btnLlamar" class="big secondary">Llamar al camarero</button>
         <button id="btnCuenta" class="big secondary">Pedir cuenta</button>
@@ -300,7 +337,7 @@
         <div class="card">
           <h3>Tu pedido</h3>
 
-          <input id="mesa" list="mesasDatalist" placeholder="Mesa o nombre" />
+          <input id="mesa" list="mesasDatalist" placeholder="Mesa (si no viene del QR)" />
 
           <div id="cartList" class="small"></div>
 
@@ -328,10 +365,11 @@
 
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 
   <script>
     // ============================================================
-    // CONFIGURACIÓN FIREBASE (ya integrada)
+    // CONFIGURACIÓN FIREBASE
     // ============================================================
     const firebaseConfig = {
       apiKey: "AIzaSyDBwim0SAPEJvqSabaCrDJNvU3J2QeCU5c",
@@ -347,12 +385,7 @@
     let db = null;
 
     function configValida(cfg) {
-      return !!(
-        cfg &&
-        cfg.apiKey &&
-        cfg.databaseURL &&
-        cfg.projectId
-      );
+      return !!(cfg && cfg.apiKey && cfg.databaseURL && cfg.projectId);
     }
 
     function showSetupWarning(message) {
@@ -378,9 +411,11 @@
     // ============================================================
 
     const DEVICE_ROLE_KEY = "restaurante_device_role";
+    const MESA_PARAM_KEY = "restaurante_mesa_param";
 
     const params = new URLSearchParams(location.search);
     const requestedView = params.get("vista") || "";
+    const mesaParam = params.get("mesa") || "";
     const fijar = params.get("fijar") === "1";
     const storedRole = localStorage.getItem(DEVICE_ROLE_KEY);
 
@@ -388,15 +423,16 @@
 
     let role = "menu";
 
-    if (staffRoles.includes(requestedView)) {
+    // Si la URL trae ?mesa=..., forzar modo cliente
+    if (mesaParam) {
+      role = "cliente";
+      localStorage.setItem(MESA_PARAM_KEY, mesaParam);
+    } else if (staffRoles.includes(requestedView)) {
       role = requestedView;
       localStorage.setItem(DEVICE_ROLE_KEY, role);
     } else if (requestedView === "cliente") {
       role = "cliente";
-
-      if (fijar) {
-        localStorage.setItem(DEVICE_ROLE_KEY, role);
-      }
+      if (fijar) localStorage.setItem(DEVICE_ROLE_KEY, role);
     } else if (storedRole && (staffRoles.includes(storedRole) || storedRole === "cliente")) {
       role = storedRole;
     }
@@ -407,6 +443,8 @@
       clientId = "cliente_" + Math.random().toString(36).slice(2) + Date.now().toString(36);
       localStorage.setItem("restaurante_client_id", clientId);
     }
+
+    let mesaFija = mesaParam || localStorage.getItem(MESA_PARAM_KEY) || "";
 
     // ============================================================
     // DATOS LOCALES
@@ -513,12 +551,8 @@
       if (role === "cliente") {
         if (confirm("¿Reiniciar cliente en este dispositivo?")) {
           localStorage.removeItem("restaurante_client_id");
-
-          if (localStorage.getItem(DEVICE_ROLE_KEY) === "cliente") {
-            location.href = location.pathname + "?vista=cliente";
-          } else {
-            location.href = location.pathname;
-          }
+          localStorage.removeItem(MESA_PARAM_KEY);
+          location.href = location.pathname;
         }
       } else {
         localStorage.removeItem(DEVICE_ROLE_KEY);
@@ -552,6 +586,14 @@
       if (role === "cliente") {
         clientPanel.classList.remove("hidden");
         document.getElementById("clientBadge").textContent = clientId.slice(0, 14);
+
+        if (mesaFija) {
+          document.getElementById("mesa").value = mesaFija;
+          const badge = document.getElementById("mesaDetectada");
+          badge.textContent = "Mesa detectada: " + mesaFija;
+          badge.style.display = "inline-block";
+          document.getElementById("mesa").readOnly = true;
+        }
       } else {
         staffPanel.classList.remove("hidden");
         document.getElementById("clientBadge").textContent = "";
@@ -560,6 +602,164 @@
           adminPanel.classList.remove("hidden");
         }
       }
+    }
+
+    // ============================================================
+    // GENERADOR DE QR
+    // ============================================================
+
+    function urlQR(nombreMesa) {
+      const base = location.origin + location.pathname;
+      return base + "?vista=cliente&mesa=" + encodeURIComponent(nombreMesa);
+    }
+
+    function generarQRIndividual(container, nombreMesa) {
+      container.innerHTML = "";
+      const url = urlQR(nombreMesa);
+
+      if (typeof QRCode !== "undefined") {
+        new QRCode(container, {
+          text: url,
+          width: 140,
+          height: 140,
+          colorDark: "#000000",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.M
+        });
+      }
+    }
+
+    function mostrarQRPanel() {
+      const preview = document.getElementById("qrPreview");
+
+      if (!mesas.length) {
+        preview.classList.remove("hidden");
+        preview.innerHTML = '<div class="small">Primero añade mesas.</div>';
+        return;
+      }
+
+      preview.classList.remove("hidden");
+      preview.innerHTML = '<div class="qr-grid" id="qrGridPreview"></div>';
+
+      const grid = document.getElementById("qrGridPreview");
+
+      mesas.forEach(m => {
+        const card = document.createElement("div");
+        card.className = "qr-card";
+        card.innerHTML = `
+          <div class="qr-canvas"></div>
+          <div class="small" style="margin-top:6px;"><strong>${escapeHtml(m.nombre || "")}</strong></div>
+          <button class="secondary" style="margin-top:6px; font-size:12px; padding:6px 10px;" onclick="descargarQRMesa('${escapeHtml(m.nombre || "").replace(/'/g, "\\'")}')">Descargar</button>
+        `;
+        grid.appendChild(card);
+      });
+
+      grid.querySelectorAll(".qr-card").forEach((card, idx) => {
+        const canvasDiv = card.querySelector(".qr-canvas");
+        generarQRIndividual(canvasDiv, mesas[idx].nombre || "");
+      });
+    }
+
+    function descargarQRMesa(nombreMesa) {
+      const tmp = document.createElement("div");
+      document.body.appendChild(tmp);
+      generarQRIndividual(tmp, nombreMesa);
+
+      setTimeout(() => {
+        const canvas = tmp.querySelector("canvas");
+        if (canvas) {
+          const link = document.createElement("a");
+          link.download = "QR_" + (nombreMesa || "mesa").replace(/\s+/g, "_") + ".png";
+          link.href = canvas.toDataURL("image/png");
+          link.click();
+        }
+        tmp.remove();
+      }, 300);
+    }
+
+    function imprimirTodosQR() {
+      if (!mesas.length) {
+        showToast("Primero añade mesas");
+        return;
+      }
+
+      const win = window.open("", "_blank");
+      if (!win) {
+        showToast("Permite ventanas emergentes para imprimir");
+        return;
+      }
+
+      const base = location.origin + location.pathname;
+
+      const html = `
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>QR Mesas</title>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"><\/script>
+<style>
+  body { font-family: Arial, sans-serif; padding: 20px; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+  }
+  .qr-card {
+    border: 2px dashed #888;
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    page-break-inside: avoid;
+  }
+  .qr-canvas { display: inline-block; }
+  .qr-card h2 { margin: 10px 0 0 0; font-size: 24px; }
+  .qr-card .sub { font-size: 14px; color: #555; margin-top: 4px; }
+  @media print {
+    body { padding: 0; }
+    .grid { gap: 15px; }
+  }
+</style>
+</head>
+<body>
+<h1 style="text-align:center;">Códigos QR de mesas</h1>
+<div class="grid" id="grid"></div>
+<script>
+  const mesas = ${JSON.stringify(mesas.map(m => m.nombre || ""))};
+  const base = "${base}";
+
+  const grid = document.getElementById("grid");
+
+  mesas.forEach(nombre => {
+    const url = base + "?vista=cliente&mesa=" + encodeURIComponent(nombre);
+
+    const card = document.createElement("div");
+    card.className = "qr-card";
+    card.innerHTML =
+      '<div class="qr-canvas"></div>' +
+      '<h2>' + nombre + '</h2>' +
+      '<div class="sub">Escanea para pedir</div>';
+    grid.appendChild(card);
+
+    new QRCode(card.querySelector(".qr-canvas"), {
+      text: url,
+      width: 220,
+      height: 220,
+      colorDark: "#000000",
+      colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.M
+    });
+  });
+
+  setTimeout(() => window.print(), 800);
+<\/script>
+</body>
+</html>
+      `;
+
+      win.document.open();
+      win.document.write(html);
+      win.document.close();
     }
 
     // ============================================================
@@ -660,6 +860,7 @@
             <div>${escapeHtml(m.nombre || "")}</div>
             <div class="row">
               <button class="secondary" onclick="renombrarMesa('${m.id}')">Renombrar</button>
+              <button class="secondary" onclick="descargarQRMesa('${escapeHtml(m.nombre || "").replace(/'/g, "\\'")}')">QR</button>
               <button class="danger" onclick="eliminarMesa('${m.id}')">Eliminar</button>
             </div>
           </div>
@@ -828,7 +1029,7 @@
           <div class="order">
             <div>
               <strong>Pedido ${escapeHtml(order.id.slice(-6))}</strong>
-              · Mesa ${escapeHtml(order.mesa || "S/M")}
+              · <strong>Mesa ${escapeHtml(order.mesa || "S/M")}</strong>
               · ${formatTime(order.createdAtLocal)}
             </div>
 
@@ -871,7 +1072,7 @@
           <div class="order">
             <div>
               <strong>${alertLabel(alert.tipo)}</strong>
-              · Mesa ${escapeHtml(alert.mesa || "S/M")}
+              · <strong>Mesa ${escapeHtml(alert.mesa || "S/M")}</strong>
               · ${formatTime(alert.createdAtLocal)}
             </div>
             <div class="small">${alert.atendida ? "Atendida" : "Pendiente"}</div>
@@ -986,8 +1187,13 @@
     async function crearPedido() {
       if (!requireFirebase()) return;
 
-      const mesa = document.getElementById("mesa").value.trim();
+      const mesa = mesaFija || document.getElementById("mesa").value.trim();
       const manual = document.getElementById("manualItems").value.trim();
+
+      if (!mesa) {
+        showToast("Indica la mesa");
+        return;
+      }
 
       const lines = [];
 
@@ -1033,7 +1239,7 @@
         cart = [];
         document.getElementById("manualItems").value = "";
         renderCart();
-        showToast("Pedido enviado");
+        showToast("Pedido enviado desde mesa " + mesa);
       } catch (e) {
         showToast("Error al crear pedido: " + e.message);
       }
@@ -1073,9 +1279,15 @@
       if (!requireFirebase()) return;
 
       const mesa =
+        mesaFija ||
         document.getElementById("mesa").value.trim() ||
         localStorage.getItem("restaurante_mesa") ||
         "";
+
+      if (!mesa) {
+        showToast("Indica la mesa primero");
+        return;
+      }
 
       const id = newId();
 
@@ -1090,9 +1302,9 @@
         });
 
         if (tipo === "PEDIR_CUENTA") {
-          showToast("Cuenta solicitada");
+          showToast("Cuenta solicitada desde mesa " + mesa);
         } else {
-          showToast("Camarero avisado");
+          showToast("Camarero avisado desde mesa " + mesa);
         }
       } catch (e) {
         showToast("Error al enviar aviso: " + e.message);
@@ -1568,6 +1780,7 @@
       addResult("Firebase JS cargado", typeof firebase !== "undefined");
       addResult("Configuración Firebase presente", configValida(firebaseConfig));
       addResult("Realtime Database inicializado", !!db);
+      addResult("Librería QR cargada", typeof QRCode !== "undefined");
       addResult("Rol válido", ["menu", "admin", "barra", "camarero", "cliente"].includes(role));
 
       try {
@@ -1613,6 +1826,13 @@
         "Funciones de gestión",
         typeof agregarMesa === "function" &&
         typeof agregarCamarero === "function"
+      );
+
+      addResult(
+        "Funciones QR",
+        typeof imprimirTodosQR === "function" &&
+        typeof descargarQRMesa === "function" &&
+        typeof mostrarQRPanel === "function"
       );
 
       if (firebaseReady && db) {
@@ -1711,9 +1931,7 @@
       }
 
       if (!configValida(firebaseConfig)) {
-        showSetupWarning(
-          "La configuración de Firebase no es válida."
-        );
+        showSetupWarning("La configuración de Firebase no es válida.");
         return;
       }
 
