@@ -1,955 +1,1730 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>QR-Café · Pedidos en la Nube</title>
-<style>
-/* ===== RESET & BASE ===== */
-*{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --bg:#f5f0eb;--card:#fff;--primary:#6f4e37;--primary-light:#a67c52;
-  --accent:#d4a574;--danger:#c0392b;--success:#27ae60;--warning:#f39c12;
-  --info:#2980b9;--text:#2c2c2c;--text-light:#777;--radius:12px;
-  --shadow:0 2px 12px rgba(0,0,0,.08);
-}
-html{font-size:16px}
-body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-button{cursor:pointer;font-family:inherit;border:none;border-radius:8px;padding:10px 18px;font-size:.95rem;transition:all .2s}
-button:active{transform:scale(.96)}
-input,select,textarea{font-family:inherit;font-size:1rem;padding:10px 14px;border:2px solid #ddd;border-radius:8px;width:100%;transition:border .2s}
-input:focus,select:focus,textarea:focus{outline:none;border-color:var(--primary)}
-h1{font-size:1.5rem}h2{font-size:1.25rem}h3{font-size:1.1rem}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pedidos Restaurante Firebase Realtime</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+    }
 
-/* ===== LAYOUT ===== */
-.view{display:none;max-width:900px;margin:0 auto;padding:16px;padding-bottom:100px}
-.view.active{display:block}
-.header{background:var(--primary);color:#fff;padding:16px 20px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:var(--shadow)}
-.header h1{font-size:1.2rem;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px}
-.header .sub{font-size:.8rem;opacity:.8;margin-top:2px}
-.cloud-status{width:10px;height:10px;border-radius:50%;background:#2ecc71;display:inline-block;box-shadow:0 0 6px #2ecc71}
-.card{background:var(--card);border-radius:var(--radius);padding:16px;margin-bottom:12px;box-shadow:var(--shadow)}
-.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:700;color:#fff}
-.badge-pendiente{background:var(--warning)}
-.badge-aceptado{background:var(--info)}
-.badge-preparando{background:#8e44ad}
-.badge-servido{background:var(--success)}
-.btn-primary{background:var(--primary);color:#fff}
-.btn-primary:hover{background:var(--primary-light)}
-.btn-success{background:var(--success);color:#fff}
-.btn-danger{background:var(--danger);color:#fff}
-.btn-warning{background:var(--warning);color:#fff}
-.btn-info{background:var(--info);color:#fff}
-.btn-sm{padding:6px 12px;font-size:.8rem}
-.btn-block{width:100%;display:block}
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
-.flex-between{display:flex;justify-content:space-between;align-items:center}
-.mt-8{margin-top:8px}.mt-16{margin-top:16px}.mb-8{margin-bottom:8px}
-.text-center{text-align:center}
-.text-muted{color:var(--text-light);font-size:.85rem}
-.hidden{display:none!important}
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      padding: 12px;
+      background: rgba(2, 6, 23, 0.92);
+      border-bottom: 1px solid #334155;
+    }
 
-/* ===== CLIENTE ===== */
-.cat-tabs{display:flex;gap:6px;overflow-x:auto;padding:8px 0;-webkit-overflow-scrolling:touch}
-.cat-tab{padding:8px 16px;border-radius:20px;background:#e8e0d8;font-size:.85rem;white-space:nowrap;font-weight:600;color:var(--text)}
-.cat-tab.active{background:var(--primary);color:#fff}
-.menu-item{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #f0ebe6}
-.menu-item:last-child{border:none}
-.menu-item .name{font-weight:600}.menu-item .price{color:var(--primary);font-weight:700}
-.qty-ctrl{display:flex;align-items:center;gap:8px}
-.qty-ctrl button{width:32px;height:32px;border-radius:50%;padding:0;font-size:1.1rem;display:flex;align-items:center;justify-content:center}
-.cart-bar{position:fixed;bottom:0;left:0;right:0;background:var(--primary);color:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;z-index:200;box-shadow:0 -4px 20px rgba(0,0,0,.15)}
-.cart-bar.hidden{display:none}
-.order-status-bar{position:fixed;bottom:0;left:0;right:0;background:var(--success);color:#fff;padding:14px 20px;text-align:center;z-index:200;font-weight:600}
+    main {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 16px;
+    }
 
-/* ===== BARRA / CAMARERO ===== */
-.pedido-card{border-left:4px solid var(--warning);padding:14px;position:relative}
-.pedido-card.aceptado{border-left-color:var(--info)}
-.pedido-card.preparando{border-left-color:#8e44ad}
-.pedido-card.servido{border-left-color:var(--success);opacity:.6}
-.pedido-card .mesa-tag{background:var(--primary);color:#fff;padding:2px 10px;border-radius:12px;font-size:.8rem;font-weight:700}
-.pedido-card .time{font-size:.75rem;color:var(--text-light)}
-.pedido-items{margin:8px 0;font-size:.9rem}
-.pedido-items li{padding:2px 0}
+    .card {
+      background: #111827;
+      border: 1px solid #334155;
+      border-radius: 16px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
 
-/* ===== ADMIN ===== */
-.nav-admin{display:flex;gap:4px;overflow-x:auto;padding:8px 0;-webkit-overflow-scrolling:touch}
-.nav-admin button{padding:8px 14px;border-radius:8px;background:#e8e0d8;font-size:.82rem;white-space:nowrap;font-weight:600}
-.nav-admin button.active{background:var(--primary);color:#fff}
-.stat-box{text-align:center;padding:16px}
-.stat-box .num{font-size:2rem;font-weight:800;color:var(--primary)}
-.stat-box .label{font-size:.8rem;color:var(--text-light)}
-table{width:100%;border-collapse:collapse;font-size:.9rem}
-th,td{padding:10px 8px;text-align:left;border-bottom:1px solid #eee}
-th{background:#f9f5f1;font-weight:700;font-size:.8rem;text-transform:uppercase;color:var(--text-light)}
-.qr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px}
-.qr-card{text-align:center;padding:16px}
-.qr-card img{width:140px;height:140px}
-.qr-card .mesa-name{font-weight:700;margin-top:8px}
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px}
-.modal{background:#fff;border-radius:var(--radius);padding:24px;width:100%;max-width:440px;max-height:90vh;overflow-y:auto}
-.modal h2{margin-bottom:16px}
-.form-group{margin-bottom:14px}
-.form-group label{display:block;font-weight:600;margin-bottom:4px;font-size:.9rem}
-.empty-state{text-align:center;padding:40px 20px;color:var(--text-light)}
-.empty-state .icon{font-size:3rem;margin-bottom:12px}
-.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:12px 24px;border-radius:8px;z-index:9999;font-weight:600;animation:fadeInOut 2.5s forwards}
-@keyframes fadeInOut{0%{opacity:0;top:0}10%{opacity:1;top:20px}80%{opacity:1}100%{opacity:0}}
+    button {
+      border: 0;
+      border-radius: 12px;
+      padding: 10px 12px;
+      background: #2563eb;
+      color: white;
+      font-weight: 700;
+      margin: 4px 4px 4px 0;
+      cursor: pointer;
+    }
 
-/* ===== PRINT ===== */
-@media print{
-  body *{visibility:hidden}
-  .print-area,.print-area *{visibility:visible}
-  .print-area{position:absolute;left:0;top:0;width:100%}
-  .qr-card{page-break-inside:avoid;border:1px solid #ccc}
-}
-</style>
+    button.secondary {
+      background: #334155;
+      color: #e5e7eb;
+    }
+
+    button.active {
+      background: #22c55e;
+    }
+
+    button.big {
+      width: 100%;
+      padding: 16px;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid #334155;
+      background: #020617;
+      color: #e5e7eb;
+      margin-bottom: 10px;
+      outline: none;
+    }
+
+    input[type="file"] {
+      padding: 8px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      border: 1px solid #334155;
+      color: #cbd5e1;
+    }
+
+    .order {
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    .small {
+      font-size: 13px;
+      color: #94a3b8;
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+      align-items: center;
+    }
+
+    #toast {
+      position: fixed;
+      bottom: 22px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #020617;
+      border: 1px solid #334155;
+      color: #e5e7eb;
+      padding: 10px 14px;
+      border-radius: 12px;
+      opacity: 0;
+      transition: 0.25s;
+      z-index: 100;
+      max-width: 90%;
+    }
+
+    #toast.show {
+      opacity: 1;
+    }
+
+    .warning {
+      border-color: #f59e0b;
+      background: #1c1400;
+      color: #fdba74;
+    }
+
+    .thumb {
+      width: 72px;
+      height: 72px;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 1px solid #334155;
+      cursor: pointer;
+    }
+
+    .thumb.placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #020617;
+      font-size: 28px;
+    }
+
+    .productos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
+      gap: 10px;
+    }
+
+    .product-card {
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 8px;
+      text-align: center;
+      background: #020617;
+    }
+
+    .product-img {
+      width: 100%;
+      height: 95px;
+      object-fit: cover;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-bottom: 6px;
+    }
+
+    .product-placeholder {
+      width: 100%;
+      height: 95px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #111827;
+      border-radius: 10px;
+      font-size: 30px;
+      margin-bottom: 6px;
+    }
+  </style>
 </head>
 <body>
 
-<!-- ==================== VISTA CLIENTE ==================== -->
-<div id="view-cliente" class="view">
-  <div class="header">
-    <h1><span class="cloud-status"></span> QR-Café</h1>
-    <div class="sub" id="cliente-mesa-label">Mesa —</div>
-  </div>
-  <div id="cliente-menu-container" class="mt-16"></div>
-  <div id="cliente-cart-bar" class="cart-bar hidden">
-    <div><strong id="cart-count">0</strong> artículos</div>
-    <button class="btn-success" onclick="Cliente.verCarrito()">Ver pedido · <span id="cart-total">0.00</span>€</button>
-  </div>
-  <div id="cliente-estado" class="hidden"></div>
-</div>
+  <header>
+    <strong>Pedidos Restaurante</strong>
+    <span id="connection" class="pill">Sin conectar</span>
+    <span id="roleBadge" class="pill"></span>
+    <span id="clientBadge" class="pill"></span>
+    <button id="btnSalir" class="secondary hidden" onclick="salir()">Salir</button>
+  </header>
 
-<!-- ==================== VISTA BARRA ==================== -->
-<div id="view-barra" class="view">
-  <div class="header" style="background:#c0392b">
-    <h1><span class="cloud-status"></span> Panel de Barra</h1>
-    <div class="sub">Pedidos en tiempo real (Nube)</div>
-  </div>
-  <div id="barra-pedidos" class="mt-16"></div>
-</div>
+  <main>
 
-<!-- ==================== VISTA CAMARERO ==================== -->
-<div id="view-camarero" class="view">
-  <div class="header" style="background:#2980b9">
-    <h1><span class="cloud-status"></span> Vista Camarero</h1>
-    <div class="sub" id="camarero-nombre">—</div>
-  </div>
-  <div id="camarero-pedidos" class="mt-16"></div>
-</div>
+    <div id="setupWarning" class="card warning hidden">
+      <strong>Aviso</strong>
+      <div id="setupWarningText" class="small"></div>
+    </div>
 
-<!-- ==================== VISTA ADMIN ==================== -->
-<div id="view-admin" class="view">
-  <div class="header" style="background:#2c3e50">
-    <h1><span class="cloud-status"></span> Administración</h1>
-    <div class="sub">Panel de control en la nube</div>
-  </div>
-  <div class="nav-admin mt-8" id="admin-nav">
-    <button class="active" onclick="Admin.tab('dashboard')">📊 Resumen</button>
-    <button onclick="Admin.tab('mesas')">🪑 Mesas</button>
-    <button onclick="Admin.tab('camareros')">🧑‍🍳 Camareros</button>
-    <button onclick="Admin.tab('menu')">📋 Menú</button>
-    <button onclick="Admin.tab('qr')">📱 QR</button>
-    <button onclick="Admin.tab('pedidos')">📦 Pedidos</button>
-    <button onclick="Admin.tab('config')">🔧 Config</button>
-  </div>
-  <div id="admin-content" class="mt-16"></div>
-</div>
-
-<!-- ==================== MODAL GENÉRICO ==================== -->
-<div id="modal-overlay" class="modal-overlay hidden" onclick="if(event.target===this)UI.closeModal()">
-  <div class="modal" id="modal-body"></div>
-</div>
-
-<script>
-// ============================================================
-//  CONFIGURACIÓN FIREBASE (¡SOLO NECESITAS LA URL!)
-// ============================================================
-const FIREBASE_URL = 'https://hosteleria-41fe7-default-rtdb.europe-west1.firebasedatabase.app/';
-
-const DB = {
-  data: null,
-  _url(path) { return FIREBASE_URL + (path ? path + '.json' : '.json'); },
-
-  // Inicialización asíncrona
-  async init() {
-    try {
-      const res = await fetch(this._url(''));
-      const data = await res.json();
-      
-      if (!data || Object.keys(data).length === 0) {
-        // Datos por defecto si la base de datos está vacía
-        const defaults = {
-          mesas: [
-            { id: 1, nombre: 'Mesa 1', camareroId: 1 },
-            { id: 2, nombre: 'Mesa 2', camareroId: 1 },
-            { id: 3, nombre: 'Mesa 3', camareroId: 2 },
-            { id: 4, nombre: 'Mesa 4', camareroId: 2 },
-            { id: 5, nombre: 'Barra 1', camareroId: null }
-          ],
-          camareros: [
-            { id: 1, nombre: 'Laura' },
-            { id: 2, nombre: 'Carlos' }
-          ],
-          menu: [
-            { id: 1, nombre: 'Café solo', precio: 1.50, categoria: 'Cafés', disponible: true },
-            { id: 2, nombre: 'Café con leche', precio: 1.80, categoria: 'Cafés', disponible: true },
-            { id: 3, nombre: 'Cortado', precio: 1.60, categoria: 'Cafés', disponible: true },
-            { id: 4, nombre: 'Capuchino', precio: 2.20, categoria: 'Cafés', disponible: true },
-            { id: 5, nombre: 'Té verde', precio: 1.80, categoria: 'Tés e Infusiones', disponible: true },
-            { id: 6, nombre: 'Zumo de naranja natural', precio: 2.50, categoria: 'Bebidas', disponible: true },
-            { id: 7, nombre: 'Agua mineral', precio: 1.20, categoria: 'Bebidas', disponible: true },
-            { id: 8, nombre: 'Cerveza', precio: 2.50, categoria: 'Bebidas', disponible: true },
-            { id: 9, nombre: 'Tostada tomate y aceite', precio: 3.00, categoria: 'Tostadas', disponible: true },
-            { id: 10, nombre: 'Tostada jamón y tomate', precio: 3.80, categoria: 'Tostadas', disponible: true },
-            { id: 11, nombre: 'Croissant', precio: 1.80, categoria: 'Bollería', disponible: true },
-            { id: 12, nombre: 'Tarta de zanahoria', precio: 3.50, categoria: 'Dulces', disponible: true }
-          ],
-          pedidos: [],
-          config: { nombreLocal: 'QR-Café', urlBase: location.origin + location.pathname }
-        };
-        await fetch(this._url(''), { method: 'PUT', body: JSON.stringify(defaults) });
-        this.data = defaults;
-      } else {
-        this.data = data;
-      }
-      this._startListening();
-    } catch (e) {
-      console.error('Error conectando a Firebase:', e);
-      alert('Error de conexión a la base de datos. Revisa tu conexión a internet.');
-    }
-  },
-
-  // Escucha en tiempo real usando Server-Sent Events (SSE)
-  _startListening() {
-    const es = new EventSource(this._url(''));
-    es.onmessage = (event) => {
-      if (event.data && event.data !== 'null') {
-        this.data = JSON.parse(event.data);
-        this._notify();
-      }
-    };
-    es.onerror = () => {
-      console.warn('SSE falló, usando polling de respaldo cada 2s');
-      es.close();
-      setInterval(async () => {
-        try {
-          const res = await fetch(this._url(''));
-          const newData = await res.json();
-          if (JSON.stringify(newData) !== JSON.stringify(this.data)) {
-            this.data = newData;
-            this._notify();
-          }
-        } catch(e) {}
-      }, 2000);
-    };
-  },
-
-  _listeners: [],
-  onChange(fn) { this._listeners.push(fn); },
-  _notify() { this._listeners.forEach(fn => fn()); },
-
-  // Getters síncronos (leen de la caché local actualizada por SSE)
-  get(path) {
-    if (!path) return this.data;
-    return this.data ? this.data[path] : null;
-  },
-
-  nextId(collection) {
-    const items = this.get(collection) || [];
-    return items.length ? Math.max(...items.map(i => i.id)) + 1 : 1;
-  },
-
-  getMesa(id) { return (this.get('mesas') || []).find(m => m.id === Number(id)); },
-  getCamarero(id) { return (this.get('camareros') || []).find(c => c.id === Number(id)); },
-  getMenuItem(id) { return (this.get('menu') || []).find(m => m.id === Number(id)); },
-  getPedidosActivos() { return (this.get('pedidos') || []).filter(p => p.estado !== 'servido'); },
-  getPedidosMesa(mesaId) { return (this.get('pedidos') || []).filter(p => p.mesaId === Number(mesaId) && p.estado !== 'servido'); },
-  getPedidosCamarero(camareroId) {
-    const mesas = (this.get('mesas') || []).filter(m => m.camareroId === Number(camareroId)).map(m => m.id);
-    return (this.get('pedidos') || []).filter(p => mesas.includes(p.mesaId) && p.estado !== 'servido');
-  },
-
-  // Acciones asíncronas que escriben en Firebase
-  async addPedido(pedido) {
-    const pedidos = this.get('pedidos') || [];
-    pedido.id = this.nextId('pedidos');
-    pedido.timestamp = Date.now();
-    pedido.estado = 'pendiente';
-    pedidos.push(pedido);
-    await fetch(this._url('pedidos'), { method: 'PUT', body: JSON.stringify(pedidos) });
-    return pedido;
-  },
-
-  async updatePedidoEstado(pedidoId, estado) {
-    const pedidos = this.get('pedidos') || [];
-    const p = pedidos.find(x => x.id === Number(pedidoId));
-    if (p) {
-      p.estado = estado;
-      await fetch(this._url('pedidos'), { method: 'PUT', body: JSON.stringify(pedidos) });
-    }
-  },
-
-  async set(path, value) {
-    await fetch(this._url(path), { method: 'PUT', body: JSON.stringify(value) });
-  },
-
-  async remove(path) {
-    await fetch(this._url(path), { method: 'DELETE' });
-  }
-};
-
-// ============================================================
-//  UI HELPERS
-// ============================================================
-const UI = {
-  toast(msg) {
-    const t = document.createElement('div');
-    t.className = 'toast';
-    t.textContent = msg;
-    document.body.appendChild(t);
-    setTimeout(() => t.remove(), 2600);
-  },
-  showModal(html) {
-    document.getElementById('modal-body').innerHTML = html;
-    document.getElementById('modal-overlay').classList.remove('hidden');
-  },
-  closeModal() {
-    document.getElementById('modal-overlay').classList.add('hidden');
-  },
-  timeAgo(ts) {
-    const s = Math.floor((Date.now() - ts) / 1000);
-    if (s < 60) return `hace ${s}s`;
-    if (s < 3600) return `hace ${Math.floor(s/60)}min`;
-    return `hace ${Math.floor(s/3600)}h`;
-  },
-  estadoBadge(estado) {
-    return `<span class="badge badge-${estado}">${estado.toUpperCase()}</span>`;
-  },
-  showView(name) {
-    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    const el = document.getElementById('view-' + name);
-    if (el) el.classList.add('active');
-  }
-};
-
-// ============================================================
-//  ROUTER
-// ============================================================
-const Router = {
-  init() {
-    window.addEventListener('hashchange', () => this.route());
-    this.route();
-  },
-  route() {
-    const hash = location.hash || '#/admin';
-    const [path, qs] = hash.replace('#/', '').split('?');
-    const params = Object.fromEntries(new URLSearchParams(qs || ''));
-
-    if (path === 'cliente' && params.mesa) {
-      UI.showView('cliente');
-      Cliente.init(Number(params.mesa));
-    } else if (path === 'barra') {
-      UI.showView('barra');
-      Barra.init();
-    } else if (path === 'camarero' && params.id) {
-      UI.showView('camarero');
-      Camarero.init(Number(params.id));
-    } else {
-      UI.showView('admin');
-      Admin.init();
-    }
-  }
-};
-
-// ============================================================
-//  VISTA CLIENTE
-// ============================================================
-const Cliente = {
-  mesaId: null,
-  carrito: {},
-  
-  init(mesaId) {
-    this.mesaId = mesaId;
-    const mesa = DB.getMesa(mesaId);
-    document.getElementById('cliente-mesa-label').textContent = mesa ? mesa.nombre : `Mesa ${mesaId}`;
-    this.carrito = {};
-    this.renderMenu();
-    this.checkPedidoActivo();
-    Sync.onChange(() => { this.checkPedidoActivo() });
-  },
-
-  renderMenu() {
-    const menu = (DB.get('menu') || []).filter(m => m.disponible);
-    const categorias = [...new Set(menu.map(m => m.categoria))];
-    const container = document.getElementById('cliente-menu-container');
-    if (!categorias.length) {
-      container.innerHTML = '<div class="empty-state"><div class="icon">🍽️</div>Menú no disponible</div>';
-      return;
-    }
-    let html = '<div class="cat-tabs" id="cat-tabs">';
-    categorias.forEach((c, i) => {
-      html += `<button class="cat-tab ${i===0?'active':''}" onclick="Cliente.filterCat('${c}',this)">${c}</button>`;
-    });
-    html += '</div><div id="menu-list">';
-    html += this._renderItems(menu.filter(m => m.categoria === categorias[0]));
-    html += '</div>';
-    container.innerHTML = html;
-  },
-
-  _renderItems(items) {
-    if (!items.length) return '<div class="empty-state"><div class="icon">🍽️</div>No hay productos</div>';
-    return items.map(m => {
-      const qty = this.carrito[m.id] || 0;
-      return `<div class="menu-item">
-        <div><div class="name">${m.nombre}</div><div class="price">${m.precio.toFixed(2)}€</div></div>
-        <div class="qty-ctrl">
-          ${qty > 0 ? `<button class="btn-danger btn-sm" onclick="Cliente.qty(${m.id},-1)">−</button>
-          <span style="font-weight:700;min-width:20px;text-align:center">${qty}</span>` : ''}
-          <button class="btn-success btn-sm" onclick="Cliente.qty(${m.id},1)">+</button>
-        </div>
-      </div>`;
-    }).join('');
-  },
-
-  filterCat(cat, btn) {
-    document.querySelectorAll('.cat-tab').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    const menu = (DB.get('menu') || []).filter(m => m.disponible && m.categoria === cat);
-    document.getElementById('menu-list').innerHTML = this._renderItems(menu);
-  },
-
-  qty(menuId, delta) {
-    const cur = this.carrito[menuId] || 0;
-    const nv = cur + delta;
-    if (nv <= 0) delete this.carrito[menuId];
-    else this.carrito[menuId] = nv;
-    this.renderMenu();
-    const activeTab = document.querySelector('.cat-tab.active');
-    if (activeTab) activeTab.click();
-    this.updateCartBar();
-  },
-
-  updateCartBar() {
-    const items = Object.entries(this.carrito);
-    const total = items.reduce((s, [id, q]) => s + (DB.getMenuItem(id)?.precio || 0) * q, 0);
-    const count = items.reduce((s, [, q]) => s + q, 0);
-    const bar = document.getElementById('cliente-cart-bar');
-    if (count > 0) {
-      bar.classList.remove('hidden');
-      document.getElementById('cart-count').textContent = count;
-      document.getElementById('cart-total').textContent = total.toFixed(2);
-    } else {
-      bar.classList.add('hidden');
-    }
-  },
-
-  verCarrito() {
-    const items = Object.entries(this.carrito);
-    if (!items.length) return;
-    const menu = DB.get('menu') || [];
-    let total = 0;
-    let html = '<h2>🛒 Tu pedido</h2><div class="mt-8">';
-    items.forEach(([id, q]) => {
-      const m = menu.find(x => x.id === Number(id));
-      if (!m) return;
-      const sub = m.precio * q;
-      total += sub;
-      html += `<div class="flex-between" style="padding:6px 0;border-bottom:1px solid #eee">
-        <span>${q}× ${m.nombre}</span><strong>${sub.toFixed(2)}€</strong>
-      </div>`;
-    });
-    html += `<div class="flex-between mt-8" style="font-size:1.2rem"><strong>TOTAL</strong><strong>${total.toFixed(2)}€</strong></div>`;
-    html += `<button class="btn-success btn-block mt-16" onclick="Cliente.enviarPedido()" style="padding:14px;font-size:1.1rem">✅ Enviar pedido a barra</button>`;
-    html += `<button class="btn-block mt-8" style="background:#eee" onclick="UI.closeModal()">Seguir pidiendo</button>`;
-    html += '</div>';
-    UI.showModal(html);
-  },
-
-  async enviarPedido() {
-    const items = Object.entries(this.carrito).map(([id, q]) => {
-      const m = DB.getMenuItem(id);
-      return { menuId: Number(id), nombre: m?.nombre || '?', precio: m?.precio || 0, cantidad: q };
-    });
-    if (!items.length) return;
-    const total = items.reduce((s, i) => s + i.precio * i.cantidad, 0);
-    await DB.addPedido({ mesaId: this.mesaId, items, total });
-    this.carrito = {};
-    this.updateCartBar();
-    UI.closeModal();
-    UI.toast('✅ ¡Pedido enviado a la nube!');
-    this.renderMenu();
-    const activeTab = document.querySelector('.cat-tab.active');
-    if (activeTab) activeTab.click();
-    this.checkPedidoActivo();
-  },
-
-  checkPedidoActivo() {
-    const pedidos = DB.getPedidosMesa(this.mesaId);
-    const estadoDiv = document.getElementById('cliente-estado');
-    if (pedidos.length > 0) {
-      const ultimo = pedidos[pedidos.length - 1];
-      const estadoText = { pendiente: '⏳ Recibido en barra', aceptado: '✅ Aceptado', preparando: '👨‍🍳 Preparando', servido: '✅ ¡Servido!' };
-      estadoDiv.className = 'order-status-bar';
-      estadoDiv.style.background = ultimo.estado === 'servido' ? 'var(--success)' : ultimo.estado === 'preparando' ? '#8e44ad' : 'var(--info)';
-      estadoDiv.innerHTML = `${estadoText[ultimo.estado] || ultimo.estado} · Pedido #${ultimo.id}`;
-      estadoDiv.classList.remove('hidden');
-      if (ultimo.estado === 'servido') {
-        setTimeout(() => estadoDiv.classList.add('hidden'), 8000);
-      }
-    } else {
-      estadoDiv.classList.add('hidden');
-    }
-  }
-};
-
-// ============================================================
-//  VISTA BARRA
-// ============================================================
-const Barra = {
-  init() {
-    this.render();
-    Sync.onChange(() => this.render());
-  },
-  render() {
-    const pedidos = DB.getPedidosActivos().sort((a, b) => b.timestamp - a.timestamp);
-    const container = document.getElementById('barra-pedidos');
-    if (!pedidos.length) {
-      container.innerHTML = '<div class="empty-state"><div class="icon">☕</div>No hay pedidos pendientes<br><span class="text-muted">Los pedidos aparecerán aquí en tiempo real</span></div>';
-      return;
-    }
-    container.innerHTML = pedidos.map(p => {
-      const mesa = DB.getMesa(p.mesaId);
-      const camarero = mesa?.camareroId ? DB.getCamarero(mesa.camareroId) : null;
-      return `<div class="card pedido-card ${p.estado}">
-        <div class="flex-between">
-          <span class="mesa-tag">${mesa?.nombre || 'Mesa ' + p.mesaId}</span>
-          <span>${UI.estadoBadge(p.estado)}</span>
-        </div>
-        <div class="text-muted mt-8">Pedido #${p.id} · ${UI.timeAgo(p.timestamp)}${camarero ? ' · Camarero: ' + camarero.nombre : ''}</div>
-        <ul class="pedido-items">${p.items.map(i => `<li>${i.cantidad}× ${i.nombre} <span class="text-muted">(${(i.precio*i.cantidad).toFixed(2)}€)</span></li>`).join('')}</ul>
-        <div class="flex-between mt-8">
-          <strong>Total: ${p.total.toFixed(2)}€</strong>
-          <div>
-            ${p.estado === 'pendiente' ? `<button class="btn-info btn-sm" onclick="Barra.cambiar(${p.id},'aceptado')">✅ Aceptar</button>` : ''}
-            ${p.estado === 'aceptado' ? `<button class="btn-warning btn-sm" onclick="Barra.cambiar(${p.id},'preparando')">👨‍🍳 Preparar</button>` : ''}
-            ${p.estado === 'preparando' ? `<button class="btn-success btn-sm" onclick="Barra.cambiar(${p.id},'servido')">🍽️ Servido</button>` : ''}
-          </div>
-        </div>
-      </div>`;
-    }).join('');
-  },
-  async cambiar(id, estado) {
-    await DB.updatePedidoEstado(id, estado);
-    UI.toast(`Pedido #${id} → ${estado}`);
-  }
-};
-
-// ============================================================
-//  VISTA CAMARERO
-// ============================================================
-const Camarero = {
-  camareroId: null,
-  init(id) {
-    this.camareroId = id;
-    const c = DB.getCamarero(id);
-    document.getElementById('camarero-nombre').textContent = c ? c.nombre : `Camarero #${id}`;
-    this.render();
-    Sync.onChange(() => this.render());
-  },
-  render() {
-    const pedidos = DB.getPedidosCamarero(this.camareroId).sort((a, b) => b.timestamp - a.timestamp);
-    const container = document.getElementById('camarero-pedidos');
-    if (!pedidos.length) {
-      container.innerHTML = '<div class="empty-state"><div class="icon">🧑‍🍳</div>No hay pedidos en tus mesas<br><span class="text-muted">Aparecerán aquí automáticamente</span></div>';
-      return;
-    }
-    container.innerHTML = pedidos.map(p => {
-      const mesa = DB.getMesa(p.mesaId);
-      return `<div class="card pedido-card ${p.estado}">
-        <div class="flex-between">
-          <span class="mesa-tag">${mesa?.nombre || 'Mesa ' + p.mesaId}</span>
-          <span>${UI.estadoBadge(p.estado)}</span>
-        </div>
-        <div class="text-muted mt-8">Pedido #${p.id} · ${UI.timeAgo(p.timestamp)}</div>
-        <ul class="pedido-items">${p.items.map(i => `<li>${i.cantidad}× ${i.nombre}</li>`).join('')}</ul>
-        <div class="mt-8" style="text-align:right">
-          ${p.estado === 'pendiente' ? `<button class="btn-info btn-sm" onclick="Camarero.cambiar(${p.id},'aceptado')">✅ Aceptar</button>` : ''}
-          ${p.estado === 'aceptado' ? `<button class="btn-warning btn-sm" onclick="Camarero.cambiar(${p.id},'preparando')">👨‍🍳 Preparar</button>` : ''}
-          ${p.estado === 'preparando' ? `<button class="btn-success btn-sm" onclick="Camarero.cambiar(${p.id},'servido')">🍽️ Entregado</button>` : ''}
-        </div>
-      </div>`;
-    }).join('');
-  },
-  async cambiar(id, estado) {
-    await DB.updatePedidoEstado(id, estado);
-    UI.toast(`Pedido #${id} → ${estado}`);
-  }
-};
-
-// ============================================================
-//  VISTA ADMIN
-// ============================================================
-const Admin = {
-  currentTab: 'dashboard',
-  init() {
-    this.tab('dashboard');
-    Sync.onChange(() => { if (this.currentTab === 'dashboard' || this.currentTab === 'pedidos') this.tab(this.currentTab) });
-  },
-  tab(name) {
-    this.currentTab = name;
-    document.querySelectorAll('#admin-nav button').forEach(b => b.classList.remove('active'));
-    const btns = document.querySelectorAll('#admin-nav button');
-    const map = ['dashboard','mesas','camareros','menu','qr','pedidos','config'];
-    const idx = map.indexOf(name);
-    if (idx >= 0 && btns[idx]) btns[idx].classList.add('active');
-    const c = document.getElementById('admin-content');
-    switch(name) {
-      case 'dashboard': this.renderDashboard(c); break;
-      case 'mesas': this.renderMesas(c); break;
-      case 'camareros': this.renderCamareros(c); break;
-      case 'menu': this.renderMenu(c); break;
-      case 'qr': this.renderQR(c); break;
-      case 'pedidos': this.renderPedidos(c); break;
-      case 'config': this.renderConfig(c); break;
-    }
-  },
-
-  renderDashboard(c) {
-    const mesas = DB.get('mesas') || [];
-    const camareros = DB.get('camareros') || [];
-    const activos = DB.getPedidosActivos();
-    const todos = DB.get('pedidos') || [];
-    const hoy = todos.filter(p => {
-      const d = new Date(p.timestamp);
-      const t = new Date();
-      return d.toDateString() === t.toDateString();
-    });
-    const factHoy = hoy.reduce((s, p) => s + (p.total || 0), 0);
-    c.innerHTML = `
-      <div class="grid-3">
-        <div class="card stat-box"><div class="num">${mesas.length}</div><div class="label">Mesas</div></div>
-        <div class="card stat-box"><div class="num">${camareros.length}</div><div class="label">Camareros</div></div>
-        <div class="card stat-box"><div class="num">${activos.length}</div><div class="label">Pedidos activos</div></div>
-      </div>
-      <div class="grid-2 mt-8">
-        <div class="card stat-box"><div class="num">${hoy.length}</div><div class="label">Pedidos hoy</div></div>
-        <div class="card stat-box"><div class="num">${factHoy.toFixed(2)}€</div><div class="label">Facturación hoy</div></div>
-      </div>
-      <div class="card mt-16">
-        <h3>🔗 Enlaces rápidos</h3>
-        <div class="mt-8">
-          <a href="#/barra" style="color:var(--primary)">🍸 Abrir panel de barra</a><br>
-          ${camareros.map(cm => `<a href="#/camarero?id=${cm.id}" style="color:var(--primary)">🧑‍🍳 Vista de ${cm.nombre}</a><br>`).join('')}
-        </div>
-      </div>`;
-  },
-
-  renderMesas(c) {
-    const mesas = DB.get('mesas') || [];
-    let html = `<div class="flex-between mb-8"><h2>🪑 Mesas (${mesas.length})</h2>
-      <button class="btn-primary btn-sm" onclick="Admin.editMesa()">+ Nueva mesa</button></div>`;
-    if (!mesas.length) { html += '<div class="empty-state">No hay mesas</div>'; c.innerHTML = html; return }
-    html += '<div class="card"><table><tr><th>Mesa</th><th>Camarero</th><th>Pedidos</th><th></th></tr>';
-    mesas.forEach(m => {
-      const cm = m.camareroId ? DB.getCamarero(m.camareroId) : null;
-      const pa = DB.getPedidosMesa(m.id).length;
-      html += `<tr>
-        <td><strong>${m.nombre}</strong></td>
-        <td>${cm ? cm.nombre : '<span class="text-muted">Sin asignar</span>'}</td>
-        <td>${pa > 0 ? `<span class="badge badge-pendiente">${pa}</span>` : '—'}</td>
-        <td>
-          <button class="btn-info btn-sm" onclick="Admin.editMesa(${m.id})">✏️</button>
-          <button class="btn-danger btn-sm" onclick="Admin.deleteMesa(${m.id})">🗑️</button>
-        </td>
-      </tr>`;
-    });
-    html += '</table></div>';
-    c.innerHTML = html;
-  },
-  editMesa(id) {
-    const mesa = id ? DB.getMesa(id) : null;
-    const camareros = DB.get('camareros') || [];
-    UI.showModal(`
-      <h2>${mesa ? 'Editar' : 'Nueva'} mesa</h2>
-      <div class="form-group"><label>Nombre</label><input id="f-mesa-nombre" value="${mesa?.nombre || ''}" placeholder="Ej: Mesa 6"></div>
-      <div class="form-group"><label>Camarero asignado</label>
-        <select id="f-mesa-camarero">
-          <option value="">Sin asignar</option>
-          ${camareros.map(cm => `<option value="${cm.id}" ${mesa?.camareroId===cm.id?'selected':''}>${cm.nombre}</option>`).join('')}
-        </select>
-      </div>
-      <button class="btn-primary btn-block" onclick="Admin.saveMesa(${id||0})">💾 Guardar</button>
-    `);
-  },
-  async saveMesa(id) {
-    const nombre = document.getElementById('f-mesa-nombre').value.trim();
-    const camareroId = document.getElementById('f-mesa-camarero').value;
-    if (!nombre) return UI.toast('⚠️ Pon un nombre');
-    const mesas = DB.get('mesas') || [];
-    if (id) {
-      const m = mesas.find(x => x.id === id);
-      if (m) { m.nombre = nombre; m.camareroId = camareroId ? Number(camareroId) : null }
-    } else {
-      mesas.push({ id: DB.nextId('mesas'), nombre, camareroId: camareroId ? Number(camareroId) : null });
-    }
-    await DB.set('mesas', mesas);
-    UI.closeModal();
-    UI.toast('✅ Mesa guardada en la nube');
-    this.tab('mesas');
-  },
-  async deleteMesa(id) {
-    if (!confirm('¿Eliminar esta mesa?')) return;
-    const mesas = (DB.get('mesas') || []).filter(m => m.id !== id);
-    await DB.set('mesas', mesas);
-    UI.toast('🗑️ Mesa eliminada');
-    this.tab('mesas');
-  },
-
-  renderCamareros(c) {
-    const camareros = DB.get('camareros') || [];
-    let html = `<div class="flex-between mb-8"><h2>🧑‍🍳 Camareros (${camareros.length})</h2>
-      <button class="btn-primary btn-sm" onclick="Admin.editCamarero()">+ Nuevo</button></div>`;
-    if (!camareros.length) { html += '<div class="empty-state">No hay camareros</div>'; c.innerHTML = html; return }
-    html += '<div class="card"><table><tr><th>Nombre</th><th>Mesas</th><th>Enlace</th><th></th></tr>';
-    camareros.forEach(cm => {
-      const mesas = (DB.get('mesas') || []).filter(m => m.camareroId === cm.id);
-      html += `<tr>
-        <td><strong>${cm.nombre}</strong></td>
-        <td>${mesas.map(m => m.nombre).join(', ') || '<span class="text-muted">Ninguna</span>'}</td>
-        <td><a href="#/camarero?id=${cm.id}" style="font-size:.8rem">Abrir vista →</a></td>
-        <td>
-          <button class="btn-info btn-sm" onclick="Admin.editCamarero(${cm.id})">✏️</button>
-          <button class="btn-danger btn-sm" onclick="Admin.deleteCamarero(${cm.id})">🗑️</button>
-        </td>
-      </tr>`;
-    });
-    html += '</table></div>';
-    c.innerHTML = html;
-  },
-  editCamarero(id) {
-    const cm = id ? DB.getCamarero(id) : null;
-    UI.showModal(`
-      <h2>${cm ? 'Editar' : 'Nuevo'} camarero</h2>
-      <div class="form-group"><label>Nombre</label><input id="f-cm-nombre" value="${cm?.nombre || ''}" placeholder="Ej: Laura"></div>
-      <button class="btn-primary btn-block" onclick="Admin.saveCamarero(${id||0})">💾 Guardar</button>
-    `);
-  },
-  async saveCamarero(id) {
-    const nombre = document.getElementById('f-cm-nombre').value.trim();
-    if (!nombre) return UI.toast('⚠️ Pon un nombre');
-    const cms = DB.get('camareros') || [];
-    if (id) {
-      const cm = cms.find(x => x.id === id);
-      if (cm) cm.nombre = nombre;
-    } else {
-      cms.push({ id: DB.nextId('camareros'), nombre });
-    }
-    await DB.set('camareros', cms);
-    UI.closeModal();
-    UI.toast('✅ Camarero guardado en la nube');
-    this.tab('camareros');
-  },
-  async deleteCamarero(id) {
-    if (!confirm('¿Eliminar este camarero?')) return;
-    const cms = (DB.get('camareros') || []).filter(c => c.id !== id);
-    await DB.set('camareros', cms);
-    const mesas = (DB.get('mesas') || []).map(m => { if (m.camareroId === id) m.camareroId = null; return m });
-    await DB.set('mesas', mesas);
-    UI.toast('🗑️ Camarero eliminado');
-    this.tab('camareros');
-  },
-
-  renderMenu(c) {
-    const menu = DB.get('menu') || [];
-    const categorias = [...new Set(menu.map(m => m.categoria))];
-    let html = `<div class="flex-between mb-8"><h2>📋 Menú (${menu.length})</h2>
-      <button class="btn-primary btn-sm" onclick="Admin.editMenuItem()">+ Nuevo producto</button></div>`;
-    categorias.forEach(cat => {
-      const items = menu.filter(m => m.categoria === cat);
-      html += `<h3 class="mt-16 mb-8">${cat}</h3><div class="card"><table><tr><th>Producto</th><th>Precio</th><th>Disp.</th><th></th></tr>`;
-      items.forEach(m => {
-        html += `<tr style="${m.disponible?'':'opacity:.4'}">
-          <td><strong>${m.nombre}</strong></td>
-          <td>${m.precio.toFixed(2)}€</td>
-          <td>${m.disponible ? '✅' : '❌'}</td>
-          <td>
-            <button class="btn-info btn-sm" onclick="Admin.editMenuItem(${m.id})">✏️</button>
-            <button class="btn-sm" style="background:#eee" onclick="Admin.toggleDisp(${m.id})">${m.disponible?'Ocultar':'Mostrar'}</button>
-            <button class="btn-danger btn-sm" onclick="Admin.deleteMenuItem(${m.id})">🗑️</button>
-          </td>
-        </tr>`;
-      });
-      html += '</table></div>';
-    });
-    c.innerHTML = html;
-  },
-  editMenuItem(id) {
-    const m = id ? DB.getMenuItem(id) : null;
-    const menu = DB.get('menu') || [];
-    const cats = [...new Set(menu.map(x => x.categoria))];
-    UI.showModal(`
-      <h2>${m ? 'Editar' : 'Nuevo'} producto</h2>
-      <div class="form-group"><label>Nombre</label><input id="f-menu-nombre" value="${m?.nombre || ''}"></div>
-      <div class="form-group"><label>Precio (€)</label><input id="f-menu-precio" type="number" step="0.1" value="${m?.precio || ''}"></div>
-      <div class="form-group"><label>Categoría</label>
-        <input id="f-menu-cat" list="cat-list" value="${m?.categoria || ''}" placeholder="Ej: Cafés">
-        <datalist id="cat-list">${cats.map(c => `<option value="${c}">`).join('')}</datalist>
-      </div>
-      <button class="btn-primary btn-block" onclick="Admin.saveMenuItem(${id||0})">💾 Guardar</button>
-    `);
-  },
-  async saveMenuItem(id) {
-    const nombre = document.getElementById('f-menu-nombre').value.trim();
-    const precio = parseFloat(document.getElementById('f-menu-precio').value);
-    const categoria = document.getElementById('f-menu-cat').value.trim();
-    if (!nombre || isNaN(precio) || !categoria) return UI.toast('⚠️ Rellena todos los campos');
-    const menu = DB.get('menu') || [];
-    if (id) {
-      const m = menu.find(x => x.id === id);
-      if (m) { m.nombre = nombre; m.precio = precio; m.categoria = categoria }
-    } else {
-      menu.push({ id: DB.nextId('menu'), nombre, precio, categoria, disponible: true });
-    }
-    await DB.set('menu', menu);
-    UI.closeModal();
-    UI.toast('✅ Producto guardado en la nube');
-    this.tab('menu');
-  },
-  async toggleDisp(id) {
-    const menu = DB.get('menu') || [];
-    const m = menu.find(x => x.id === id);
-    if (m) m.disponible = !m.disponible;
-    await DB.set('menu', menu);
-    this.tab('menu');
-  },
-  async deleteMenuItem(id) {
-    if (!confirm('¿Eliminar este producto?')) return;
-    const menu = (DB.get('menu') || []).filter(m => m.id !== id);
-    await DB.set('menu', menu);
-    UI.toast('🗑️ Producto eliminado');
-    this.tab('menu');
-  },
-
-  renderQR(c) {
-    const mesas = DB.get('mesas') || [];
-    const config = DB.get('config') || {};
-    const base = config.urlBase || (location.origin + location.pathname);
-    let html = `<div class="flex-between mb-8"><h2>📱 Códigos QR</h2>
-      <button class="btn-primary btn-sm" onclick="window.print()">🖨️ Imprimir todos</button></div>
-      <p class="text-muted mb-8">Escanea cada QR desde la mesa correspondiente.</p>
-      <div class="qr-grid print-area">`;
-    mesas.forEach(m => {
-      const url = `${base}#/cliente?mesa=${m.id}`;
-      const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}`;
-      html += `<div class="card qr-card">
-        <img src="${qrUrl}" alt="QR ${m.nombre}" loading="lazy">
-        <div class="mesa-name">${m.nombre}</div>
-        <div class="text-muted" style="font-size:.7rem;word-break:break-all">${url}</div>
-      </div>`;
-    });
-    html += '</div>';
-    c.innerHTML = html;
-  },
-
-  renderPedidos(c) {
-    const todos = (DB.get('pedidos') || []).sort((a, b) => b.timestamp - a.timestamp);
-    const activos = todos.filter(p => p.estado !== 'servido');
-    const historial = todos.filter(p => p.estado === 'servido');
-    let html = `<h2 class="mb-8">📦 Pedidos activos (${activos.length})</h2>`;
-    if (!activos.length) html += '<div class="card text-muted text-center">Sin pedidos activos</div>';
-    else html += this._pedidosTable(activos);
-    html += `<h2 class="mt-16 mb-8">📜 Historial (${historial.length})</h2>`;
-    if (!historial.length) html += '<div class="card text-muted text-center">Sin historial</div>';
-    else html += this._pedidosTable(historial.slice(0, 50));
-    if (historial.length > 0) {
-      html += `<button class="btn-danger btn-sm mt-8" onclick="Admin.limpiarHistorial()">🗑️ Limpiar historial</button>`;
-    }
-    c.innerHTML = html;
-  },
-  _pedidosTable(pedidos) {
-    let html = '<div class="card" style="overflow-x:auto"><table><tr><th>#</th><th>Mesa</th><th>Items</th><th>Total</th><th>Estado</th><th>Hora</th></tr>';
-    pedidos.forEach(p => {
-      const mesa = DB.getMesa(p.mesaId);
-      const d = new Date(p.timestamp);
-      const hora = d.toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' });
-      html += `<tr>
-        <td>${p.id}</td>
-        <td><strong>${mesa?.nombre || p.mesaId}</strong></td>
-        <td style="font-size:.8rem">${p.items.map(i => `${i.cantidad}×${i.nombre}`).join(', ')}</td>
-        <td>${p.total.toFixed(2)}€</td>
-        <td>${UI.estadoBadge(p.estado)}</td>
-        <td class="text-muted">${hora}</td>
-      </tr>`;
-    });
-    html += '</table></div>';
-    return html;
-  },
-  async limpiarHistorial() {
-    if (!confirm('¿Borrar todo el historial de pedidos servidos?')) return;
-    const pedidos = (DB.get('pedidos') || []).filter(p => p.estado !== 'servido');
-    await DB.set('pedidos', pedidos);
-    UI.toast('🗑️ Historial limpiado');
-    this.tab('pedidos');
-  },
-
-  renderConfig(c) {
-    const config = DB.get('config') || {};
-    c.innerHTML = `
-      <h2 class="mb-8">🔧 Configuración</h2>
+    <!-- MENU -->
+    <section id="menuPanel" class="hidden">
       <div class="card">
-        <div class="form-group"><label>Nombre del local</label>
-          <input id="f-config-nombre" value="${config.nombreLocal || ''}">
+        <h2>Entrar como</h2>
+        <button class="big" onclick="goView('admin')">Administrador</button>
+        <button class="big secondary" onclick="goView('barra')">Barra</button>
+        <button class="big secondary" onclick="goView('camarero')">Camarero</button>
+        <div class="small" style="margin-top:10px;">
+          El dispositivo cliente se configura con su URL especial.
         </div>
-        <div class="form-group"><label>URL base (para generar QR)</label>
-          <input id="f-config-url" value="${config.urlBase || location.origin + location.pathname}">
-          <div class="text-muted mt-8">Debe ser la URL pública donde esté alojado este archivo.</div>
+      </div>
+    </section>
+
+    <!-- PANEL STAFF -->
+    <section id="staffPanel" class="hidden">
+      <div class="card">
+        <h2>Alertas</h2>
+        <div id="staffAlerts" class="small">Cargando...</div>
+      </div>
+
+      <div class="card">
+        <h2>Pedidos</h2>
+        <div id="staffOrders" class="small">Cargando...</div>
+      </div>
+    </section>
+
+    <!-- PANEL ADMIN -->
+    <section id="adminPanel" class="hidden">
+
+      <div class="card">
+        <h2>Productos</h2>
+
+        <div class="row">
+          <input id="productoNombre" placeholder="Nombre del producto" style="margin:0;" />
+          <input id="productoPrecio" type="number" step="0.01" placeholder="Precio" style="margin:0;" />
         </div>
-        <button class="btn-primary" onclick="Admin.saveConfig()">💾 Guardar</button>
+
+        <input id="productoDescripcion" placeholder="Descripción opcional" />
+
+        <label class="small">Foto opcional</label>
+        <input id="productoFoto" type="file" accept="image/*" />
+        <div id="productoFotoPreview" class="row"></div>
+
+        <button onclick="agregarProducto()">Añadir producto</button>
+
+        <div id="productosAdminList" class="small" style="margin-top:12px;">Cargando...</div>
       </div>
-      <div class="card mt-16">
-        <h3>⚠️ Zona de peligro</h3>
-        <p class="text-muted mt-8">Esto borrará TODOS los datos en la nube.</p>
-        <button class="btn-danger mt-8" onclick="Admin.resetAll()">🗑️ Resetear todo en Firebase</button>
+
+      <div class="card">
+        <h2>Mesas</h2>
+        <div class="row">
+          <input id="nuevaMesa" placeholder="Nueva mesa" style="margin:0;" />
+          <button onclick="agregarMesa()" style="flex:0 0 auto;">Añadir</button>
+        </div>
+        <div id="mesasList" class="small" style="margin-top:10px;">Cargando...</div>
       </div>
-      <div class="card mt-16">
-        <h3>✅ Estado de la conexión</h3>
-        <p class="text-muted mt-8">Conectado a: <code style="background:#eee;padding:2px 6px;border-radius:4px;font-size:.8rem">${FIREBASE_URL}</code></p>
-        <p class="text-muted mt-8">Sincronización: <strong style="color:var(--success)">Activa (Tiempo Real)</strong></p>
-      </div>`;
-  },
-  async saveConfig() {
-    const config = {
-      nombreLocal: document.getElementById('f-config-nombre').value.trim(),
-      urlBase: document.getElementById('f-config-url').value.trim()
+
+      <div class="card">
+        <h2>Camareros</h2>
+        <div class="row">
+          <input id="nuevoCamarero" placeholder="Nuevo camarero" style="margin:0;" />
+          <button onclick="agregarCamarero()" style="flex:0 0 auto;">Añadir</button>
+        </div>
+        <div id="camarerosList" class="small" style="margin-top:10px;">Cargando...</div>
+      </div>
+
+    </section>
+
+    <!-- PANEL CLIENTE -->
+    <section id="clientPanel" class="hidden">
+      <div class="card">
+        <h2>Cliente</h2>
+
+        <button id="btnPedidos" class="big">Pedidos</button>
+        <button id="btnLlamar" class="big secondary">Llamar al camarero</button>
+        <button id="btnCuenta" class="big secondary">Pedir cuenta</button>
+
+        <div id="clientStatus" class="small" style="margin-top:10px;"></div>
+      </div>
+
+      <div id="clientOrdersCard" class="hidden">
+
+        <div class="card">
+          <h3>Carta</h3>
+          <div id="productosClienteList" class="small">Cargando...</div>
+        </div>
+
+        <div class="card">
+          <h3>Tu pedido</h3>
+
+          <input id="mesa" list="mesasDatalist" placeholder="Mesa o nombre" />
+
+          <div id="cartList" class="small"></div>
+
+          <textarea id="manualItems" rows="2" placeholder="Nota o pedido manual opcional"></textarea>
+
+          <button id="createOrder">Enviar pedido</button>
+
+          <div id="clientOrders" class="small" style="margin-top:12px;"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- DIAGNOSTICO -->
+    <section class="card">
+      <h3>Comprobación</h3>
+      <button class="secondary" id="diagnosticsBtn">Comprobar sistema</button>
+      <div id="diagnosticsResults" class="small" style="margin-top:10px;"></div>
+    </section>
+
+  </main>
+
+  <datalist id="mesasDatalist"></datalist>
+  <div id="toast"></div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+  <script>
+    // ============================================================
+    // CONFIGURACIÓN FIREBASE (ya integrada)
+    // ============================================================
+    const firebaseConfig = {
+      apiKey: "AIzaSyDBwim0SAPEJvqSabaCrDJNvU3J2QeCU5c",
+      authDomain: "hosteleria-41fe7.firebaseapp.com",
+      databaseURL: "https://hosteleria-41fe7-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "hosteleria-41fe7",
+      storageBucket: "hosteleria-41fe7.firebasestorage.app",
+      messagingSenderId: "966603143880",
+      appId: "1:966603143880:web:3b2a6b7a903992079bc3fd"
     };
-    await DB.set('config', config);
-    UI.toast('✅ Configuración guardada en la nube');
-  },
-  async resetAll() {
-    if (!confirm('⚠️ ¿BORRAR TODOS LOS DATOS EN LA NUBE? Esta acción no se puede deshacer.')) return;
-    if (!confirm('¿Estás SEGURO?')) return;
-    await DB.set('', null);
-    await DB.init();
-    UI.toast('🔄 Datos reseteados en la nube');
-    this.tab('dashboard');
-  }
-};
 
-// Alias para mantener compatibilidad con el código existente
-const Sync = {
-  onChange: (fn) => DB.onChange(fn)
-};
+    let firebaseReady = false;
+    let db = null;
 
-// ============================================================
-//  INICIALIZACIÓN
-// ============================================================
-(async function() {
-  await DB.init();
-  Router.init();
-})();
-</script>
+    function configValida(cfg) {
+      return !!(
+        cfg &&
+        cfg.apiKey &&
+        cfg.databaseURL &&
+        cfg.projectId
+      );
+    }
+
+    function showSetupWarning(message) {
+      const box = document.getElementById("setupWarning");
+      const text = document.getElementById("setupWarningText");
+      box.classList.remove("hidden");
+      text.textContent = message;
+    }
+
+    function initFirebase(cfg) {
+      try {
+        firebase.initializeApp(cfg);
+        db = firebase.database();
+        firebaseReady = true;
+        document.getElementById("connection").textContent = "Firebase conectado";
+      } catch (e) {
+        showSetupWarning("Error inicializando Firebase: " + e.message);
+      }
+    }
+
+    // ============================================================
+    // ROL DEL DISPOSITIVO
+    // ============================================================
+
+    const DEVICE_ROLE_KEY = "restaurante_device_role";
+
+    const params = new URLSearchParams(location.search);
+    const requestedView = params.get("vista") || "";
+    const fijar = params.get("fijar") === "1";
+    const storedRole = localStorage.getItem(DEVICE_ROLE_KEY);
+
+    const staffRoles = ["admin", "barra", "camarero"];
+
+    let role = "menu";
+
+    if (staffRoles.includes(requestedView)) {
+      role = requestedView;
+      localStorage.setItem(DEVICE_ROLE_KEY, role);
+    } else if (requestedView === "cliente") {
+      role = "cliente";
+
+      if (fijar) {
+        localStorage.setItem(DEVICE_ROLE_KEY, role);
+      }
+    } else if (storedRole && (staffRoles.includes(storedRole) || storedRole === "cliente")) {
+      role = storedRole;
+    }
+
+    let clientId = localStorage.getItem("restaurante_client_id");
+
+    if (!clientId) {
+      clientId = "cliente_" + Math.random().toString(36).slice(2) + Date.now().toString(36);
+      localStorage.setItem("restaurante_client_id", clientId);
+    }
+
+    // ============================================================
+    // DATOS LOCALES
+    // ============================================================
+
+    let orders = [];
+    let alerts = [];
+    let clientOrders = [];
+    let clientAlerts = [];
+    let previousClientAlertsMap = {};
+
+    let mesas = [];
+    let camareros = [];
+    let productos = [];
+
+    let cart = [];
+    let pendingProductoFoto = "";
+
+    // ============================================================
+    // UTILIDADES
+    // ============================================================
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function escapeHtmlLines(value) {
+      return escapeHtml(value).replace(/\n/g, "<br>");
+    }
+
+    function nowLocal() {
+      return Date.now();
+    }
+
+    function formatTime(timestamp) {
+      try {
+        return new Date(timestamp).toLocaleTimeString("es-ES", {
+          hour: "2-digit",
+          minute: "2-digit"
+        });
+      } catch (e) {
+        return "";
+      }
+    }
+
+    function estadoLabel(estado) {
+      const estados = {
+        RECIBIDO: "Recibido",
+        EN_PREPARACION: "En preparación",
+        LISTO: "Listo",
+        ENTREGADO: "Entregado",
+        CANCELADO: "Cancelado"
+      };
+
+      return estados[estado] || estado;
+    }
+
+    function alertLabel(tipo) {
+      if (tipo === "PEDIR_CUENTA") return "Cuenta solicitada";
+      return "Llamar al camarero";
+    }
+
+    function formatPrecio(value) {
+      const n = Number(value) || 0;
+      return n.toFixed(2).replace(".", ",") + " €";
+    }
+
+    let toastTimer;
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 2600);
+    }
+
+    function requireFirebase() {
+      if (!firebaseReady || !db) {
+        showToast("Configura Firebase primero");
+        return false;
+      }
+      return true;
+    }
+
+    function newId() {
+      return db.ref().push().key;
+    }
+
+    // ============================================================
+    // NAVEGACIÓN
+    // ============================================================
+
+    function goView(view) {
+      location.href = location.pathname + "?vista=" + view;
+    }
+
+    function salir() {
+      if (role === "cliente") {
+        if (confirm("¿Reiniciar cliente en este dispositivo?")) {
+          localStorage.removeItem("restaurante_client_id");
+
+          if (localStorage.getItem(DEVICE_ROLE_KEY) === "cliente") {
+            location.href = location.pathname + "?vista=cliente";
+          } else {
+            location.href = location.pathname;
+          }
+        }
+      } else {
+        localStorage.removeItem(DEVICE_ROLE_KEY);
+        location.href = location.pathname;
+      }
+    }
+
+    function applyRole() {
+      const menuPanel = document.getElementById("menuPanel");
+      const staffPanel = document.getElementById("staffPanel");
+      const adminPanel = document.getElementById("adminPanel");
+      const clientPanel = document.getElementById("clientPanel");
+      const btnSalir = document.getElementById("btnSalir");
+
+      menuPanel.classList.add("hidden");
+      staffPanel.classList.add("hidden");
+      adminPanel.classList.add("hidden");
+      clientPanel.classList.add("hidden");
+      btnSalir.classList.add("hidden");
+
+      document.getElementById("roleBadge").textContent = role;
+
+      if (role === "menu") {
+        menuPanel.classList.remove("hidden");
+        document.getElementById("clientBadge").textContent = "";
+        return;
+      }
+
+      btnSalir.classList.remove("hidden");
+
+      if (role === "cliente") {
+        clientPanel.classList.remove("hidden");
+        document.getElementById("clientBadge").textContent = clientId.slice(0, 14);
+      } else {
+        staffPanel.classList.remove("hidden");
+        document.getElementById("clientBadge").textContent = "";
+
+        if (role === "admin") {
+          adminPanel.classList.remove("hidden");
+        }
+      }
+    }
+
+    // ============================================================
+    // COMPRESIÓN DE IMÁGENES
+    // ============================================================
+
+    function compressImage(file, maxWidth, quality) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+
+        reader.onload = function () {
+          const img = new Image();
+
+          img.onload = function () {
+            let width = img.width;
+            let height = img.height;
+
+            if (!width || !height) {
+              reject(new Error("Imagen no válida"));
+              return;
+            }
+
+            if (width > maxWidth) {
+              height = Math.round(height * (maxWidth / width));
+              width = maxWidth;
+            }
+
+            const canvas = document.createElement("canvas");
+            canvas.width = width;
+            canvas.height = height;
+
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, width, height);
+
+            resolve(canvas.toDataURL("image/jpeg", quality));
+          };
+
+          img.onerror = function () {
+            reject(new Error("No se pudo cargar la imagen"));
+          };
+
+          img.src = reader.result;
+        };
+
+        reader.onerror = function () {
+          reject(new Error("No se pudo leer el archivo"));
+        };
+
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function compressImageFile(file) {
+      if (!file || !file.type.startsWith("image/")) return "";
+
+      try {
+        let data = await compressImage(file, 600, 0.62);
+
+        if (data.length > 900000) {
+          data = await compressImage(file, 420, 0.45);
+        }
+
+        if (data.length > 950000) {
+          data = await compressImage(file, 320, 0.35);
+        }
+
+        return data;
+      } catch (e) {
+        return "";
+      }
+    }
+
+    // ============================================================
+    // RENDER MESAS / CAMAREROS
+    // ============================================================
+
+    function renderMesasDatalist() {
+      const datalist = document.getElementById("mesasDatalist");
+      if (!datalist) return;
+
+      datalist.innerHTML = mesas
+        .map(m => `<option value="${escapeHtml(m.nombre || "")}">`)
+        .join("");
+    }
+
+    function renderMesasAdmin() {
+      const box = document.getElementById("mesasList");
+      if (!box) return;
+
+      if (!mesas.length) {
+        box.innerHTML = '<div class="small">No hay mesas.</div>';
+        return;
+      }
+
+      box.innerHTML = mesas.map(m => {
+        return `
+          <div class="order">
+            <div>${escapeHtml(m.nombre || "")}</div>
+            <div class="row">
+              <button class="secondary" onclick="renombrarMesa('${m.id}')">Renombrar</button>
+              <button class="danger" onclick="eliminarMesa('${m.id}')">Eliminar</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderCamarerosAdmin() {
+      const box = document.getElementById("camarerosList");
+      if (!box) return;
+
+      if (!camareros.length) {
+        box.innerHTML = '<div class="small">No hay camareros.</div>';
+        return;
+      }
+
+      box.innerHTML = camareros.map(c => {
+        return `
+          <div class="order">
+            <div>${escapeHtml(c.nombre || "")}</div>
+            <div class="row">
+              <button class="secondary" onclick="renombrarCamarero('${c.id}')">Renombrar</button>
+              <button class="danger" onclick="eliminarCamarero('${c.id}')">Eliminar</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    // ============================================================
+    // RENDER PRODUCTOS
+    // ============================================================
+
+    function renderProductosCliente() {
+      const box = document.getElementById("productosClienteList");
+      if (!box) return;
+
+      const visible = productos.filter(p => p.activo !== false);
+
+      if (!visible.length) {
+        box.innerHTML = '<div class="small">No hay productos disponibles.</div>';
+        return;
+      }
+
+      box.innerHTML = '<div class="productos-grid">' + visible.map(p => {
+        const img = p.foto
+          ? `<img class="product-img" src="${p.foto}" onclick="window.open(this.src)">`
+          : `<div class="product-placeholder">🍽️</div>`;
+
+        const precio = Number(p.precio) > 0
+          ? `<div class="small">${formatPrecio(p.precio)}</div>`
+          : "";
+
+        const descripcion = p.descripcion
+          ? `<div class="small">${escapeHtml(p.descripcion)}</div>`
+          : "";
+
+        return `
+          <div class="product-card">
+            ${img}
+            <div class="small"><strong>${escapeHtml(p.nombre || "")}</strong></div>
+            ${descripcion}
+            ${precio}
+            <button onclick="addCart('${p.id}')">Añadir</button>
+          </div>
+        `;
+      }).join("") + '</div>';
+    }
+
+    function renderProductosAdmin() {
+      const box = document.getElementById("productosAdminList");
+      if (!box) return;
+
+      if (!productos.length) {
+        box.innerHTML = '<div class="small">No hay productos.</div>';
+        return;
+      }
+
+      box.innerHTML = productos.map(p => {
+        const img = p.foto
+          ? `<img class="thumb" src="${p.foto}" onclick="window.open(this.src)">`
+          : `<div class="thumb placeholder">🍽️</div>`;
+
+        return `
+          <div class="order">
+            <div class="row">
+              ${img}
+              <div style="flex:1;">
+                <strong>${escapeHtml(p.nombre || "")}</strong>
+                <div class="small">${formatPrecio(p.precio || 0)}</div>
+                <div class="small">${escapeHtml(p.descripcion || "")}</div>
+              </div>
+            </div>
+
+            <div class="row">
+              <input type="file" accept="image/*" onchange="subirFotoProducto('${p.id}', this)" />
+            </div>
+
+            <div class="row">
+              <button class="secondary" onclick="editarProductoNombre('${p.id}')">Renombrar</button>
+              <button class="secondary" onclick="editarProductoPrecio('${p.id}')">Precio</button>
+              <button class="danger" onclick="eliminarProducto('${p.id}')">Eliminar</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    // ============================================================
+    // RENDER STAFF
+    // ============================================================
+
+    function camareroOptions(selected) {
+      const names = camareros.map(c => c.nombre || "");
+
+      if (selected && !names.includes(selected)) {
+        names.unshift(selected);
+      }
+
+      return `
+        <option value="">Sin camarero</option>
+        ${names.map(n => {
+          return `<option value="${escapeHtml(n)}" ${selected === n ? "selected" : ""}>${escapeHtml(n)}</option>`;
+        }).join("")}
+      `;
+    }
+
+    function stateButtons(order) {
+      const states = [
+        ["RECIBIDO", "Recibido"],
+        ["EN_PREPARACION", "En preparación"],
+        ["LISTO", "Listo"],
+        ["ENTREGADO", "Entregado"],
+        ["CANCELADO", "Cancelar"]
+      ];
+
+      return `
+        <div class="row">
+          ${states.map(([value, label]) => {
+            return `
+              <button
+                class="${order.estado === value ? "active" : "secondary"}"
+                onclick="cambiarEstado('${order.id}', '${value}')"
+              >
+                ${label}
+              </button>
+            `;
+          }).join("")}
+        </div>
+      `;
+    }
+
+    function renderStaffOrders() {
+      const box = document.getElementById("staffOrders");
+      if (!box) return;
+
+      if (!orders.length) {
+        box.innerHTML = '<div class="small">No hay pedidos.</div>';
+        return;
+      }
+
+      const sorted = [...orders].sort((a, b) => (b.createdAtLocal || 0) - (a.createdAtLocal || 0));
+
+      box.innerHTML = sorted.map(order => {
+        return `
+          <div class="order">
+            <div>
+              <strong>Pedido ${escapeHtml(order.id.slice(-6))}</strong>
+              · Mesa ${escapeHtml(order.mesa || "S/M")}
+              · ${formatTime(order.createdAtLocal)}
+            </div>
+
+            <div style="margin-top:6px;">
+              ${escapeHtmlLines(order.items || "")}
+            </div>
+
+            <div class="small" style="margin-top:6px;">
+              Estado actual: ${estadoLabel(order.estado)}
+            </div>
+
+            <div class="row">
+              <select onchange="asignarCamarero('${order.id}', this.value)">
+                ${camareroOptions(order.camarero || "")}
+              </select>
+            </div>
+
+            ${stateButtons(order)}
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderStaffAlerts() {
+      const box = document.getElementById("staffAlerts");
+      if (!box) return;
+
+      if (!alerts.length) {
+        box.innerHTML = '<div class="small">No hay alertas.</div>';
+        return;
+      }
+
+      const sorted = [...alerts].sort((a, b) => {
+        if (!!a.atendida !== !!b.atendida) return a.atendida ? 1 : -1;
+        return (b.createdAtLocal || 0) - (a.createdAtLocal || 0);
+      });
+
+      box.innerHTML = sorted.map(alert => {
+        return `
+          <div class="order">
+            <div>
+              <strong>${alertLabel(alert.tipo)}</strong>
+              · Mesa ${escapeHtml(alert.mesa || "S/M")}
+              · ${formatTime(alert.createdAtLocal)}
+            </div>
+            <div class="small">${alert.atendida ? "Atendida" : "Pendiente"}</div>
+            ${
+              !alert.atendida
+                ? `<button onclick="atenderAlerta('${alert.id}')">Atender</button>`
+                : ""
+            }
+          </div>
+        `;
+      }).join("");
+    }
+
+    // ============================================================
+    // RENDER CLIENTE
+    // ============================================================
+
+    function renderCart() {
+      const box = document.getElementById("cartList");
+      if (!box) return;
+
+      if (!cart.length) {
+        box.innerHTML = '<div class="small">No hay productos añadidos.</div>';
+        return;
+      }
+
+      box.innerHTML = cart.map(item => {
+        return `
+          <div class="order">
+            <div>
+              ${item.qty} x ${escapeHtml(item.nombre)}
+              ${item.precio ? " · " + formatPrecio(item.precio * item.qty) : ""}
+            </div>
+            <button class="danger" onclick="removeCart('${item.id}')">Quitar</button>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderClientOrders() {
+      const box = document.getElementById("clientOrders");
+      if (!box) return;
+
+      if (!clientOrders.length) {
+        box.innerHTML = '<div class="small">Todavía no has enviado pedidos.</div>';
+        return;
+      }
+
+      const sorted = [...clientOrders].sort((a, b) => (b.createdAtLocal || 0) - (a.createdAtLocal || 0));
+
+      box.innerHTML = sorted.map(order => {
+        return `
+          <div class="order">
+            <div>${escapeHtmlLines(order.items || "")}</div>
+            <div class="small">Mesa: ${escapeHtml(order.mesa || "S/M")}</div>
+            <div class="small">Estado: ${estadoLabel(order.estado)}</div>
+            <div class="small">Actualizado: ${formatTime(order.updatedAtLocal)}</div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderClientStatus() {
+      const box = document.getElementById("clientStatus");
+      if (!box) return;
+
+      if (!clientAlerts.length) {
+        box.textContent = "";
+        return;
+      }
+
+      const sorted = [...clientAlerts].sort((a, b) => (b.createdAtLocal || 0) - (a.createdAtLocal || 0));
+      const latest = sorted[0];
+
+      box.textContent =
+        "Último aviso: " +
+        alertLabel(latest.tipo) +
+        " · " +
+        (latest.atendida ? "Atendido" : "Pendiente");
+    }
+
+    // ============================================================
+    // ACCIONES PEDIDOS
+    // ============================================================
+
+    function addCart(productoId) {
+      const producto = productos.find(p => p.id === productoId);
+      if (!producto) return;
+
+      const existing = cart.find(item => item.id === productoId);
+
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({
+          id: producto.id,
+          nombre: producto.nombre || "Producto",
+          precio: Number(producto.precio) || 0,
+          qty: 1
+        });
+      }
+
+      renderCart();
+      showToast("Producto añadido");
+    }
+
+    function removeCart(productoId) {
+      cart = cart.filter(item => item.id !== productoId);
+      renderCart();
+    }
+
+    async function crearPedido() {
+      if (!requireFirebase()) return;
+
+      const mesa = document.getElementById("mesa").value.trim();
+      const manual = document.getElementById("manualItems").value.trim();
+
+      const lines = [];
+
+      if (manual) {
+        lines.push(manual);
+      }
+
+      cart.forEach(item => {
+        lines.push(
+          item.qty + " x " + item.nombre +
+          (item.precio ? " (" + formatPrecio(item.precio * item.qty) + ")" : "")
+        );
+      });
+
+      if (cart.length) {
+        const total = cart.reduce((sum, item) => {
+          return sum + (item.qty * (item.precio || 0));
+        }, 0);
+
+        lines.push("Total: " + formatPrecio(total));
+      }
+
+      if (!lines.length) {
+        showToast("Añade productos o escribe un pedido");
+        return;
+      }
+
+      localStorage.setItem("restaurante_mesa", mesa);
+
+      const id = newId();
+
+      try {
+        await db.ref("pedidos/" + id).set({
+          clientId,
+          mesa,
+          items: lines.join("\n"),
+          lineas: cart,
+          estado: "RECIBIDO",
+          createdAtLocal: nowLocal(),
+          updatedAtLocal: nowLocal()
+        });
+
+        cart = [];
+        document.getElementById("manualItems").value = "";
+        renderCart();
+        showToast("Pedido enviado");
+      } catch (e) {
+        showToast("Error al crear pedido: " + e.message);
+      }
+    }
+
+    async function cambiarEstado(orderId, estado) {
+      if (!requireFirebase()) return;
+
+      try {
+        await db.ref("pedidos/" + orderId).update({
+          estado,
+          updatedAtLocal: nowLocal()
+        });
+
+        showToast("Estado actualizado");
+      } catch (e) {
+        showToast("Error al actualizar: " + e.message);
+      }
+    }
+
+    async function asignarCamarero(orderId, camarero) {
+      if (!requireFirebase()) return;
+
+      try {
+        await db.ref("pedidos/" + orderId).update({
+          camarero,
+          updatedAtLocal: nowLocal()
+        });
+
+        showToast("Camarero asignado");
+      } catch (e) {
+        showToast("Error al asignar camarero: " + e.message);
+      }
+    }
+
+    async function enviarAlerta(tipo) {
+      if (!requireFirebase()) return;
+
+      const mesa =
+        document.getElementById("mesa").value.trim() ||
+        localStorage.getItem("restaurante_mesa") ||
+        "";
+
+      const id = newId();
+
+      try {
+        await db.ref("alertas/" + id).set({
+          clientId,
+          mesa,
+          tipo,
+          atendida: false,
+          createdAtLocal: nowLocal(),
+          updatedAtLocal: nowLocal()
+        });
+
+        if (tipo === "PEDIR_CUENTA") {
+          showToast("Cuenta solicitada");
+        } else {
+          showToast("Camarero avisado");
+        }
+      } catch (e) {
+        showToast("Error al enviar aviso: " + e.message);
+      }
+    }
+
+    async function atenderAlerta(alertId) {
+      if (!requireFirebase()) return;
+
+      try {
+        await db.ref("alertas/" + alertId).update({
+          atendida: true,
+          updatedAtLocal: nowLocal()
+        });
+
+        showToast("Alerta atendida");
+      } catch (e) {
+        showToast("Error al atender alerta: " + e.message);
+      }
+    }
+
+    // ============================================================
+    // ACCIONES MESAS / CAMAREROS
+    // ============================================================
+
+    async function agregarMesa() {
+      if (!requireFirebase()) return;
+
+      const nombre = document.getElementById("nuevaMesa").value.trim();
+
+      if (!nombre) {
+        showToast("Escribe el nombre de la mesa");
+        return;
+      }
+
+      const id = newId();
+
+      try {
+        await db.ref("mesas/" + id).set({
+          nombre,
+          activo: true,
+          createdAtLocal: nowLocal()
+        });
+
+        document.getElementById("nuevaMesa").value = "";
+        showToast("Mesa añadida");
+      } catch (e) {
+        showToast("Error al añadir mesa: " + e.message);
+      }
+    }
+
+    async function renombrarMesa(id) {
+      if (!requireFirebase()) return;
+
+      const mesa = mesas.find(m => m.id === id);
+      const nuevo = prompt("Nuevo nombre de la mesa", mesa ? mesa.nombre : "");
+
+      if (!nuevo || !nuevo.trim()) return;
+
+      try {
+        await db.ref("mesas/" + id).update({
+          nombre: nuevo.trim()
+        });
+
+        showToast("Mesa renombrada");
+      } catch (e) {
+        showToast("Error: " + e.message);
+      }
+    }
+
+    async function eliminarMesa(id) {
+      if (!requireFirebase()) return;
+
+      if (!confirm("¿Eliminar esta mesa?")) return;
+
+      try {
+        await db.ref("mesas/" + id).remove();
+        showToast("Mesa eliminada");
+      } catch (e) {
+        showToast("Error: " + e.message);
+      }
+    }
+
+    async function agregarCamarero() {
+      if (!requireFirebase()) return;
+
+      const nombre = document.getElementById("nuevoCamarero").value.trim();
+
+      if (!nombre) {
+        showToast("Escribe el nombre del camarero");
+        return;
+      }
+
+      const id = newId();
+
+      try {
+        await db.ref("camareros/" + id).set({
+          nombre,
+          activo: true,
+          createdAtLocal: nowLocal()
+        });
+
+        document.getElementById("nuevoCamarero").value = "";
+        showToast("Camarero añadido");
+      } catch (e) {
+        showToast("Error al añadir camarero: " + e.message);
+      }
+    }
+
+    async function renombrarCamarero(id) {
+      if (!requireFirebase()) return;
+
+      const camarero = camareros.find(c => c.id === id);
+      const nuevo = prompt("Nuevo nombre del camarero", camarero ? camarero.nombre : "");
+
+      if (!nuevo || !nuevo.trim()) return;
+
+      try {
+        await db.ref("camareros/" + id).update({
+          nombre: nuevo.trim()
+        });
+
+        showToast("Camarero renombrado");
+      } catch (e) {
+        showToast("Error: " + e.message);
+      }
+    }
+
+    async function eliminarCamarero(id) {
+      if (!requireFirebase()) return;
+
+      if (!confirm("¿Eliminar este camarero?")) return;
+
+      try {
+        await db.ref("camareros/" + id).remove();
+        showToast("Camarero eliminado");
+      } catch (e) {
+        showToast("Error: " + e.message);
+      }
+    }
+
+    // ============================================================
+    // ACCIONES PRODUCTOS
+    // ============================================================
+
+    async function agregarProducto() {
+      if (!requireFirebase()) return;
+
+      const nombre = document.getElementById("productoNombre").value.trim();
+      const precio = Number(document.getElementById("productoPrecio").value) || 0;
+      const descripcion = document.getElementById("productoDescripcion").value.trim();
+      const foto = pendingProductoFoto || "";
+
+      if (!nombre) {
+        showToast("Escribe el nombre del producto");
+        return;
+      }
+
+      if (foto && foto.length > 950000) {
+        showToast("La foto es demasiado grande");
+        return;
+      }
+
+      const id = newId();
+
+      try {
+        await db.ref("productos/" + id).set({
+          nombre,
+          precio,
+          descripcion,
+          foto,
+          activo: true,
+          createdAtLocal: nowLocal(),
+          updatedAtLocal: nowLocal()
+        });
+
+        document.getElementById("productoNombre").value = "";
+        document.getElementById("productoPrecio").value = "";
+        document.getElementById("productoDescripcion").value = "";
+        document.getElementById("productoFoto").value = "";
+        pendingProductoFoto = "";
+        document.getElementById("productoFotoPreview").innerHTML = "";
+
+        showToast("Producto añadido");
+      } catch (e) {
+        showToast("Error al añadir producto: " + e.message);
+      }
+    }
+
+    async function subirFotoProducto(productoId, input) {
+      if (!requireFirebase()) return;
+
+      const file = input.files && input.files[0];
+      if (!file) return;
+
+      showToast("Procesando foto...");
+
+      const foto = await compressImageFile(file);
+
+      if (!foto) {
+        showToast("No se pudo procesar la foto");
+        return;
+      }
+
+      if (foto.length > 950000) {
+        showToast("La foto sigue siendo demasiado grande");
+        return;
+      }
+
+      try {
+        await db.ref("productos/" + productoId).update({
+          foto,
+          updatedAtLocal: nowLocal()
+        });
+
+        input.value = "";
+        showToast("Foto actualizada");
+      } catch (e) {
+        showToast("Error al subir foto: " + e.message);
+      }
+    }
+
+    async function editarProductoNombre(id) {
+      if (!requireFirebase()) return;
+
+      const producto = productos.find(p => p.id === id);
+      const nuevo = prompt("Nuevo nombre del producto", producto ? producto.nombre : "");
+
+      if (!nuevo || !nuevo.trim()) return;
+
+      try {
+        await db.ref("productos/" + id).update({
+          nombre: nuevo.trim(),
+          updatedAtLocal: nowLocal()
+        });
+
+        showToast("Producto renombrado");
+      } catch (e) {
+        showToast("Error: " + e.message);
+      }
+    }
+
+    async function editarProductoPrecio(id) {
+      if (!requireFirebase()) return;
+
+      const producto = productos.find(p => p.id === id);
+      const actual = producto && producto.precio ? producto.precio : 0;
+
+      const nuevo = prompt("Nuevo precio", String(actual));
+      if (nuevo === null) return;
+
+      const precio = parseFloat(String(nuevo).replace(",", "."));
+
+      try {
+        await db.ref("productos/" + id).update({
+          precio: isNaN(precio) ? 0 : precio,
+          updatedAtLocal: nowLocal()
+        });
+
+        showToast("Precio actualizado");
+      } catch (e) {
+        showToast("Error: " + e.message);
+      }
+    }
+
+    async function eliminarProducto(id) {
+      if (!requireFirebase()) return;
+
+      if (!confirm("¿Eliminar este producto?")) return;
+
+      try {
+        await db.ref("productos/" + id).remove();
+        showToast("Producto eliminado");
+      } catch (e) {
+        showToast("Error: " + e.message);
+      }
+    }
+
+    // ============================================================
+    // SUSCRIPCIONES REALTIME DATABASE
+    // ============================================================
+
+    function subscribeMesas() {
+      db.ref("mesas").on("value", snapshot => {
+        const data = snapshot.val() || {};
+
+        mesas = Object.keys(data).map(id => ({
+          id,
+          ...data[id]
+        }));
+
+        mesas.sort((a, b) => String(a.nombre || "").localeCompare(String(b.nombre || "")));
+
+        renderMesasDatalist();
+
+        if (role === "admin") {
+          renderMesasAdmin();
+        }
+      }, error => {
+        if (role === "admin") {
+          document.getElementById("mesasList").innerHTML =
+            '<div class="small">Error: ' + escapeHtml(error.message) + "</div>";
+        }
+      });
+    }
+
+    function subscribeCamareros() {
+      db.ref("camareros").on("value", snapshot => {
+        const data = snapshot.val() || {};
+
+        camareros = Object.keys(data).map(id => ({
+          id,
+          ...data[id]
+        }));
+
+        camareros.sort((a, b) => String(a.nombre || "").localeCompare(String(b.nombre || "")));
+
+        if (role === "admin") {
+          renderCamarerosAdmin();
+        }
+
+        if (role !== "cliente") {
+          renderStaffOrders();
+        }
+      }, error => {
+        if (role === "admin") {
+          document.getElementById("camarerosList").innerHTML =
+            '<div class="small">Error: ' + escapeHtml(error.message) + "</div>";
+        }
+      });
+    }
+
+    function subscribeProductos() {
+      db.ref("productos").on("value", snapshot => {
+        const data = snapshot.val() || {};
+
+        productos = Object.keys(data).map(id => ({
+          id,
+          ...data[id]
+        }));
+
+        productos.sort((a, b) => String(a.nombre || "").localeCompare(String(b.nombre || "")));
+
+        if (role === "cliente") {
+          renderProductosCliente();
+        }
+
+        if (role === "admin") {
+          renderProductosAdmin();
+        }
+      }, error => {
+        if (role === "cliente") {
+          document.getElementById("productosClienteList").innerHTML =
+            '<div class="small">Error: ' + escapeHtml(error.message) + "</div>";
+        }
+
+        if (role === "admin") {
+          document.getElementById("productosAdminList").innerHTML =
+            '<div class="small">Error: ' + escapeHtml(error.message) + "</div>";
+        }
+      });
+    }
+
+    function subscribeStaff() {
+      db.ref("pedidos").on("value", snapshot => {
+        const data = snapshot.val() || {};
+
+        orders = Object.keys(data).map(id => ({
+          id,
+          ...data[id]
+        }));
+
+        renderStaffOrders();
+      }, error => {
+        document.getElementById("staffOrders").innerHTML =
+          '<div class="small">Error: ' + escapeHtml(error.message) + "</div>";
+      });
+
+      db.ref("alertas").on("value", snapshot => {
+        const data = snapshot.val() || {};
+
+        alerts = Object.keys(data).map(id => ({
+          id,
+          ...data[id]
+        }));
+
+        renderStaffAlerts();
+      }, error => {
+        document.getElementById("staffAlerts").innerHTML =
+          '<div class="small">Error: ' + escapeHtml(error.message) + "</div>";
+      });
+    }
+
+    function subscribeClient() {
+      db.ref("pedidos").on("value", snapshot => {
+        const data = snapshot.val() || {};
+
+        clientOrders = Object.keys(data)
+          .map(id => ({ id, ...data[id] }))
+          .filter(o => o.clientId === clientId);
+
+        renderClientOrders();
+      }, error => {
+        document.getElementById("clientOrders").innerHTML =
+          '<div class="small">Error: ' + escapeHtml(error.message) + "</div>";
+      });
+
+      db.ref("alertas").on("value", snapshot => {
+        const data = snapshot.val() || {};
+
+        clientAlerts = Object.keys(data)
+          .map(id => ({ id, ...data[id] }))
+          .filter(a => a.clientId === clientId);
+
+        const sorted = [...clientAlerts].sort((a, b) => (b.createdAtLocal || 0) - (a.createdAtLocal || 0));
+
+        sorted.forEach(alert => {
+          const prev = previousClientAlertsMap[alert.id];
+
+          if (prev && prev.atendida === false && alert.atendida === true) {
+            if (alert.tipo === "PEDIR_CUENTA") {
+              showToast("La cuenta está en proceso");
+            } else {
+              showToast("El camarero ha atendido tu aviso");
+            }
+          }
+        });
+
+        previousClientAlertsMap = {};
+
+        sorted.forEach(alert => {
+          previousClientAlertsMap[alert.id] = {
+            atendida: alert.atendida,
+            tipo: alert.tipo
+          };
+        });
+
+        renderClientStatus();
+      }, error => {
+        document.getElementById("clientStatus").textContent =
+          "Error: " + error.message;
+      });
+    }
+
+    function startRealtime() {
+      if (!firebaseReady || !db || role === "menu") return;
+
+      subscribeMesas();
+
+      if (role === "cliente" || role === "admin") {
+        subscribeProductos();
+      }
+
+      if (role === "cliente") {
+        subscribeClient();
+      } else {
+        subscribeStaff();
+        subscribeCamareros();
+      }
+    }
+
+    // ============================================================
+    // DIAGNOSTICO
+    // ============================================================
+
+    async function runDiagnostic() {
+      const results = [];
+
+      function addResult(name, ok, error = "") {
+        results.push({ name, ok, error });
+      }
+
+      addResult("Firebase JS cargado", typeof firebase !== "undefined");
+      addResult("Configuración Firebase presente", configValida(firebaseConfig));
+      addResult("Realtime Database inicializado", !!db);
+      addResult("Rol válido", ["menu", "admin", "barra", "camarero", "cliente"].includes(role));
+
+      try {
+        localStorage.setItem("test_local", "1");
+        localStorage.removeItem("test_local");
+        addResult("LocalStorage disponible", true);
+      } catch (e) {
+        addResult("LocalStorage disponible", false, e.message);
+      }
+
+      addResult("Canvas disponible", !!document.createElement("canvas").getContext);
+
+      const ids = [
+        "setupWarning",
+        "menuPanel",
+        "staffPanel",
+        "adminPanel",
+        "clientPanel",
+        "staffOrders",
+        "staffAlerts",
+        "clientOrders",
+        "btnPedidos",
+        "btnLlamar",
+        "btnCuenta",
+        "diagnosticsResults",
+        "productosAdminList",
+        "productosClienteList",
+        "productoNombre",
+        "productoFoto",
+        "cartList"
+      ];
+
+      addResult("Interfaz necesaria", ids.every(id => !!document.getElementById(id)));
+
+      addResult(
+        "Funciones de productos",
+        typeof agregarProducto === "function" &&
+        typeof subirFotoProducto === "function" &&
+        typeof compressImageFile === "function"
+      );
+
+      addResult(
+        "Funciones de gestión",
+        typeof agregarMesa === "function" &&
+        typeof agregarCamarero === "function"
+      );
+
+      if (firebaseReady && db) {
+        try {
+          const testId = newId();
+          await db.ref("diagnosticos/" + testId).set({
+            test: true,
+            createdAtLocal: nowLocal()
+          });
+
+          const snap = await db.ref("diagnosticos/" + testId).once("value");
+          await db.ref("diagnosticos/" + testId).remove();
+
+          addResult("Escritura/lectura/borrado en Realtime Database", snap.exists());
+        } catch (e) {
+          addResult("Escritura/lectura/borrado en Realtime Database", false, e.message);
+        }
+      } else {
+        addResult("Escritura/lectura/borrado en Realtime Database", false, "Firebase no está listo");
+      }
+
+      const box = document.getElementById("diagnosticsResults");
+      const failures = results.filter(r => !r.ok);
+
+      box.innerHTML = results.map(r => {
+        return `
+          <div class="order">
+            ${r.ok ? "✅" : "❌"} ${escapeHtml(r.name)}
+            ${r.error ? `<div class="small">${escapeHtml(r.error)}</div>` : ""}
+          </div>
+        `;
+      }).join("");
+
+      if (!failures.length) {
+        showToast("Diagnóstico correcto: 0 fallos detectados");
+      } else {
+        showToast("Diagnóstico con " + failures.length + " fallos");
+      }
+    }
+
+    // ============================================================
+    // EVENTOS
+    // ============================================================
+
+    document.getElementById("btnPedidos").addEventListener("click", () => {
+      document.getElementById("clientOrdersCard").classList.toggle("hidden");
+    });
+
+    document.getElementById("btnLlamar").addEventListener("click", () => {
+      enviarAlerta("LLAMAR_CAMARERO");
+    });
+
+    document.getElementById("btnCuenta").addEventListener("click", () => {
+      enviarAlerta("PEDIR_CUENTA");
+    });
+
+    document.getElementById("createOrder").addEventListener("click", () => {
+      crearPedido();
+    });
+
+    document.getElementById("diagnosticsBtn").addEventListener("click", () => {
+      runDiagnostic();
+    });
+
+    document.getElementById("productoFoto").addEventListener("change", async function () {
+      const file = this.files && this.files[0];
+      const preview = document.getElementById("productoFotoPreview");
+
+      if (!file) {
+        pendingProductoFoto = "";
+        preview.innerHTML = "";
+        return;
+      }
+
+      preview.innerHTML = '<div class="small">Procesando foto...</div>';
+
+      pendingProductoFoto = await compressImageFile(file);
+
+      if (pendingProductoFoto) {
+        preview.innerHTML = `<img class="thumb" src="${pendingProductoFoto}">`;
+      } else {
+        preview.innerHTML = '<div class="small">No se pudo procesar la foto.</div>';
+      }
+    });
+
+    // ============================================================
+    // ARRANQUE
+    // ============================================================
+
+    function boot() {
+      applyRole();
+
+      if (typeof firebase === "undefined") {
+        showSetupWarning("No se pudo cargar Firebase desde CDN. Comprueba conexión a internet.");
+        return;
+      }
+
+      if (!configValida(firebaseConfig)) {
+        showSetupWarning(
+          "La configuración de Firebase no es válida."
+        );
+        return;
+      }
+
+      initFirebase(firebaseConfig);
+
+      if (firebaseReady) {
+        startRealtime();
+      }
+    }
+
+    boot();
+  </script>
 </body>
 </html>
