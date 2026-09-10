@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>QR-Café · Pedidos en la Nube</title>
+<style>
+/* ===== RESET & BASE ===== */
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f5f0eb;--card:#fff;--primary:#6f4e37;--primary-light:#a67c52;
+  --accent:#d4a574;--danger:#c0392b;--success:#27ae60;--warning:#f39c12;
+  --info:#2980b9;--text:#2c2c2c;--text-light:#777;--radius:12px;
+  --shadow:0 2px 12px rgba(0,0,0,.08);
+}
+html{font-size:16px}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+button{cursor:pointer;font-family:inherit;border:none;border-radius:8px;padding:10px 18px;font-size:.95rem;transition:all .2s}
+button:active{transform:scale(.96)}
+input,select,textarea{font-family:inherit;font-size:1rem;padding:10px 14px;border:2px solid #ddd;border-radius:8px;width:100%;transition:border .2s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--primary)}
+h1{font-size:1.5rem}h2{font-size:1.25rem}h3{font-size:1.1rem}
+
+/* ===== LAYOUT ===== */
+.view{display:none;max-width:900px;margin:0 auto;padding:16px;padding-bottom:100px}
+.view.active{display:block}
+.header{background:var(--primary);color:#fff;padding:16px 20px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:var(--shadow)}
+.header h1{font-size:1.2rem;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px}
+.header .sub{font-size:.8rem;opacity:.8;margin-top:2px}
+.cloud-status{width:10px;height:10px;border-radius:50%;background:#2ecc71;display:inline-block;box-shadow:0 0 6px #2ecc71}
+.card{background:var(--card);border-radius:var(--radius);padding:16px;margin-bottom:12px;box-shadow:var(--shadow)}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:700;color:#fff}
+.badge-pendiente{background:var(--warning)}
+.badge-aceptado{background:var(--info)}
+.badge-preparando{background:#8e44ad}
+.badge-servido{background:var(--success)}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:var(--primary-light)}
+.btn-success{background:var(--success);color:#fff}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-warning{background:var(--warning);color:#fff}
+.btn-info{background:var(--info);color:#fff}
+.btn-sm{padding:6px 12px;font-size:.8rem}
+.btn-block{width:100%;display:block}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.flex-between{display:flex;justify-content:space-between;align-items:center}
+.mt-8{margin-top:8px}.mt-16{margin-top:16px}.mb-8{margin-bottom:8px}
+.text-center{text-align:center}
+.text-muted{color:var(--text-light);font-size:.85rem}
+.hidden{display:none!important}
+
+/* ===== CLIENTE ===== */
+.cat-tabs{display:flex;gap:6px;overflow-x:auto;padding:8px 0;-webkit-overflow-scrolling:touch}
+.cat-tab{padding:8px 16px;border-radius:20px;background:#e8e0d8;font-size:.85rem;white-space:nowrap;font-weight:600;color:var(--text)}
+.cat-tab.active{background:var(--primary);color:#fff}
+.menu-item{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #f0ebe6}
+.menu-item:last-child{border:none}
+.menu-item .name{font-weight:600}.menu-item .price{color:var(--primary);font-weight:700}
+.qty-ctrl{display:flex;align-items:center;gap:8px}
+.qty-ctrl button{width:32px;height:32px;border-radius:50%;padding:0;font-size:1.1rem;display:flex;align-items:center;justify-content:center}
+.cart-bar{position:fixed;bottom:0;left:0;right:0;background:var(--primary);color:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;z-index:200;box-shadow:0 -4px 20px rgba(0,0,0,.15)}
+.cart-bar.hidden{display:none}
+.order-status-bar{position:fixed;bottom:0;left:0;right:0;background:var(--success);color:#fff;padding:14px 20px;text-align:center;z-index:200;font-weight:600}
+
+/* ===== BARRA / CAMARERO ===== */
+.pedido-card{border-left:4px solid var(--warning);padding:14px;position:relative}
+.pedido-card.aceptado{border-left-color:var(--info)}
+.pedido-card.preparando{border-left-color:#8e44ad}
+.pedido-card.servido{border-left-color:var(--success);opacity:.6}
+.pedido-card .mesa-tag{background:var(--primary);color:#fff;padding:2px 10px;border-radius:12px;font-size:.8rem;font-weight:700}
+.pedido-card .time{font-size:.75rem;color:var(--text-light)}
+.pedido-items{margin:8px 0;font-size:.9rem}
+.pedido-items li{padding:2px 0}
+
+/* ===== ADMIN ===== */
+.nav-admin{display:flex;gap:4px;overflow-x:auto;padding:8px 0;-webkit-overflow-scrolling:touch}
+.nav-admin button{padding:8px 14px;border-radius:8px;background:#e8e0d8;font-size:.82rem;white-space:nowrap;font-weight:600}
+.nav-admin button.active{background:var(--primary);color:#fff}
+.stat-box{text-align:center;padding:16px}
+.stat-box .num{font-size:2rem;font-weight:800;color:var(--primary)}
+.stat-box .label{font-size:.8rem;color:var(--text-light)}
+table{width:100%;border-collapse:collapse;font-size:.9rem}
+th,td{padding:10px 8px;text-align:left;border-bottom:1px solid #eee}
+th{background:#f9f5f1;font-weight:700;font-size:.8rem;text-transform:uppercase;color:var(--text-light)}
+.qr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px}
+.qr-card{text-align:center;padding:16px}
+.qr-card img{width:140px;height:140px}
+.qr-card .mesa-name{font-weight:700;margin-top:8px}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal{background:#fff;border-radius:var(--radius);padding:24px;width:100%;max-width:440px;max-height:90vh;overflow-y:auto}
+.modal h2{margin-bottom:16px}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-weight:600;margin-bottom:4px;font-size:.9rem}
+.empty-state{text-align:center;padding:40px 20px;color:var(--text-light)}
+.empty-state .icon{font-size:3rem;margin-bottom:12px}
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:12px 24px;border-radius:8px;z-index:9999;font-weight:600;animation:fadeInOut 2.5s forwards}
+@keyframes fadeInOut{0%{opacity:0;top:0}10%{opacity:1;top:20px}80%{opacity:1}100%{opacity:0}}
+
+/* ===== PRINT ===== */
+@media print{
+  body *{visibility:hidden}
+  .print-area,.print-area *{visibility:visible}
+  .print-area{position:absolute;left:0;top:0;width:100%}
+  .qr-card{page-break-inside:avoid;border:1px solid #ccc}
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== VISTA CLIENTE ==================== -->
+<div id="view-cliente" class="view">
+  <div class="header">
+    <h1><span class="cloud-status"></span> QR-Café</h1>
+    <div class="sub" id="cliente-mesa-label">Mesa —</div>
+  </div>
+  <div id="cliente-menu-container" class="mt-16"></div>
+  <div id="cliente-cart-bar" class="cart-bar hidden">
+    <div><strong id="cart-count">0</strong> artículos</div>
+    <button class="btn-success" onclick="Cliente.verCarrito()">Ver pedido · <span id="cart-total">0.00</span>€</button>
+  </div>
+  <div id="cliente-estado" class="hidden"></div>
+</div>
+
+<!-- ==================== VISTA BARRA ==================== -->
+<div id="view-barra" class="view">
+  <div class="header" style="background:#c0392b">
+    <h1><span class="cloud-status"></span> Panel de Barra</h1>
+    <div class="sub">Pedidos en tiempo real (Nube)</div>
+  </div>
+  <div id="barra-pedidos" class="mt-16"></div>
+</div>
+
+<!-- ==================== VISTA CAMARERO ==================== -->
+<div id="view-camarero" class="view">
+  <div class="header" style="background:#2980b9">
+    <h1><span class="cloud-status"></span> Vista Camarero</h1>
+    <div class="sub" id="camarero-nombre">—</div>
+  </div>
+  <div id="camarero-pedidos" class="mt-16"></div>
+</div>
+
+<!-- ==================== VISTA ADMIN ==================== -->
+<div id="view-admin" class="view">
+  <div class="header" style="background:#2c3e50">
+    <h1><span class="cloud-status"></span> Administración</h1>
+    <div class="sub">Panel de control en la nube</div>
+  </div>
+  <div class="nav-admin mt-8" id="admin-nav">
+    <button class="active" onclick="Admin.tab('dashboard')">📊 Resumen</button>
+    <button onclick="Admin.tab('mesas')">🪑 Mesas</button>
+    <button onclick="Admin.tab('camareros')">🧑‍🍳 Camareros</button>
+    <button onclick="Admin.tab('menu')">📋 Menú</button>
+    <button onclick="Admin.tab('qr')">📱 QR</button>
+    <button onclick="Admin.tab('pedidos')">📦 Pedidos</button>
+    <button onclick="Admin.tab('config')">🔧 Config</button>
+  </div>
+  <div id="admin-content" class="mt-16"></div>
+</div>
+
+<!-- ==================== MODAL GENÉRICO ==================== -->
+<div id="modal-overlay" class="modal-overlay hidden" onclick="if(event.target===this)UI.closeModal()">
+  <div class="modal" id="modal-body"></div>
+</div>
+
+<script>
+// ============================================================
+//  CONFIGURACIÓN FIREBASE (¡SOLO NECESITAS LA URL!)
+// ============================================================
+const FIREBASE_URL = 'https://hosteleria-41fe7-default-rtdb.europe-west1.firebasedatabase.app/';
+
+const DB = {
+  data: null,
+  _url(path) { return FIREBASE_URL + (path ? path + '.json' : '.json'); },
+
+  // Inicialización asíncrona
+  async init() {
+    try {
+      const res = await fetch(this._url(''));
+      const data = await res.json();
+      
+      if (!data || Object.keys(data).length === 0) {
+        // Datos por defecto si la base de datos está vacía
+        const defaults = {
+          mesas: [
+            { id: 1, nombre: 'Mesa 1', camareroId: 1 },
+            { id: 2, nombre: 'Mesa 2', camareroId: 1 },
+            { id: 3, nombre: 'Mesa 3', camareroId: 2 },
+            { id: 4, nombre: 'Mesa 4', camareroId: 2 },
+            { id: 5, nombre: 'Barra 1', camareroId: null }
+          ],
+          camareros: [
+            { id: 1, nombre: 'Laura' },
+            { id: 2, nombre: 'Carlos' }
+          ],
+          menu: [
+            { id: 1, nombre: 'Café solo', precio: 1.50, categoria: 'Cafés', disponible: true },
+            { id: 2, nombre: 'Café con leche', precio: 1.80, categoria: 'Cafés', disponible: true },
+            { id: 3, nombre: 'Cortado', precio: 1.60, categoria: 'Cafés', disponible: true },
+            { id: 4, nombre: 'Capuchino', precio: 2.20, categoria: 'Cafés', disponible: true },
+            { id: 5, nombre: 'Té verde', precio: 1.80, categoria: 'Tés e Infusiones', disponible: true },
+            { id: 6, nombre: 'Zumo de naranja natural', precio: 2.50, categoria: 'Bebidas', disponible: true },
+            { id: 7, nombre: 'Agua mineral', precio: 1.20, categoria: 'Bebidas', disponible: true },
+            { id: 8, nombre: 'Cerveza', precio: 2.50, categoria: 'Bebidas', disponible: true },
+            { id: 9, nombre: 'Tostada tomate y aceite', precio: 3.00, categoria: 'Tostadas', disponible: true },
+            { id: 10, nombre: 'Tostada jamón y tomate', precio: 3.80, categoria: 'Tostadas', disponible: true },
+            { id: 11, nombre: 'Croissant', precio: 1.80, categoria: 'Bollería', disponible: true },
+            { id: 12, nombre: 'Tarta de zanahoria', precio: 3.50, categoria: 'Dulces', disponible: true }
+          ],
+          pedidos: [],
+          config: { nombreLocal: 'QR-Café', urlBase: location.origin + location.pathname }
+        };
+        await fetch(this._url(''), { method: 'PUT', body: JSON.stringify(defaults) });
+        this.data = defaults;
+      } else {
+        this.data = data;
+      }
+      this._startListening();
+    } catch (e) {
+      console.error('Error conectando a Firebase:', e);
+      alert('Error de conexión a la base de datos. Revisa tu conexión a internet.');
+    }
+  },
+
+  // Escucha en tiempo real usando Server-Sent Events (SSE)
+  _startListening() {
+    const es = new EventSource(this._url(''));
+    es.onmessage = (event) => {
+      if (event.data && event.data !== 'null') {
+        this.data = JSON.parse(event.data);
+        this._notify();
+      }
+    };
+    es.onerror = () => {
+      console.warn('SSE falló, usando polling de respaldo cada 2s');
+      es.close();
+      setInterval(async () => {
+        try {
+          const res = await fetch(this._url(''));
+          const newData = await res.json();
+          if (JSON.stringify(newData) !== JSON.stringify(this.data)) {
+            this.data = newData;
+            this._notify();
+          }
+        } catch(e) {}
+      }, 2000);
+    };
+  },
+
+  _listeners: [],
+  onChange(fn) { this._listeners.push(fn); },
+  _notify() { this._listeners.forEach(fn => fn()); },
+
+  // Getters síncronos (leen de la caché local actualizada por SSE)
+  get(path) {
+    if (!path) return this.data;
+    return this.data ? this.data[path] : null;
+  },
+
+  nextId(collection) {
+    const items = this.get(collection) || [];
+    return items.length ? Math.max(...items.map(i => i.id)) + 1 : 1;
+  },
+
+  getMesa(id) { return (this.get('mesas') || []).find(m => m.id === Number(id)); },
+  getCamarero(id) { return (this.get('camareros') || []).find(c => c.id === Number(id)); },
+  getMenuItem(id) { return (this.get('menu') || []).find(m => m.id === Number(id)); },
+  getPedidosActivos() { return (this.get('pedidos') || []).filter(p => p.estado !== 'servido'); },
+  getPedidosMesa(mesaId) { return (this.get('pedidos') || []).filter(p => p.mesaId === Number(mesaId) && p.estado !== 'servido'); },
+  getPedidosCamarero(camareroId) {
+    const mesas = (this.get('mesas') || []).filter(m => m.camareroId === Number(camareroId)).map(m => m.id);
+    return (this.get('pedidos') || []).filter(p => mesas.includes(p.mesaId) && p.estado !== 'servido');
+  },
+
+  // Acciones asíncronas que escriben en Firebase
+  async addPedido(pedido) {
+    const pedidos = this.get('pedidos') || [];
+    pedido.id = this.nextId('pedidos');
+    pedido.timestamp = Date.now();
+    pedido.estado = 'pendiente';
+    pedidos.push(pedido);
+    await fetch(this._url('pedidos'), { method: 'PUT', body: JSON.stringify(pedidos) });
+    return pedido;
+  },
+
+  async updatePedidoEstado(pedidoId, estado) {
+    const pedidos = this.get('pedidos') || [];
+    const p = pedidos.find(x => x.id === Number(pedidoId));
+    if (p) {
+      p.estado = estado;
+      await fetch(this._url('pedidos'), { method: 'PUT', body: JSON.stringify(pedidos) });
+    }
+  },
+
+  async set(path, value) {
+    await fetch(this._url(path), { method: 'PUT', body: JSON.stringify(value) });
+  },
+
+  async remove(path) {
+    await fetch(this._url(path), { method: 'DELETE' });
+  }
+};
+
+// ============================================================
+//  UI HELPERS
+// ============================================================
+const UI = {
+  toast(msg) {
+    const t = document.createElement('div');
+    t.className = 'toast';
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 2600);
+  },
+  showModal(html) {
+    document.getElementById('modal-body').innerHTML = html;
+    document.getElementById('modal-overlay').classList.remove('hidden');
+  },
+  closeModal() {
+    document.getElementById('modal-overlay').classList.add('hidden');
+  },
+  timeAgo(ts) {
+    const s = Math.floor((Date.now() - ts) / 1000);
+    if (s < 60) return `hace ${s}s`;
+    if (s < 3600) return `hace ${Math.floor(s/60)}min`;
+    return `hace ${Math.floor(s/3600)}h`;
+  },
+  estadoBadge(estado) {
+    return `<span class="badge badge-${estado}">${estado.toUpperCase()}</span>`;
+  },
+  showView(name) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    const el = document.getElementById('view-' + name);
+    if (el) el.classList.add('active');
+  }
+};
+
+// ============================================================
+//  ROUTER
+// ============================================================
+const Router = {
+  init() {
+    window.addEventListener('hashchange', () => this.route());
+    this.route();
+  },
+  route() {
+    const hash = location.hash || '#/admin';
+    const [path, qs] = hash.replace('#/', '').split('?');
+    const params = Object.fromEntries(new URLSearchParams(qs || ''));
+
+    if (path === 'cliente' && params.mesa) {
+      UI.showView('cliente');
+      Cliente.init(Number(params.mesa));
+    } else if (path === 'barra') {
+      UI.showView('barra');
+      Barra.init();
+    } else if (path === 'camarero' && params.id) {
+      UI.showView('camarero');
+      Camarero.init(Number(params.id));
+    } else {
+      UI.showView('admin');
+      Admin.init();
+    }
+  }
+};
+
+// ============================================================
+//  VISTA CLIENTE
+// ============================================================
+const Cliente = {
+  mesaId: null,
+  carrito: {},
+  
+  init(mesaId) {
+    this.mesaId = mesaId;
+    const mesa = DB.getMesa(mesaId);
+    document.getElementById('cliente-mesa-label').textContent = mesa ? mesa.nombre : `Mesa ${mesaId}`;
+    this.carrito = {};
+    this.renderMenu();
+    this.checkPedidoActivo();
+    Sync.onChange(() => { this.checkPedidoActivo() });
+  },
+
+  renderMenu() {
+    const menu = (DB.get('menu') || []).filter(m => m.disponible);
+    const categorias = [...new Set(menu.map(m => m.categoria))];
+    const container = document.getElementById('cliente-menu-container');
+    if (!categorias.length) {
+      container.innerHTML = '<div class="empty-state"><div class="icon">🍽️</div>Menú no disponible</div>';
+      return;
+    }
+    let html = '<div class="cat-tabs" id="cat-tabs">';
+    categorias.forEach((c, i) => {
+      html += `<button class="cat-tab ${i===0?'active':''}" onclick="Cliente.filterCat('${c}',this)">${c}</button>`;
+    });
+    html += '</div><div id="menu-list">';
+    html += this._renderItems(menu.filter(m => m.categoria === categorias[0]));
+    html += '</div>';
+    container.innerHTML = html;
+  },
+
+  _renderItems(items) {
+    if (!items.length) return '<div class="empty-state"><div class="icon">🍽️</div>No hay productos</div>';
+    return items.map(m => {
+      const qty = this.carrito[m.id] || 0;
+      return `<div class="menu-item">
+        <div><div class="name">${m.nombre}</div><div class="price">${m.precio.toFixed(2)}€</div></div>
+        <div class="qty-ctrl">
+          ${qty > 0 ? `<button class="btn-danger btn-sm" onclick="Cliente.qty(${m.id},-1)">−</button>
+          <span style="font-weight:700;min-width:20px;text-align:center">${qty}</span>` : ''}
+          <button class="btn-success btn-sm" onclick="Cliente.qty(${m.id},1)">+</button>
+        </div>
+      </div>`;
+    }).join('');
+  },
+
+  filterCat(cat, btn) {
+    document.querySelectorAll('.cat-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const menu = (DB.get('menu') || []).filter(m => m.disponible && m.categoria === cat);
+    document.getElementById('menu-list').innerHTML = this._renderItems(menu);
+  },
+
+  qty(menuId, delta) {
+    const cur = this.carrito[menuId] || 0;
+    const nv = cur + delta;
+    if (nv <= 0) delete this.carrito[menuId];
+    else this.carrito[menuId] = nv;
+    this.renderMenu();
+    const activeTab = document.querySelector('.cat-tab.active');
+    if (activeTab) activeTab.click();
+    this.updateCartBar();
+  },
+
+  updateCartBar() {
+    const items = Object.entries(this.carrito);
+    const total = items.reduce((s, [id, q]) => s + (DB.getMenuItem(id)?.precio || 0) * q, 0);
+    const count = items.reduce((s, [, q]) => s + q, 0);
+    const bar = document.getElementById('cliente-cart-bar');
+    if (count > 0) {
+      bar.classList.remove('hidden');
+      document.getElementById('cart-count').textContent = count;
+      document.getElementById('cart-total').textContent = total.toFixed(2);
+    } else {
+      bar.classList.add('hidden');
+    }
+  },
+
+  verCarrito() {
+    const items = Object.entries(this.carrito);
+    if (!items.length) return;
+    const menu = DB.get('menu') || [];
+    let total = 0;
+    let html = '<h2>🛒 Tu pedido</h2><div class="mt-8">';
+    items.forEach(([id, q]) => {
+      const m = menu.find(x => x.id === Number(id));
+      if (!m) return;
+      const sub = m.precio * q;
+      total += sub;
+      html += `<div class="flex-between" style="padding:6px 0;border-bottom:1px solid #eee">
+        <span>${q}× ${m.nombre}</span><strong>${sub.toFixed(2)}€</strong>
+      </div>`;
+    });
+    html += `<div class="flex-between mt-8" style="font-size:1.2rem"><strong>TOTAL</strong><strong>${total.toFixed(2)}€</strong></div>`;
+    html += `<button class="btn-success btn-block mt-16" onclick="Cliente.enviarPedido()" style="padding:14px;font-size:1.1rem">✅ Enviar pedido a barra</button>`;
+    html += `<button class="btn-block mt-8" style="background:#eee" onclick="UI.closeModal()">Seguir pidiendo</button>`;
+    html += '</div>';
+    UI.showModal(html);
+  },
+
+  async enviarPedido() {
+    const items = Object.entries(this.carrito).map(([id, q]) => {
+      const m = DB.getMenuItem(id);
+      return { menuId: Number(id), nombre: m?.nombre || '?', precio: m?.precio || 0, cantidad: q };
+    });
+    if (!items.length) return;
+    const total = items.reduce((s, i) => s + i.precio * i.cantidad, 0);
+    await DB.addPedido({ mesaId: this.mesaId, items, total });
+    this.carrito = {};
+    this.updateCartBar();
+    UI.closeModal();
+    UI.toast('✅ ¡Pedido enviado a la nube!');
+    this.renderMenu();
+    const activeTab = document.querySelector('.cat-tab.active');
+    if (activeTab) activeTab.click();
+    this.checkPedidoActivo();
+  },
+
+  checkPedidoActivo() {
+    const pedidos = DB.getPedidosMesa(this.mesaId);
+    const estadoDiv = document.getElementById('cliente-estado');
+    if (pedidos.length > 0) {
+      const ultimo = pedidos[pedidos.length - 1];
+      const estadoText = { pendiente: '⏳ Recibido en barra', aceptado: '✅ Aceptado', preparando: '👨‍🍳 Preparando', servido: '✅ ¡Servido!' };
+      estadoDiv.className = 'order-status-bar';
+      estadoDiv.style.background = ultimo.estado === 'servido' ? 'var(--success)' : ultimo.estado === 'preparando' ? '#8e44ad' : 'var(--info)';
+      estadoDiv.innerHTML = `${estadoText[ultimo.estado] || ultimo.estado} · Pedido #${ultimo.id}`;
+      estadoDiv.classList.remove('hidden');
+      if (ultimo.estado === 'servido') {
+        setTimeout(() => estadoDiv.classList.add('hidden'), 8000);
+      }
+    } else {
+      estadoDiv.classList.add('hidden');
+    }
+  }
+};
+
+// ============================================================
+//  VISTA BARRA
+// ============================================================
+const Barra = {
+  init() {
+    this.render();
+    Sync.onChange(() => this.render());
+  },
+  render() {
+    const pedidos = DB.getPedidosActivos().sort((a, b) => b.timestamp - a.timestamp);
+    const container = document.getElementById('barra-pedidos');
+    if (!pedidos.length) {
+      container.innerHTML = '<div class="empty-state"><div class="icon">☕</div>No hay pedidos pendientes<br><span class="text-muted">Los pedidos aparecerán aquí en tiempo real</span></div>';
+      return;
+    }
+    container.innerHTML = pedidos.map(p => {
+      const mesa = DB.getMesa(p.mesaId);
+      const camarero = mesa?.camareroId ? DB.getCamarero(mesa.camareroId) : null;
+      return `<div class="card pedido-card ${p.estado}">
+        <div class="flex-between">
+          <span class="mesa-tag">${mesa?.nombre || 'Mesa ' + p.mesaId}</span>
+          <span>${UI.estadoBadge(p.estado)}</span>
+        </div>
+        <div class="text-muted mt-8">Pedido #${p.id} · ${UI.timeAgo(p.timestamp)}${camarero ? ' · Camarero: ' + camarero.nombre : ''}</div>
+        <ul class="pedido-items">${p.items.map(i => `<li>${i.cantidad}× ${i.nombre} <span class="text-muted">(${(i.precio*i.cantidad).toFixed(2)}€)</span></li>`).join('')}</ul>
+        <div class="flex-between mt-8">
+          <strong>Total: ${p.total.toFixed(2)}€</strong>
+          <div>
+            ${p.estado === 'pendiente' ? `<button class="btn-info btn-sm" onclick="Barra.cambiar(${p.id},'aceptado')">✅ Aceptar</button>` : ''}
+            ${p.estado === 'aceptado' ? `<button class="btn-warning btn-sm" onclick="Barra.cambiar(${p.id},'preparando')">👨‍🍳 Preparar</button>` : ''}
+            ${p.estado === 'preparando' ? `<button class="btn-success btn-sm" onclick="Barra.cambiar(${p.id},'servido')">🍽️ Servido</button>` : ''}
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  },
+  async cambiar(id, estado) {
+    await DB.updatePedidoEstado(id, estado);
+    UI.toast(`Pedido #${id} → ${estado}`);
+  }
+};
+
+// ============================================================
+//  VISTA CAMARERO
+// ============================================================
+const Camarero = {
+  camareroId: null,
+  init(id) {
+    this.camareroId = id;
+    const c = DB.getCamarero(id);
+    document.getElementById('camarero-nombre').textContent = c ? c.nombre : `Camarero #${id}`;
+    this.render();
+    Sync.onChange(() => this.render());
+  },
+  render() {
+    const pedidos = DB.getPedidosCamarero(this.camareroId).sort((a, b) => b.timestamp - a.timestamp);
+    const container = document.getElementById('camarero-pedidos');
+    if (!pedidos.length) {
+      container.innerHTML = '<div class="empty-state"><div class="icon">🧑‍🍳</div>No hay pedidos en tus mesas<br><span class="text-muted">Aparecerán aquí automáticamente</span></div>';
+      return;
+    }
+    container.innerHTML = pedidos.map(p => {
+      const mesa = DB.getMesa(p.mesaId);
+      return `<div class="card pedido-card ${p.estado}">
+        <div class="flex-between">
+          <span class="mesa-tag">${mesa?.nombre || 'Mesa ' + p.mesaId}</span>
+          <span>${UI.estadoBadge(p.estado)}</span>
+        </div>
+        <div class="text-muted mt-8">Pedido #${p.id} · ${UI.timeAgo(p.timestamp)}</div>
+        <ul class="pedido-items">${p.items.map(i => `<li>${i.cantidad}× ${i.nombre}</li>`).join('')}</ul>
+        <div class="mt-8" style="text-align:right">
+          ${p.estado === 'pendiente' ? `<button class="btn-info btn-sm" onclick="Camarero.cambiar(${p.id},'aceptado')">✅ Aceptar</button>` : ''}
+          ${p.estado === 'aceptado' ? `<button class="btn-warning btn-sm" onclick="Camarero.cambiar(${p.id},'preparando')">👨‍🍳 Preparar</button>` : ''}
+          ${p.estado === 'preparando' ? `<button class="btn-success btn-sm" onclick="Camarero.cambiar(${p.id},'servido')">🍽️ Entregado</button>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+  },
+  async cambiar(id, estado) {
+    await DB.updatePedidoEstado(id, estado);
+    UI.toast(`Pedido #${id} → ${estado}`);
+  }
+};
+
+// ============================================================
+//  VISTA ADMIN
+// ============================================================
+const Admin = {
+  currentTab: 'dashboard',
+  init() {
+    this.tab('dashboard');
+    Sync.onChange(() => { if (this.currentTab === 'dashboard' || this.currentTab === 'pedidos') this.tab(this.currentTab) });
+  },
+  tab(name) {
+    this.currentTab = name;
+    document.querySelectorAll('#admin-nav button').forEach(b => b.classList.remove('active'));
+    const btns = document.querySelectorAll('#admin-nav button');
+    const map = ['dashboard','mesas','camareros','menu','qr','pedidos','config'];
+    const idx = map.indexOf(name);
+    if (idx >= 0 && btns[idx]) btns[idx].classList.add('active');
+    const c = document.getElementById('admin-content');
+    switch(name) {
+      case 'dashboard': this.renderDashboard(c); break;
+      case 'mesas': this.renderMesas(c); break;
+      case 'camareros': this.renderCamareros(c); break;
+      case 'menu': this.renderMenu(c); break;
+      case 'qr': this.renderQR(c); break;
+      case 'pedidos': this.renderPedidos(c); break;
+      case 'config': this.renderConfig(c); break;
+    }
+  },
+
+  renderDashboard(c) {
+    const mesas = DB.get('mesas') || [];
+    const camareros = DB.get('camareros') || [];
+    const activos = DB.getPedidosActivos();
+    const todos = DB.get('pedidos') || [];
+    const hoy = todos.filter(p => {
+      const d = new Date(p.timestamp);
+      const t = new Date();
+      return d.toDateString() === t.toDateString();
+    });
+    const factHoy = hoy.reduce((s, p) => s + (p.total || 0), 0);
+    c.innerHTML = `
+      <div class="grid-3">
+        <div class="card stat-box"><div class="num">${mesas.length}</div><div class="label">Mesas</div></div>
+        <div class="card stat-box"><div class="num">${camareros.length}</div><div class="label">Camareros</div></div>
+        <div class="card stat-box"><div class="num">${activos.length}</div><div class="label">Pedidos activos</div></div>
+      </div>
+      <div class="grid-2 mt-8">
+        <div class="card stat-box"><div class="num">${hoy.length}</div><div class="label">Pedidos hoy</div></div>
+        <div class="card stat-box"><div class="num">${factHoy.toFixed(2)}€</div><div class="label">Facturación hoy</div></div>
+      </div>
+      <div class="card mt-16">
+        <h3>🔗 Enlaces rápidos</h3>
+        <div class="mt-8">
+          <a href="#/barra" style="color:var(--primary)">🍸 Abrir panel de barra</a><br>
+          ${camareros.map(cm => `<a href="#/camarero?id=${cm.id}" style="color:var(--primary)">🧑‍🍳 Vista de ${cm.nombre}</a><br>`).join('')}
+        </div>
+      </div>`;
+  },
+
+  renderMesas(c) {
+    const mesas = DB.get('mesas') || [];
+    let html = `<div class="flex-between mb-8"><h2>🪑 Mesas (${mesas.length})</h2>
+      <button class="btn-primary btn-sm" onclick="Admin.editMesa()">+ Nueva mesa</button></div>`;
+    if (!mesas.length) { html += '<div class="empty-state">No hay mesas</div>'; c.innerHTML = html; return }
+    html += '<div class="card"><table><tr><th>Mesa</th><th>Camarero</th><th>Pedidos</th><th></th></tr>';
+    mesas.forEach(m => {
+      const cm = m.camareroId ? DB.getCamarero(m.camareroId) : null;
+      const pa = DB.getPedidosMesa(m.id).length;
+      html += `<tr>
+        <td><strong>${m.nombre}</strong></td>
+        <td>${cm ? cm.nombre : '<span class="text-muted">Sin asignar</span>'}</td>
+        <td>${pa > 0 ? `<span class="badge badge-pendiente">${pa}</span>` : '—'}</td>
+        <td>
+          <button class="btn-info btn-sm" onclick="Admin.editMesa(${m.id})">✏️</button>
+          <button class="btn-danger btn-sm" onclick="Admin.deleteMesa(${m.id})">🗑️</button>
+        </td>
+      </tr>`;
+    });
+    html += '</table></div>';
+    c.innerHTML = html;
+  },
+  editMesa(id) {
+    const mesa = id ? DB.getMesa(id) : null;
+    const camareros = DB.get('camareros') || [];
+    UI.showModal(`
+      <h2>${mesa ? 'Editar' : 'Nueva'} mesa</h2>
+      <div class="form-group"><label>Nombre</label><input id="f-mesa-nombre" value="${mesa?.nombre || ''}" placeholder="Ej: Mesa 6"></div>
+      <div class="form-group"><label>Camarero asignado</label>
+        <select id="f-mesa-camarero">
+          <option value="">Sin asignar</option>
+          ${camareros.map(cm => `<option value="${cm.id}" ${mesa?.camareroId===cm.id?'selected':''}>${cm.nombre}</option>`).join('')}
+        </select>
+      </div>
+      <button class="btn-primary btn-block" onclick="Admin.saveMesa(${id||0})">💾 Guardar</button>
+    `);
+  },
+  async saveMesa(id) {
+    const nombre = document.getElementById('f-mesa-nombre').value.trim();
+    const camareroId = document.getElementById('f-mesa-camarero').value;
+    if (!nombre) return UI.toast('⚠️ Pon un nombre');
+    const mesas = DB.get('mesas') || [];
+    if (id) {
+      const m = mesas.find(x => x.id === id);
+      if (m) { m.nombre = nombre; m.camareroId = camareroId ? Number(camareroId) : null }
+    } else {
+      mesas.push({ id: DB.nextId('mesas'), nombre, camareroId: camareroId ? Number(camareroId) : null });
+    }
+    await DB.set('mesas', mesas);
+    UI.closeModal();
+    UI.toast('✅ Mesa guardada en la nube');
+    this.tab('mesas');
+  },
+  async deleteMesa(id) {
+    if (!confirm('¿Eliminar esta mesa?')) return;
+    const mesas = (DB.get('mesas') || []).filter(m => m.id !== id);
+    await DB.set('mesas', mesas);
+    UI.toast('🗑️ Mesa eliminada');
+    this.tab('mesas');
+  },
+
+  renderCamareros(c) {
+    const camareros = DB.get('camareros') || [];
+    let html = `<div class="flex-between mb-8"><h2>🧑‍🍳 Camareros (${camareros.length})</h2>
+      <button class="btn-primary btn-sm" onclick="Admin.editCamarero()">+ Nuevo</button></div>`;
+    if (!camareros.length) { html += '<div class="empty-state">No hay camareros</div>'; c.innerHTML = html; return }
+    html += '<div class="card"><table><tr><th>Nombre</th><th>Mesas</th><th>Enlace</th><th></th></tr>';
+    camareros.forEach(cm => {
+      const mesas = (DB.get('mesas') || []).filter(m => m.camareroId === cm.id);
+      html += `<tr>
+        <td><strong>${cm.nombre}</strong></td>
+        <td>${mesas.map(m => m.nombre).join(', ') || '<span class="text-muted">Ninguna</span>'}</td>
+        <td><a href="#/camarero?id=${cm.id}" style="font-size:.8rem">Abrir vista →</a></td>
+        <td>
+          <button class="btn-info btn-sm" onclick="Admin.editCamarero(${cm.id})">✏️</button>
+          <button class="btn-danger btn-sm" onclick="Admin.deleteCamarero(${cm.id})">🗑️</button>
+        </td>
+      </tr>`;
+    });
+    html += '</table></div>';
+    c.innerHTML = html;
+  },
+  editCamarero(id) {
+    const cm = id ? DB.getCamarero(id) : null;
+    UI.showModal(`
+      <h2>${cm ? 'Editar' : 'Nuevo'} camarero</h2>
+      <div class="form-group"><label>Nombre</label><input id="f-cm-nombre" value="${cm?.nombre || ''}" placeholder="Ej: Laura"></div>
+      <button class="btn-primary btn-block" onclick="Admin.saveCamarero(${id||0})">💾 Guardar</button>
+    `);
+  },
+  async saveCamarero(id) {
+    const nombre = document.getElementById('f-cm-nombre').value.trim();
+    if (!nombre) return UI.toast('⚠️ Pon un nombre');
+    const cms = DB.get('camareros') || [];
+    if (id) {
+      const cm = cms.find(x => x.id === id);
+      if (cm) cm.nombre = nombre;
+    } else {
+      cms.push({ id: DB.nextId('camareros'), nombre });
+    }
+    await DB.set('camareros', cms);
+    UI.closeModal();
+    UI.toast('✅ Camarero guardado en la nube');
+    this.tab('camareros');
+  },
+  async deleteCamarero(id) {
+    if (!confirm('¿Eliminar este camarero?')) return;
+    const cms = (DB.get('camareros') || []).filter(c => c.id !== id);
+    await DB.set('camareros', cms);
+    const mesas = (DB.get('mesas') || []).map(m => { if (m.camareroId === id) m.camareroId = null; return m });
+    await DB.set('mesas', mesas);
+    UI.toast('🗑️ Camarero eliminado');
+    this.tab('camareros');
+  },
+
+  renderMenu(c) {
+    const menu = DB.get('menu') || [];
+    const categorias = [...new Set(menu.map(m => m.categoria))];
+    let html = `<div class="flex-between mb-8"><h2>📋 Menú (${menu.length})</h2>
+      <button class="btn-primary btn-sm" onclick="Admin.editMenuItem()">+ Nuevo producto</button></div>`;
+    categorias.forEach(cat => {
+      const items = menu.filter(m => m.categoria === cat);
+      html += `<h3 class="mt-16 mb-8">${cat}</h3><div class="card"><table><tr><th>Producto</th><th>Precio</th><th>Disp.</th><th></th></tr>`;
+      items.forEach(m => {
+        html += `<tr style="${m.disponible?'':'opacity:.4'}">
+          <td><strong>${m.nombre}</strong></td>
+          <td>${m.precio.toFixed(2)}€</td>
+          <td>${m.disponible ? '✅' : '❌'}</td>
+          <td>
+            <button class="btn-info btn-sm" onclick="Admin.editMenuItem(${m.id})">✏️</button>
+            <button class="btn-sm" style="background:#eee" onclick="Admin.toggleDisp(${m.id})">${m.disponible?'Ocultar':'Mostrar'}</button>
+            <button class="btn-danger btn-sm" onclick="Admin.deleteMenuItem(${m.id})">🗑️</button>
+          </td>
+        </tr>`;
+      });
+      html += '</table></div>';
+    });
+    c.innerHTML = html;
+  },
+  editMenuItem(id) {
+    const m = id ? DB.getMenuItem(id) : null;
+    const menu = DB.get('menu') || [];
+    const cats = [...new Set(menu.map(x => x.categoria))];
+    UI.showModal(`
+      <h2>${m ? 'Editar' : 'Nuevo'} producto</h2>
+      <div class="form-group"><label>Nombre</label><input id="f-menu-nombre" value="${m?.nombre || ''}"></div>
+      <div class="form-group"><label>Precio (€)</label><input id="f-menu-precio" type="number" step="0.1" value="${m?.precio || ''}"></div>
+      <div class="form-group"><label>Categoría</label>
+        <input id="f-menu-cat" list="cat-list" value="${m?.categoria || ''}" placeholder="Ej: Cafés">
+        <datalist id="cat-list">${cats.map(c => `<option value="${c}">`).join('')}</datalist>
+      </div>
+      <button class="btn-primary btn-block" onclick="Admin.saveMenuItem(${id||0})">💾 Guardar</button>
+    `);
+  },
+  async saveMenuItem(id) {
+    const nombre = document.getElementById('f-menu-nombre').value.trim();
+    const precio = parseFloat(document.getElementById('f-menu-precio').value);
+    const categoria = document.getElementById('f-menu-cat').value.trim();
+    if (!nombre || isNaN(precio) || !categoria) return UI.toast('⚠️ Rellena todos los campos');
+    const menu = DB.get('menu') || [];
+    if (id) {
+      const m = menu.find(x => x.id === id);
+      if (m) { m.nombre = nombre; m.precio = precio; m.categoria = categoria }
+    } else {
+      menu.push({ id: DB.nextId('menu'), nombre, precio, categoria, disponible: true });
+    }
+    await DB.set('menu', menu);
+    UI.closeModal();
+    UI.toast('✅ Producto guardado en la nube');
+    this.tab('menu');
+  },
+  async toggleDisp(id) {
+    const menu = DB.get('menu') || [];
+    const m = menu.find(x => x.id === id);
+    if (m) m.disponible = !m.disponible;
+    await DB.set('menu', menu);
+    this.tab('menu');
+  },
+  async deleteMenuItem(id) {
+    if (!confirm('¿Eliminar este producto?')) return;
+    const menu = (DB.get('menu') || []).filter(m => m.id !== id);
+    await DB.set('menu', menu);
+    UI.toast('🗑️ Producto eliminado');
+    this.tab('menu');
+  },
+
+  renderQR(c) {
+    const mesas = DB.get('mesas') || [];
+    const config = DB.get('config') || {};
+    const base = config.urlBase || (location.origin + location.pathname);
+    let html = `<div class="flex-between mb-8"><h2>📱 Códigos QR</h2>
+      <button class="btn-primary btn-sm" onclick="window.print()">🖨️ Imprimir todos</button></div>
+      <p class="text-muted mb-8">Escanea cada QR desde la mesa correspondiente.</p>
+      <div class="qr-grid print-area">`;
+    mesas.forEach(m => {
+      const url = `${base}#/cliente?mesa=${m.id}`;
+      const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}`;
+      html += `<div class="card qr-card">
+        <img src="${qrUrl}" alt="QR ${m.nombre}" loading="lazy">
+        <div class="mesa-name">${m.nombre}</div>
+        <div class="text-muted" style="font-size:.7rem;word-break:break-all">${url}</div>
+      </div>`;
+    });
+    html += '</div>';
+    c.innerHTML = html;
+  },
+
+  renderPedidos(c) {
+    const todos = (DB.get('pedidos') || []).sort((a, b) => b.timestamp - a.timestamp);
+    const activos = todos.filter(p => p.estado !== 'servido');
+    const historial = todos.filter(p => p.estado === 'servido');
+    let html = `<h2 class="mb-8">📦 Pedidos activos (${activos.length})</h2>`;
+    if (!activos.length) html += '<div class="card text-muted text-center">Sin pedidos activos</div>';
+    else html += this._pedidosTable(activos);
+    html += `<h2 class="mt-16 mb-8">📜 Historial (${historial.length})</h2>`;
+    if (!historial.length) html += '<div class="card text-muted text-center">Sin historial</div>';
+    else html += this._pedidosTable(historial.slice(0, 50));
+    if (historial.length > 0) {
+      html += `<button class="btn-danger btn-sm mt-8" onclick="Admin.limpiarHistorial()">🗑️ Limpiar historial</button>`;
+    }
+    c.innerHTML = html;
+  },
+  _pedidosTable(pedidos) {
+    let html = '<div class="card" style="overflow-x:auto"><table><tr><th>#</th><th>Mesa</th><th>Items</th><th>Total</th><th>Estado</th><th>Hora</th></tr>';
+    pedidos.forEach(p => {
+      const mesa = DB.getMesa(p.mesaId);
+      const d = new Date(p.timestamp);
+      const hora = d.toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' });
+      html += `<tr>
+        <td>${p.id}</td>
+        <td><strong>${mesa?.nombre || p.mesaId}</strong></td>
+        <td style="font-size:.8rem">${p.items.map(i => `${i.cantidad}×${i.nombre}`).join(', ')}</td>
+        <td>${p.total.toFixed(2)}€</td>
+        <td>${UI.estadoBadge(p.estado)}</td>
+        <td class="text-muted">${hora}</td>
+      </tr>`;
+    });
+    html += '</table></div>';
+    return html;
+  },
+  async limpiarHistorial() {
+    if (!confirm('¿Borrar todo el historial de pedidos servidos?')) return;
+    const pedidos = (DB.get('pedidos') || []).filter(p => p.estado !== 'servido');
+    await DB.set('pedidos', pedidos);
+    UI.toast('🗑️ Historial limpiado');
+    this.tab('pedidos');
+  },
+
+  renderConfig(c) {
+    const config = DB.get('config') || {};
+    c.innerHTML = `
+      <h2 class="mb-8">🔧 Configuración</h2>
+      <div class="card">
+        <div class="form-group"><label>Nombre del local</label>
+          <input id="f-config-nombre" value="${config.nombreLocal || ''}">
+        </div>
+        <div class="form-group"><label>URL base (para generar QR)</label>
+          <input id="f-config-url" value="${config.urlBase || location.origin + location.pathname}">
+          <div class="text-muted mt-8">Debe ser la URL pública donde esté alojado este archivo.</div>
+        </div>
+        <button class="btn-primary" onclick="Admin.saveConfig()">💾 Guardar</button>
+      </div>
+      <div class="card mt-16">
+        <h3>⚠️ Zona de peligro</h3>
+        <p class="text-muted mt-8">Esto borrará TODOS los datos en la nube.</p>
+        <button class="btn-danger mt-8" onclick="Admin.resetAll()">🗑️ Resetear todo en Firebase</button>
+      </div>
+      <div class="card mt-16">
+        <h3>✅ Estado de la conexión</h3>
+        <p class="text-muted mt-8">Conectado a: <code style="background:#eee;padding:2px 6px;border-radius:4px;font-size:.8rem">${FIREBASE_URL}</code></p>
+        <p class="text-muted mt-8">Sincronización: <strong style="color:var(--success)">Activa (Tiempo Real)</strong></p>
+      </div>`;
+  },
+  async saveConfig() {
+    const config = {
+      nombreLocal: document.getElementById('f-config-nombre').value.trim(),
+      urlBase: document.getElementById('f-config-url').value.trim()
+    };
+    await DB.set('config', config);
+    UI.toast('✅ Configuración guardada en la nube');
+  },
+  async resetAll() {
+    if (!confirm('⚠️ ¿BORRAR TODOS LOS DATOS EN LA NUBE? Esta acción no se puede deshacer.')) return;
+    if (!confirm('¿Estás SEGURO?')) return;
+    await DB.set('', null);
+    await DB.init();
+    UI.toast('🔄 Datos reseteados en la nube');
+    this.tab('dashboard');
+  }
+};
+
+// Alias para mantener compatibilidad con el código existente
+const Sync = {
+  onChange: (fn) => DB.onChange(fn)
+};
+
+// ============================================================
+//  INICIALIZACIÓN
+// ============================================================
+(async function() {
+  await DB.init();
+  Router.init();
+})();
+</script>
+</body>
+</html>
