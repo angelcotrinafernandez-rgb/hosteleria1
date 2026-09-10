@@ -45,7 +45,6 @@
       line-height: 1.5;
     }
 
-    /* Header */
     .header {
       position: sticky;
       top: 0;
@@ -139,14 +138,12 @@
       background: linear-gradient(135deg, var(--accent-green), var(--accent-green-dark));
     }
 
-    /* Main container */
     .container {
       max-width: 1200px;
       margin: 0 auto;
       padding: 20px;
     }
 
-    /* Cards */
     .card {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -168,6 +165,8 @@
       margin-bottom: 16px;
       padding-bottom: 12px;
       border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
     .card-title {
@@ -182,7 +181,6 @@
       font-size: 20px;
     }
 
-    /* Buttons */
     .btn {
       display: inline-flex;
       align-items: center;
@@ -253,7 +251,6 @@
       font-size: 16px;
     }
 
-    /* Inputs */
     .input, .textarea, .select {
       width: 100%;
       padding: 12px 14px;
@@ -280,7 +277,6 @@
       min-height: 80px;
     }
 
-    /* Menu panel */
     .menu-panel {
       max-width: 400px;
       margin: 60px auto;
@@ -350,7 +346,6 @@
       border-radius: var(--radius-sm);
     }
 
-    /* Stats bar */
     .stats-bar {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -380,7 +375,6 @@
       margin-top: 4px;
     }
 
-    /* Orders grid */
     .orders-grid {
       display: grid;
       gap: 12px;
@@ -399,27 +393,12 @@
       background: var(--bg-card-hover);
     }
 
-    .order-card.estado-recibido {
-      border-left-color: var(--accent-blue);
-    }
-
-    .order-card.estado-preparacion {
-      border-left-color: var(--accent-gold);
-    }
-
-    .order-card.estado-listo {
-      border-left-color: var(--accent-green);
-    }
-
-    .order-card.estado-entregado {
-      border-left-color: var(--text-muted);
-      opacity: 0.7;
-    }
-
-    .order-card.estado-cancelado {
-      border-left-color: var(--accent-red);
-      opacity: 0.7;
-    }
+    .order-card.estado-recibido { border-left-color: var(--accent-blue); }
+    .order-card.estado-preparacion { border-left-color: var(--accent-gold); }
+    .order-card.estado-listo { border-left-color: var(--accent-green); }
+    .order-card.estado-entregado { border-left-color: var(--text-muted); opacity: 0.7; }
+    .order-card.estado-cancelado { border-left-color: var(--accent-red); opacity: 0.7; }
+    .order-card.estado-pagado { border-left-color: var(--accent-purple); opacity: 0.7; }
 
     .order-header {
       display: flex;
@@ -471,32 +450,13 @@
       font-weight: 600;
     }
 
-    .order-status.recibido {
-      background: rgba(59, 130, 246, 0.15);
-      color: var(--accent-blue);
-    }
+    .order-status.recibido { background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); }
+    .order-status.preparacion { background: rgba(245, 158, 11, 0.15); color: var(--accent-gold); }
+    .order-status.listo { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); }
+    .order-status.entregado { background: rgba(113, 113, 122, 0.15); color: var(--text-muted); }
+    .order-status.cancelado { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); }
+    .order-status.pagado { background: rgba(139, 92, 246, 0.15); color: var(--accent-purple); }
 
-    .order-status.preparacion {
-      background: rgba(245, 158, 11, 0.15);
-      color: var(--accent-gold);
-    }
-
-    .order-status.listo {
-      background: rgba(16, 185, 129, 0.15);
-      color: var(--accent-green);
-    }
-
-    .order-status.entregado {
-      background: rgba(113, 113, 122, 0.15);
-      color: var(--text-muted);
-    }
-
-    .order-status.cancelado {
-      background: rgba(239, 68, 68, 0.15);
-      color: var(--accent-red);
-    }
-
-    /* Alerts */
     .alert-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -533,7 +493,6 @@
       margin-top: 2px;
     }
 
-    /* Products grid */
     .products-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -606,7 +565,6 @@
       border-color: var(--accent-gold);
     }
 
-    /* Cart */
     .cart-item {
       display: flex;
       align-items: center;
@@ -642,7 +600,6 @@
       padding: 4px 8px;
     }
 
-    /* Client header */
     .client-header {
       text-align: center;
       padding: 20px;
@@ -665,7 +622,6 @@
       margin-top: 10px;
     }
 
-    /* QR Section */
     .qr-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -693,7 +649,6 @@
       font-size: 15px;
     }
 
-    /* Toast */
     .toast {
       position: fixed;
       bottom: 24px;
@@ -725,12 +680,10 @@
       background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), var(--bg-card));
     }
 
-    /* Hidden */
     .hidden {
       display: none !important;
     }
 
-    /* Empty state */
     .empty-state {
       text-align: center;
       padding: 40px 20px;
@@ -743,7 +696,6 @@
       opacity: 0.5;
     }
 
-    /* Debug panel */
     .debug-panel {
       background: var(--bg-secondary);
       border: 1px solid var(--border);
@@ -761,48 +713,56 @@
       color: var(--text-secondary);
     }
 
-    .debug-line.error {
-      color: var(--accent-red);
+    .debug-line.error { color: var(--accent-red); }
+    .debug-line.success { color: var(--accent-green); }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
     }
 
-    .debug-line.success {
-      color: var(--accent-green);
+    .modal-content {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: var(--shadow-xl);
     }
 
-    /* Responsive */
-    @media (max-width: 768px) {
-      .container {
-        padding: 12px;
-      }
-
-      .stats-bar {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .products-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .order-footer {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .order-footer .btn {
-        width: 100%;
-      }
+    /* Total mesa */
+    .total-mesa-card {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), var(--bg-card));
+      border-color: rgba(245, 158, 11, 0.3);
+      text-align: center;
     }
 
-    /* Animations */
+    .total-mesa-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--accent-gold);
+      margin-top: 4px;
+    }
+
+    /* Cuenta mesas */
+    .cuenta-mesa-card {
+      border-left-color: var(--accent-gold);
+    }
+
     @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .animate-in {
@@ -810,25 +770,26 @@
     }
 
     @keyframes newOrder {
-      0% {
-        box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
-      }
-      70% {
-        box-shadow: 0 0 0 10px rgba(245, 158, 11, 0);
-      }
-      100% {
-        box-shadow: 0 0 0 0 rgba(245, 158, 11, 0);
-      }
+      0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
     }
 
     .order-new {
       animation: newOrder 1.5s ease;
     }
+
+    @media (max-width: 768px) {
+      .container { padding: 12px; }
+      .stats-bar { grid-template-columns: repeat(2, 1fr); }
+      .products-grid { grid-template-columns: repeat(2, 1fr); }
+      .order-footer { flex-direction: column; align-items: stretch; }
+      .order-footer .btn { width: 100%; }
+    }
   </style>
 </head>
 <body>
 
-  <!-- Header -->
   <header class="header">
     <div class="header-left">
       <div class="logo">🍽️</div>
@@ -840,15 +801,12 @@
         <span id="connectionText">Conectando...</span>
       </div>
       <span class="role-badge" id="roleBadge">-</span>
-      <button class="btn btn-secondary btn-sm" id="btnSalir" onclick="salir()" style="display:none;">
-        Salir
-      </button>
+      <button class="btn btn-secondary btn-sm" id="btnSalir" onclick="salir()" style="display:none;">Salir</button>
     </div>
   </header>
 
   <div class="container">
 
-    <!-- Warning -->
     <div id="setupWarning" class="card hidden" style="border-color: var(--accent-red); background: rgba(239, 68, 68, 0.1);">
       <div class="card-title" style="color: var(--accent-red);">⚠️ Aviso</div>
       <div id="setupWarningText" style="margin-top: 8px; color: var(--text-secondary);"></div>
@@ -861,9 +819,9 @@
         <h1 class="menu-title">Hostelería Pro</h1>
         <p class="menu-subtitle">Selecciona tu rol para continuar</p>
         <div class="menu-buttons">
-          <button class="menu-btn" onclick="goView('admin')">
+          <button class="menu-btn" onclick="mostrarLoginAdmin()">
             <span class="icon">👔</span>
-            <span>Administrador</span>
+            <span>Administrador 🔐</span>
           </button>
           <button class="menu-btn" onclick="goView('barra')">
             <span class="icon">🍸</span>
@@ -880,10 +838,24 @@
       </div>
     </section>
 
+    <!-- LOGIN MODAL -->
+    <div id="loginModal" class="modal-overlay hidden">
+      <div class="modal-content">
+        <h3 style="margin-bottom: 8px;">🔐 Acceso Administrador</h3>
+        <p class="small" style="color: var(--text-secondary); margin-bottom: 16px;">Introduce tus credenciales para continuar</p>
+        <input class="input" id="loginUsuario" placeholder="Usuario" style="margin-bottom: 10px;" />
+        <input class="input" id="loginPassword" type="password" placeholder="Contraseña" />
+        <div id="loginError" style="color: var(--accent-red); font-size: 13px; margin-top: 8px; min-height: 20px;"></div>
+        <div style="display: flex; gap: 10px; margin-top: 16px;">
+          <button class="btn btn-secondary" onclick="cerrarLogin()">Cancelar</button>
+          <button class="btn btn-primary" onclick="intentarLogin()" style="flex: 1;">Entrar</button>
+        </div>
+      </div>
+    </div>
+
     <!-- STAFF PANEL -->
     <section id="staffPanel" class="hidden">
       
-      <!-- Stats -->
       <div class="stats-bar">
         <div class="stat-card">
           <div class="stat-value" id="statPedidos">0</div>
@@ -900,6 +872,22 @@
         <div class="stat-card">
           <div class="stat-value" id="statMesas">0</div>
           <div class="stat-label">Mesas</div>
+        </div>
+      </div>
+
+      <!-- Cuentas por mesa -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="icon">💰</span>
+            Cuentas por mesa
+          </div>
+        </div>
+        <div id="cuentasMesas">
+          <div class="empty-state">
+            <div class="icon">💰</div>
+            <div>No hay cuentas abiertas</div>
+          </div>
         </div>
       </div>
 
@@ -955,6 +943,40 @@
     <!-- ADMIN PANEL -->
     <section id="adminPanel" class="hidden">
       
+      <!-- Contabilidad -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="icon">📊</span>
+            Contabilidad
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="exportarExcel()">📥 Exportar Excel</button>
+        </div>
+        
+        <div class="stats-bar">
+          <div class="stat-card">
+            <div class="stat-value" id="contDia" style="font-size: 20px;">0,00 €</div>
+            <div class="stat-label">Hoy</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="contSemana" style="font-size: 20px;">0,00 €</div>
+            <div class="stat-label">Esta semana</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="contMes" style="font-size: 20px;">0,00 €</div>
+            <div class="stat-label">Este mes</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="contTotal" style="font-size: 20px;">0,00 €</div>
+            <div class="stat-label">Total histórico</div>
+          </div>
+        </div>
+        
+        <div style="margin-top: 16px;">
+          <button class="btn btn-secondary btn-sm" onclick="cambiarPasswordAdmin()">🔑 Cambiar contraseña</button>
+        </div>
+      </div>
+
       <!-- QR Section -->
       <div class="card">
         <div class="card-header">
@@ -1044,6 +1066,12 @@
         </div>
       </div>
 
+      <!-- Total mesa -->
+      <div id="totalMesaCard" class="card total-mesa-card" style="display: none;">
+        <div style="font-size: 13px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">Total de tu cuenta</div>
+        <div class="total-mesa-value" id="totalMesaValue">0,00 €</div>
+      </div>
+
       <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
         <button class="btn btn-primary btn-block" onclick="toggleClientOrders()">
           🍽️ Ver carta y pedir
@@ -1117,6 +1145,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
   <script>
     // ============================================================
@@ -1161,6 +1190,18 @@
     }
 
     // ============================================================
+    // PASSWORD HASH
+    // ============================================================
+    function hashPassword(password) {
+      let hash = 5381;
+      for (let i = 0; i < password.length; i++) {
+        hash = ((hash << 5) + hash) + password.charCodeAt(i);
+        hash = hash & 0x7fffffff;
+      }
+      return 'h' + hash.toString(36);
+    }
+
+    // ============================================================
     // INIT FIREBASE
     // ============================================================
     function initFirebase() {
@@ -1170,7 +1211,6 @@
         db = firebase.database();
         firebaseReady = true;
 
-        // Test connection
         db.ref('.info/connected').on('value', (snap) => {
           const connected = snap.val() === true;
           const dot = document.getElementById('connectionDot');
@@ -1247,6 +1287,7 @@
     let mesas = [];
     let camareros = [];
     let productos = [];
+    let pagos = [];
     let cart = [];
     let pendingProductoFoto = '';
     let previousOrderIds = new Set();
@@ -1288,7 +1329,8 @@
         EN_PREPARACION: '👨‍🍳 En preparación',
         LISTO: '✅ Listo',
         ENTREGADO: '📦 Entregado',
-        CANCELADO: '❌ Cancelado'
+        CANCELADO: '❌ Cancelado',
+        PAGADO: '💰 Pagado'
       };
       return estados[estado] || estado;
     }
@@ -1299,7 +1341,8 @@
         EN_PREPARACION: 'preparacion',
         LISTO: 'listo',
         ENTREGADO: 'entregado',
-        CANCELADO: 'cancelado'
+        CANCELADO: 'cancelado',
+        PAGADO: 'pagado'
       };
       return classes[estado] || 'recibido';
     }
@@ -1307,6 +1350,15 @@
     function formatPrecio(value) {
       const n = Number(value) || 0;
       return n.toFixed(2).replace('.', ',') + ' €';
+    }
+
+    function extraerTotalPedido(items) {
+      if (!items) return 0;
+      const match = items.match(/Total:\s*([\d.,]+)\s*€/);
+      if (match) {
+        return parseFloat(match[1].replace(',', '.'));
+      }
+      return 0;
     }
 
     function showToast(message, type = '') {
@@ -1345,6 +1397,10 @@
           localStorage.removeItem(KEY_ROLE);
           location.href = location.pathname;
         }
+      } else if (role === 'admin') {
+        sessionStorage.removeItem('admin_auth');
+        localStorage.removeItem(KEY_ROLE);
+        location.href = location.pathname;
       } else {
         localStorage.removeItem(KEY_ROLE);
         location.href = location.pathname;
@@ -1381,16 +1437,151 @@
             document.getElementById('mesaDetectadaText').textContent = mesaFija;
             document.getElementById('clientOrdersCard').classList.remove('hidden');
           }
+        } else if (role === 'admin') {
+          // Verificar autenticación de admin
+          if (!sessionStorage.getItem('admin_auth')) {
+            mostrarLoginAdmin();
+            return;
+          }
+          staffPanel.classList.remove('hidden');
+          adminPanel.classList.remove('hidden');
         } else {
           staffPanel.classList.remove('hidden');
-          
-          if (role === 'admin') {
-            adminPanel.classList.remove('hidden');
-          }
         }
       }
 
       debugLog('Interfaz aplicada para rol: ' + role, 'info');
+    }
+
+    // ============================================================
+    // ADMIN LOGIN
+    // ============================================================
+    function mostrarLoginAdmin() {
+      const bloqueado = checkBloqueo();
+      if (bloqueado > 0) {
+        document.getElementById('loginError').textContent = `Bloqueado. Espera ${bloqueado} segundos.`;
+      }
+      document.getElementById('loginModal').classList.remove('hidden');
+      document.getElementById('loginUsuario').focus();
+    }
+
+    function cerrarLogin() {
+      document.getElementById('loginModal').classList.add('hidden');
+      document.getElementById('loginUsuario').value = '';
+      document.getElementById('loginPassword').value = '';
+      document.getElementById('loginError').textContent = '';
+    }
+
+    function checkBloqueo() {
+      const intentos = parseInt(localStorage.getItem('admin_intentos') || '0');
+      const ultimoFallo = parseInt(localStorage.getItem('admin_ultimo_fallo') || '0');
+      const ahora = Date.now();
+      
+      if (intentos >= 3 && (ahora - ultimoFallo) < 60000) {
+        return Math.ceil((60000 - (ahora - ultimoFallo)) / 1000);
+      }
+      
+      if (intentos >= 3 && (ahora - ultimoFallo) >= 60000) {
+        localStorage.setItem('admin_intentos', '0');
+      }
+      
+      return 0;
+    }
+
+    function registrarFallo() {
+      const intentos = parseInt(localStorage.getItem('admin_intentos') || '0') + 1;
+      localStorage.setItem('admin_intentos', intentos.toString());
+      localStorage.setItem('admin_ultimo_fallo', Date.now().toString());
+    }
+
+    function resetFallos() {
+      localStorage.setItem('admin_intentos', '0');
+    }
+
+    async function intentarLogin() {
+      const usuario = document.getElementById('loginUsuario').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      const errorElem = document.getElementById('loginError');
+
+      const bloqueado = checkBloqueo();
+      if (bloqueado > 0) {
+        errorElem.textContent = `Bloqueado. Espera ${bloqueado} segundos.`;
+        return;
+      }
+
+      if (!usuario || !password) {
+        errorElem.textContent = 'Introduce usuario y contraseña.';
+        return;
+      }
+
+      if (!requireFirebase()) return;
+
+      try {
+        debugLog('Intentando login admin: ' + usuario, 'info');
+        
+        const snapshot = await db.ref('config/admin').once('value');
+        let config = snapshot.val();
+
+        if (!config) {
+          debugLog('Creando credenciales admin por defecto', 'info');
+          const defaultHash = hashPassword('admin123');
+          await db.ref('config/admin').set({
+            usuario: 'admin',
+            passwordHash: defaultHash
+          });
+          config = { usuario: 'admin', passwordHash: defaultHash };
+        }
+
+        const inputHash = hashPassword(password);
+
+        if (usuario === config.usuario && inputHash === config.passwordHash) {
+          debugLog('Login admin correcto', 'success');
+          resetFallos();
+          sessionStorage.setItem('admin_auth', '1');
+          localStorage.setItem(KEY_ROLE, 'admin');
+          cerrarLogin();
+          location.href = location.pathname + '?vista=admin';
+        } else {
+          debugLog('Login admin fallido', 'error');
+          registrarFallo();
+          const restante = 3 - parseInt(localStorage.getItem('admin_intentos') || '0');
+          errorElem.textContent = `Credenciales incorrectas. ${restante > 0 ? restante + ' intentos restantes.' : ''}`;
+        }
+      } catch (e) {
+        debugLog('Error en login: ' + e.message, 'error');
+        errorElem.textContent = 'Error: ' + e.message;
+      }
+    }
+
+    async function cambiarPasswordAdmin() {
+      if (!requireFirebase()) return;
+
+      const actual = prompt('Contraseña actual:');
+      if (!actual) return;
+
+      try {
+        const snapshot = await db.ref('config/admin').once('value');
+        const config = snapshot.val();
+
+        if (!config || hashPassword(actual) !== config.passwordHash) {
+          showToast('❌ Contraseña actual incorrecta', 'error');
+          return;
+        }
+
+        const nueva = prompt('Nueva contraseña (mínimo 4 caracteres):');
+        if (!nueva || nueva.length < 4) {
+          showToast('❌ La nueva contraseña debe tener al menos 4 caracteres', 'error');
+          return;
+        }
+
+        await db.ref('config/admin').update({
+          passwordHash: hashPassword(nueva)
+        });
+
+        showToast('✅ Contraseña actualizada', 'success');
+      } catch (e) {
+        showToast('❌ Error: ' + e.message, 'error');
+      }
     }
 
     // ============================================================
@@ -1644,6 +1835,47 @@
       document.getElementById('statMesas').textContent = mesas.length;
     }
 
+    function calcularTotalMesa(mesa, ordersList) {
+      return ordersList
+        .filter(o => o.mesa === mesa && o.estado !== 'CANCELADO' && o.estado !== 'PAGADO')
+        .reduce((sum, o) => sum + (o.totalPedido || extraerTotalPedido(o.items)), 0);
+    }
+
+    function renderCuentasMesas() {
+      const box = document.getElementById('cuentasMesas');
+      if (!box) return;
+
+      const mesasActivas = {};
+      orders.forEach(o => {
+        if (o.estado !== 'CANCELADO' && o.estado !== 'PAGADO') {
+          if (!mesasActivas[o.mesa]) {
+            mesasActivas[o.mesa] = { total: 0, numPedidos: 0 };
+          }
+          mesasActivas[o.mesa].total += o.totalPedido || extraerTotalPedido(o.items);
+          mesasActivas[o.mesa].numPedidos++;
+        }
+      });
+
+      const keys = Object.keys(mesasActivas);
+      if (!keys.length) {
+        box.innerHTML = '<div class="empty-state"><div class="icon">💰</div><div>No hay cuentas abiertas</div></div>';
+        return;
+      }
+
+      box.innerHTML = keys.map(mesa => {
+        const info = mesasActivas[mesa];
+        return `
+          <div class="alert-card cuenta-mesa-card animate-in">
+            <div class="alert-info">
+              <div class="alert-title">🪑 Mesa ${escapeHtml(mesa)}</div>
+              <div class="alert-meta">${info.numPedidos} pedido(s) · ${formatPrecio(info.total)}</div>
+            </div>
+            <button class="btn btn-success btn-sm" onclick="cobrarMesa('${escapeHtml(mesa).replace(/'/g, "\\'")}')">💰 Cobrar</button>
+          </div>
+        `;
+      }).join('');
+    }
+
     function renderStaffAlerts() {
       const box = document.getElementById('staffAlerts');
       if (!box) return;
@@ -1700,14 +1932,13 @@
                 ${order.estado === 'RECIBIDO' ? `<button class="btn btn-secondary btn-sm" onclick="cambiarEstado('${order.id}', 'EN_PREPARACION')">👨‍🍳 Preparar</button>` : ''}
                 ${order.estado === 'EN_PREPARACION' ? `<button class="btn btn-success btn-sm" onclick="cambiarEstado('${order.id}', 'LISTO')">✅ Listo</button>` : ''}
                 ${order.estado === 'LISTO' ? `<button class="btn btn-primary btn-sm" onclick="cambiarEstado('${order.id}', 'ENTREGADO')">📦 Entregar</button>` : ''}
-                ${order.estado !== 'CANCELADO' && order.estado !== 'ENTREGADO' ? `<button class="btn btn-danger btn-sm" onclick="cambiarEstado('${order.id}', 'CANCELADO')">❌</button>` : ''}
+                ${order.estado !== 'CANCELADO' && order.estado !== 'ENTREGADO' && order.estado !== 'PAGADO' ? `<button class="btn btn-danger btn-sm" onclick="cambiarEstado('${order.id}', 'CANCELADO')">❌</button>` : ''}
               </div>
             </div>
           </div>
         `;
       }).join('');
 
-      // Update previous IDs
       previousOrderIds = new Set(orders.map(o => o.id));
     }
 
@@ -1880,6 +2111,55 @@
       box.innerHTML = `Último aviso: ${tipoLabel} · ${latest.atendida ? '✅ Atendido' : '⏳ Pendiente'}`;
     }
 
+    function actualizarTotalMesaCliente() {
+      const total = clientOrders
+        .filter(o => o.estado !== 'CANCELADO' && o.estado !== 'PAGADO')
+        .reduce((sum, o) => sum + (o.totalPedido || extraerTotalPedido(o.items)), 0);
+
+      const elem = document.getElementById('totalMesaCard');
+      const valueElem = document.getElementById('totalMesaValue');
+
+      if (total > 0) {
+        elem.style.display = 'block';
+        valueElem.textContent = formatPrecio(total);
+      } else {
+        elem.style.display = 'none';
+      }
+    }
+
+    function renderContabilidad() {
+      const now = new Date();
+      const hoy = now.toISOString().slice(0, 10);
+
+      const inicioSemana = new Date(now);
+      const diaSemana = now.getDay() || 7;
+      inicioSemana.setDate(now.getDate() - diaSemana + 1);
+      const fechaInicioSemana = inicioSemana.toISOString().slice(0, 10);
+
+      const inicioMes = new Date(now.getFullYear(), now.getMonth(), 1);
+      const fechaInicioMes = inicioMes.toISOString().slice(0, 10);
+
+      let totalHistorico = 0;
+      let totalDia = 0;
+      let totalSemana = 0;
+      let totalMes = 0;
+
+      pagos.forEach(p => {
+        const total = p.total || 0;
+        totalHistorico += total;
+        if (p.fecha === hoy) totalDia += total;
+        if (p.fecha >= fechaInicioSemana) totalSemana += total;
+        if (p.fecha >= fechaInicioMes) totalMes += total;
+      });
+
+      document.getElementById('contDia').textContent = formatPrecio(totalDia);
+      document.getElementById('contSemana').textContent = formatPrecio(totalSemana);
+      document.getElementById('contMes').textContent = formatPrecio(totalMes);
+      document.getElementById('contTotal').textContent = formatPrecio(totalHistorico);
+
+      debugLog(`Contabilidad: Día=${formatPrecio(totalDia)}, Semana=${formatPrecio(totalSemana)}, Mes=${formatPrecio(totalMes)}, Total=${formatPrecio(totalHistorico)}`, 'info');
+    }
+
     // ============================================================
     // ACTIONS
     // ============================================================
@@ -1935,9 +2215,11 @@
         );
       });
 
+      let totalPedido = 0;
+
       if (cart.length) {
-        const total = cart.reduce((sum, item) => sum + (item.qty * (item.precio || 0)), 0);
-        lines.push('Total: ' + formatPrecio(total));
+        totalPedido = cart.reduce((sum, item) => sum + (item.qty * (item.precio || 0)), 0);
+        lines.push('Total: ' + formatPrecio(totalPedido));
       }
 
       if (!lines.length) {
@@ -1951,6 +2233,7 @@
         mesa: mesa,
         items: lines.join('\n'),
         estado: 'RECIBIDO',
+        totalPedido: Math.round(totalPedido * 100) / 100,
         createdAtLocal: nowLocal(),
         updatedAtLocal: nowLocal()
       };
@@ -1982,6 +2265,57 @@
         showToast('✅ Estado actualizado', 'success');
       } catch (e) {
         showToast('❌ Error: ' + e.message, 'error');
+      }
+    }
+
+    async function cobrarMesa(mesa) {
+      if (!requireFirebase()) return;
+
+      const pedidosMesa = orders.filter(o =>
+        o.mesa === mesa &&
+        o.estado !== 'CANCELADO' &&
+        o.estado !== 'PAGADO'
+      );
+
+      if (!pedidosMesa.length) {
+        showToast('No hay pedidos pendientes en esta mesa', 'error');
+        return;
+      }
+
+      const total = pedidosMesa.reduce((sum, o) => {
+        return sum + (o.totalPedido || extraerTotalPedido(o.items));
+      }, 0);
+
+      if (!confirm(`Cobrar mesa ${mesa}: ${formatPrecio(total)}\n${pedidosMesa.length} pedido(s)\n¿Confirmar?`)) return;
+
+      const now = new Date();
+      const pagoId = newId();
+
+      try {
+        // Crear registro de pago
+        await db.ref('pagos/' + pagoId).set({
+          fecha: now.toISOString().slice(0, 10),
+          hora: now.toTimeString().slice(0, 5),
+          timestamp: now.getTime(),
+          mesa: mesa,
+          total: Math.round(total * 100) / 100,
+          numPedidos: pedidosMesa.length
+        });
+
+        debugLog(`Pago registrado: Mesa ${mesa}, Total ${formatPrecio(total)}`, 'success');
+
+        // Marcar pedidos como PAGADO
+        for (const pedido of pedidosMesa) {
+          await db.ref('pedidos/' + pedido.id).update({
+            estado: 'PAGADO',
+            updatedAtLocal: nowLocal()
+          });
+        }
+
+        showToast('✅ Mesa cobrada: ' + formatPrecio(total), 'success');
+      } catch (e) {
+        debugLog('Error al cobrar mesa: ' + e.message, 'error');
+        showToast('❌ Error al cobrar: ' + e.message, 'error');
       }
     }
 
@@ -2174,36 +2508,6 @@
       }
     }
 
-    async function subirFotoProducto(productoId, input) {
-      if (!requireFirebase()) return;
-      const file = input.files && input.files[0];
-      if (!file) return;
-
-      showToast('Procesando foto...', '');
-      const foto = await compressImageFile(file);
-
-      if (!foto) {
-        showToast('❌ No se pudo procesar la foto', 'error');
-        return;
-      }
-
-      if (foto.length > 950000) {
-        showToast('⚠️ La foto es demasiado grande', 'error');
-        return;
-      }
-
-      try {
-        await db.ref('productos/' + productoId).update({
-          foto: foto,
-          updatedAtLocal: nowLocal()
-        });
-        input.value = '';
-        showToast('✅ Foto actualizada', 'success');
-      } catch (e) {
-        showToast('❌ Error: ' + e.message, 'error');
-      }
-    }
-
     async function editarProductoNombre(id) {
       if (!requireFirebase()) return;
       const producto = productos.find(p => p.id === id);
@@ -2238,11 +2542,11 @@
       
       debugLog('Forzando actualización de datos...', 'info');
       
-      // Re-subscribe to force refresh
       db.ref('pedidos').once('value').then(snapshot => {
         const data = snapshot.val() || {};
         orders = Object.keys(data).map(id => ({ id, ...data[id] }));
         renderStaffOrders();
+        renderCuentasMesas();
         updateStats();
         debugLog('Datos actualizados manualmente. Pedidos: ' + orders.length, 'success');
         showToast('✅ Datos actualizados', 'success');
@@ -2250,6 +2554,39 @@
         debugLog('Error al actualizar: ' + e.message, 'error');
         showToast('❌ Error al actualizar', 'error');
       });
+    }
+
+    // ============================================================
+    // EXCEL EXPORT
+    // ============================================================
+    function exportarExcel() {
+      if (typeof XLSX === 'undefined') {
+        showToast('❌ Librería Excel no cargada', 'error');
+        return;
+      }
+
+      if (!pagos.length) {
+        showToast('⚠️ No hay pagos registrados', 'error');
+        return;
+      }
+
+      const data = pagos.map(p => ({
+        'Fecha': p.fecha,
+        'Hora': p.hora,
+        'Mesa': p.mesa,
+        'Nº Pedidos': p.numPedidos,
+        'Total (€)': p.total
+      }));
+
+      const ws = XLSX.utils.json_to_sheet(data);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Contabilidad');
+
+      const fecha = new Date().toISOString().slice(0, 10);
+      XLSX.writeFile(wb, `contabilidad_${fecha}.xlsx`);
+
+      showToast('✅ Excel exportado', 'success');
+      debugLog('Excel exportado con ' + pagos.length + ' pagos', 'success');
     }
 
     // ============================================================
@@ -2297,6 +2634,7 @@
           clientOrders = allOrders.filter(o => o.clientId === clientId);
           debugLog('Pedidos cliente actualizados: ' + clientOrders.length, 'info');
           renderClientOrders();
+          actualizarTotalMesaCliente();
         }, error => {
           debugLog('Error en suscripción pedidos cliente: ' + error.message, 'error');
         });
@@ -2315,7 +2653,6 @@
           const data = snapshot.val() || {};
           const newOrders = Object.keys(data).map(id => ({ id, ...data[id] }));
           
-          // Check for new orders
           const newCount = newOrders.filter(o => !previousOrderIds.has(o.id)).length;
           if (newCount > 0 && previousOrderIds.size > 0) {
             debugLog('🔔 ¡Nuevo pedido recibido!', 'success');
@@ -2325,6 +2662,7 @@
           orders = newOrders;
           debugLog('Pedidos staff actualizados: ' + orders.length, 'info');
           renderStaffOrders();
+          renderCuentasMesas();
           updateStats();
         }, error => {
           debugLog('Error en suscripción pedidos staff: ' + error.message, 'error');
@@ -2349,6 +2687,19 @@
         }, error => {
           debugLog('Error en suscripción camareros: ' + error.message, 'error');
         });
+
+        // Pagos - only for admin
+        if (role === 'admin') {
+          db.ref('pagos').on('value', snapshot => {
+            const data = snapshot.val() || {};
+            pagos = Object.keys(data).map(id => ({ id, ...data[id] }));
+            pagos.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+            debugLog('Pagos actualizados: ' + pagos.length, 'info');
+            renderContabilidad();
+          }, error => {
+            debugLog('Error en suscripción pagos: ' + error.message, 'error');
+          });
+        }
       }
 
       debugLog('Suscripciones iniciadas correctamente', 'success');
