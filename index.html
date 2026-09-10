@@ -124,21 +124,22 @@
     }
 
     .btn:active { transform: scale(0.97); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
     .btn-primary { background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-dark)); color: #000; }
-    .btn-primary:hover { box-shadow: 0 4px 12px rgba(245,158,11,0.4); transform: translateY(-1px); }
+    .btn-primary:hover:not(:disabled) { box-shadow: 0 4px 12px rgba(245,158,11,0.4); transform: translateY(-1px); }
 
     .btn-secondary { background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border); }
-    .btn-secondary:hover { background: var(--bg-card-hover); border-color: var(--text-muted); }
+    .btn-secondary:hover:not(:disabled) { background: var(--bg-card-hover); border-color: var(--text-muted); }
 
     .btn-success { background: linear-gradient(135deg, var(--accent-green), var(--accent-green-dark)); color: white; }
-    .btn-success:hover { box-shadow: 0 4px 12px rgba(16,185,129,0.4); transform: translateY(-1px); }
+    .btn-success:hover:not(:disabled) { box-shadow: 0 4px 12px rgba(16,185,129,0.4); transform: translateY(-1px); }
 
     .btn-danger { background: linear-gradient(135deg, var(--accent-red), #dc2626); color: white; }
-    .btn-danger:hover { box-shadow: 0 4px 12px rgba(239,68,68,0.4); }
+    .btn-danger:hover:not(:disabled) { box-shadow: 0 4px 12px rgba(239,68,68,0.4); }
 
     .btn-pagado { background: linear-gradient(135deg, var(--accent-purple), #7c3aed); color: white; }
-    .btn-pagado:hover { box-shadow: 0 4px 12px rgba(139,92,246,0.4); transform: translateY(-1px); }
+    .btn-pagado:hover:not(:disabled) { box-shadow: 0 4px 12px rgba(139,92,246,0.4); transform: translateY(-1px); }
 
     .btn-sm { padding: 6px 12px; font-size: 12px; }
     .btn-block { width: 100%; padding: 14px; font-size: 16px; }
@@ -947,14 +948,9 @@
       return n.toFixed(2).replace('.', ',') + ' €';
     }
 
-    // ============================================================
-    // FUNCIÓN CORREGIDA: extraerTotalPedido
-    // Antes fallaba porque items podía ser un objeto en vez de string
-    // ============================================================
     function extraerTotalPedido(items) {
       if (!items) return 0;
       if (typeof items !== 'string') {
-        // Si items es un objeto o array, intentar convertirlo a string
         try {
           items = String(items);
         } catch (e) {
@@ -1433,6 +1429,9 @@
       if (e4) e4.textContent = mesas.length;
     }
 
+    // ============================================================
+    // CAMBIO 2 APLICADO: renderCuentasMesas con bloqueo de cobro
+    // ============================================================
     function renderCuentasMesas() {
       var box = document.getElementById('cuentasMesas');
       if (!box) {
@@ -1445,11 +1444,14 @@
         if (o.estado !== 'CANCELADO' && o.estado !== 'PAGADO') {
           var nombreMesa = o.mesa || 'Sin mesa';
           if (!mesasActivas[nombreMesa]) {
-            mesasActivas[nombreMesa] = { total: 0, numPedidos: 0 };
+            mesasActivas[nombreMesa] = { total: 0, numPedidos: 0, pendientesEntrega: 0 };
           }
           var totalPedido = o.totalPedido || extraerTotalPedido(o.items);
           mesasActivas[nombreMesa].total += totalPedido;
           mesasActivas[nombreMesa].numPedidos++;
+          if (o.estado !== 'ENTREGADO') {
+            mesasActivas[nombreMesa].pendientesEntrega++;
+          }
         }
       });
 
@@ -1465,12 +1467,23 @@
       keys.forEach(function(mesa) {
         var info = mesasActivas[mesa];
         var mesaEncoded = encodeURIComponent(mesa);
+        var listaParaCobrar = (info.pendientesEntrega === 0);
+
+        var estadoTexto = listaParaCobrar
+          ? '✅ Lista para cobrar'
+          : '🔒 ' + info.pendientesEntrega + ' pedido(s) sin entregar todavía';
+
+        var botonCobrar = listaParaCobrar
+          ? '<button class="btn btn-success btn-sm" onclick="cobrarMesa(\'' + mesaEncoded + '\')">💰 Cobrar</button>'
+          : '<button class="btn btn-secondary btn-sm" disabled>🔒 Cobrar</button>';
+
         html += '<div class="alert-card cuenta-mesa animate-in">' +
           '<div class="alert-info">' +
           '<div class="alert-title">🪑 Mesa ' + escapeHtml(mesa) + '</div>' +
           '<div class="alert-meta">' + info.numPedidos + ' pedido(s) · ' + formatPrecio(info.total) + '</div>' +
+          '<div class="alert-meta">' + estadoTexto + '</div>' +
           '</div>' +
-          '<button class="btn btn-success btn-sm" onclick="cobrarMesa(\'' + mesaEncoded + '\')">💰 Cobrar</button>' +
+          botonCobrar +
           '</div>';
       });
 
@@ -1507,6 +1520,9 @@
       box.innerHTML = html;
     }
 
+    // ============================================================
+    // CAMBIO 1 APLICADO: el botón Pagado ya NO aparece en LISTO
+    // ============================================================
     function renderStaffOrders() {
       var box = document.getElementById('staffOrders');
       if (!box) return;
@@ -1537,7 +1553,6 @@
 
         if (order.estado === 'LISTO') {
           botones += '<button class="btn btn-primary btn-sm" onclick="cambiarEstado(\'' + order.id + '\', \'ENTREGADO\')">📦 Entregar</button>';
-          botones += '<button class="btn btn-pagado btn-sm" onclick="cambiarEstado(\'' + order.id + '\', \'PAGADO\')">💰 Pagado</button>';
         }
 
         if (order.estado === 'ENTREGADO') {
@@ -1920,6 +1935,9 @@
       });
     }
 
+    // ============================================================
+    // CAMBIO 3 APLICADO: cobrarMesa valida que todo esté ENTREGADO
+    // ============================================================
     function cobrarMesa(mesaEncoded) {
       var mesa = decodeURIComponent(mesaEncoded);
       debugLog('cobrarMesa: iniciando cobro para mesa "' + mesa + '"', 'info');
@@ -1936,6 +1954,15 @@
 
       if (!pedidosMesa.length) {
         showToast('No hay pedidos pendientes en esta mesa', 'error');
+        return;
+      }
+
+      // VALIDACIÓN: no se puede cobrar si hay pedidos sin entregar
+      var noEntregados = pedidosMesa.filter(function(o) { return o.estado !== 'ENTREGADO'; });
+      if (noEntregados.length) {
+        var detalle = noEntregados.map(function(o) { return estadoLabel(o.estado); }).join(', ');
+        debugLog('cobrarMesa: BLOQUEADO. Pedidos sin entregar: ' + detalle, 'error');
+        showToast('⚠️ No se puede cobrar todavía: hay pedidos sin entregar (' + detalle + ')', 'error');
         return;
       }
 
