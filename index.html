@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <title>Hostelería Pro</title>
-<!-- VERSION: PROD-2026-09-14-B -->
+<!-- VERSION: PROD-2026-09-14-C -->
 <style>
 :root{--bg:#0a0a0f;--bg2:#13131a;--card:#1a1a24;--border:#2a2a38;--t1:#f4f4f5;--t2:#a1a1aa;--t3:#71717a;--gold:#f59e0b;--green:#10b981;--blue:#3b82f6;--red:#ef4444;--purple:#8b5cf6;}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
@@ -74,9 +74,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-s
 .obox{background:var(--card);border:3px solid var(--gold);border-radius:20px;padding:30px;max-width:620px;width:100%;text-align:center;max-height:90vh;overflow-y:auto;}
 .obox.recoger{border-color:var(--green);}
 .obox.farewell{border-color:var(--green);background:linear-gradient(135deg, rgba(16,185,129,0.1), var(--card));}
+.obox.client-alert{border-color:var(--blue);background:linear-gradient(135deg, rgba(59,130,246,0.1), var(--card));}
 .otitle{font-size:28px;font-weight:800;color:var(--gold);margin-bottom:10px;}
 .obox.recoger .otitle{color:var(--green);}
 .obox.farewell .otitle{color:var(--green);}
+.obox.client-alert .otitle{color:var(--blue);font-size:32px;}
 .ocount{display:inline-block;padding:6px 14px;background:rgba(245,158,11,.15);color:var(--gold);border-radius:20px;font-weight:700;margin-bottom:14px;}
 .obody{text-align:left;margin:16px 0;}
 .oorder{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;}
@@ -184,7 +186,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-s
     </div>
     <div class="card">
       <h3>🔧 Diagnóstico <button class="btn btn-grey btn-sm" style="margin-left:auto;" onclick="toggleDebug()">Mostrar/Ocultar</button></h3>
-      <div class="otime">Versión: PROD-2026-09-14 B</div>
+      <div class="otime">Versión: PROD-2026-09-14 C</div>
       <div id="debugPanel" class="debug-panel hidden"><div class="debug-line">Iniciando...</div></div>
     </div>
   </section>
@@ -276,13 +278,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-s
 
 </div>
 
-<!-- OVERLAY AVISOS STAFF -->
+<!-- OVERLAY AVISOS STAFF (PEDIDOS) -->
 <div id="overlay" class="overlay hidden">
   <div class="obox" id="obox">
     <div class="otitle" id="otitle">🔔 NUEVO PEDIDO</div>
     <div id="ocount" class="ocount hidden"></div>
     <div id="obody" class="obody"></div>
     <button class="btn btn-green obtn" onclick="cerrarOverlay()">✅ ENTERADO</button>
+  </div>
+</div>
+
+<!-- OVERLAY ALERTAS CLIENTES -->
+<div id="clientAlertOverlay" class="overlay hidden">
+  <div class="obox client-alert">
+    <div class="otitle" id="clientAlertTitle">🔔 ALERTA</div>
+    <div id="clientAlertBody" class="obody"></div>
+    <button class="btn btn-green obtn" onclick="cerrarClientAlertOverlay()">✅ ENTERADO</button>
   </div>
 </div>
 
@@ -308,6 +319,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-s
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- Audio fallback para alertas -->
+<audio id="alertAudio" preload="auto">
+  <source src="data:audio/wav;base64,UklGZQoAQABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoAAAAA" type="audio/wav">
+</audio>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
@@ -344,7 +360,7 @@ var myCamName=localStorage.getItem(KEY_CAM)||'';
 // ============ DATA ============
 var orders=[],alerts=[],mesas=[],camareros=[],productos=[],pagos=[];
 var clientOrders=[],clientAlerts=[];
-var cart=[],pendingFoto='',overlayQueue=[],knownState={},initialLoaded=false,audioCtx=null;
+var cart=[],pendingFoto='',overlayQueue=[],clientAlertQueue=[],knownState={},knownAlerts={},initialLoaded=false,audioCtx=null;
 
 // ============ PERMISOS ============
 function puedeCambiar(d){if(role==='admin')return true;if(role==='barra')return d==='EN_PREPARACION'||d==='LISTO'||d==='PAGADO';if(role==='camarero')return d==='ENTREGADO';return false;}
@@ -363,6 +379,7 @@ function stClass(e){var m={RECIBIDO:'recibido',EN_PREPARACION:'prep',LISTO:'list
 function exTotal(items){if(!items)return 0;var m=String(items).match(/Total:\s*([\d.,]+)\s*€/);return m?parseFloat(m[1].replace(',','.')):0;}
 function mesaByName(n){for(var i=0;i<mesas.length;i++)if(mesas[i].nombre===n)return mesas[i];return null;}
 function isResponsible(o){if(role!=='camarero'||!myCamName)return false;var m=mesaByName(o.mesa);return!!(m&&m.camarero===myCamName);}
+function isResponsibleAlert(a){if(role!=='camarero'||!myCamName)return false;var m=mesaByName(a.mesa);return!!(m&&m.camarero===myCamName);}
 function isStaff(){return role==='barra'||role==='camarero'||role==='admin';}
 function showToast(m,t){var e=document.getElementById('toast');e.textContent=m;e.className='toast show '+(t||'');setTimeout(function(){e.className='toast';},3000);}
 
@@ -374,10 +391,41 @@ function checkAudioState(){
   }
 }
 
-function beep(){try{
-  if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
-  if(audioCtx.state==='suspended')audioCtx.resume().then(checkAudioState);
+function beep(){
+  var played = false;
+  
+  // Intento 1: Web Audio API
+  try{
+    if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+    if(audioCtx.state==='suspended'){
+      audioCtx.resume().then(function(){
+        checkAudioState();
+        playBeepSound();
+      });
+    } else {
+      playBeepSound();
+    }
+    played = true;
+  }catch(e){
+    console.log('Web Audio API failed:', e);
+  }
+  
+  // Intento 2: Fallback con elemento audio
+  if(!played){
+    try{
+      var audio = document.getElementById('alertAudio');
+      if(audio){
+        audio.currentTime = 0;
+        audio.play().catch(function(e){console.log('Audio fallback failed:', e);});
+      }
+    }catch(e){}
+  }
+  
   checkAudioState();
+}
+
+function playBeepSound(){
+  if(!audioCtx) return;
   var n=audioCtx.currentTime;
   [0,.22,.44].forEach(function(t){
     var o=audioCtx.createOscillator(),g=audioCtx.createGain();
@@ -388,14 +436,26 @@ function beep(){try{
     o.connect(g);g.connect(audioCtx.destination);
     o.start(n+t);o.stop(n+t+.2);
   });
-}catch(e){}}
+}
 
-function vibrar(){try{if(navigator.vibrate)navigator.vibrate([300,100,300,100,300]);}catch(e){}}
+function vibrar(){
+  try{
+    if(navigator.vibrate){
+      // Patrón más intenso: vibración larga con pausas
+      navigator.vibrate([500, 200, 500, 200, 500]);
+    }
+  }catch(e){}
+}
 
 // Desbloquear audio en primera interacción
 document.addEventListener('pointerdown',function(){
   if(audioCtx && audioCtx.state==='suspended'){
     audioCtx.resume().then(checkAudioState);
+  }
+  // También desbloquear el audio fallback
+  var audio = document.getElementById('alertAudio');
+  if(audio){
+    audio.play().then(function(){audio.pause();audio.currentTime=0;}).catch(function(){});
   }
 },{once:true});
 
@@ -405,7 +465,7 @@ document.addEventListener('visibilitychange',function(){if(document.visibilitySt
 function compressImage(file,mw,q){return new Promise(function(res,rej){var r=new FileReader();r.onload=function(){var img=new Image();img.onload=function(){var w=img.width,h=img.height;if(w>mw){h=Math.round(h*(mw/w));w=mw;}var c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);res(c.toDataURL('image/jpeg',q));};img.onerror=function(){rej();};img.src=r.result;};r.readAsDataURL(file);});}
 function compressFile(f){if(!f||!f.type.startsWith('image/'))return Promise.resolve('');return compressImage(f,600,.62).then(function(d){return d.length>900000?compressImage(f,420,.45):d;}).then(function(d){return d.length>950000?compressImage(f,320,.35):d;}).catch(function(){return'';});}
 
-// ============ OVERLAY ============
+// ============ OVERLAY PEDIDOS ============
 function showOverlay(){if(!overlayQueue.length)return;
   var types={};overlayQueue.forEach(function(i){types[i.tipo]=1;});var tk=Object.keys(types);
   document.getElementById('otitle').textContent=tk.length===1?(tk[0]==='RECOGER'?'🏃 RECOGER':'🔔 NUEVO PEDIDO'):'🔔 AVISOS';
@@ -417,11 +477,60 @@ function showOverlay(){if(!overlayQueue.length)return;
   document.getElementById('overlay').classList.remove('hidden');beep();vibrar();}
 function cerrarOverlay(){overlayQueue=[];document.getElementById('overlay').classList.add('hidden');try{if(navigator.vibrate)navigator.vibrate(0);}catch(e){}}
 
-function detectChanges(){if(!isStaff())return;
-  orders.forEach(function(o){var prev=knownState[o.id];
-    if(prev===undefined){if(initialLoaded&&role==='barra')overlayQueue.push({tipo:'NUEVO',order:o});knownState[o.id]=o.estado;}
-    else if(prev!==o.estado){if(o.estado==='LISTO'&&isResponsible(o))overlayQueue.push({tipo:'RECOGER',order:o});knownState[o.id]=o.estado;}});
-  initialLoaded=true;if(overlayQueue.length)showOverlay();}
+// ============ OVERLAY ALERTAS CLIENTES ============
+function showClientAlertOverlay(){
+  if(!clientAlertQueue.length) return;
+  
+  var html = clientAlertQueue.map(function(a){
+    var msg = a.tipo === 'PEDIR_CUENTA' 
+      ? '💶 Mesa ' + esc(a.mesa) + ' ha solicitado la cuenta'
+      : '🔔 Mesa ' + esc(a.mesa) + ' solicita tu atención';
+    return '<div class="oorder"><div class="om" style="font-size:24px;">' + msg + '</div></div>';
+  }).join('');
+  
+  document.getElementById('clientAlertTitle').textContent = clientAlertQueue.length > 1 ? '🔔 ' + clientAlertQueue.length + ' ALERTAS' : '🔔 ALERTA';
+  document.getElementById('clientAlertBody').innerHTML = html;
+  document.getElementById('clientAlertOverlay').classList.remove('hidden');
+  beep();
+  vibrar();
+}
+
+function cerrarClientAlertOverlay(){
+  clientAlertQueue = [];
+  document.getElementById('clientAlertOverlay').classList.add('hidden');
+  try{if(navigator.vibrate)navigator.vibrate(0);}catch(e){}
+}
+
+function detectChanges(){
+  if(!isStaff()) return;
+  
+  // Detectar cambios en pedidos
+  orders.forEach(function(o){
+    var prev=knownState[o.id];
+    if(prev===undefined){
+      if(initialLoaded && role==='barra') overlayQueue.push({tipo:'NUEVO',order:o});
+      knownState[o.id]=o.estado;
+    } else if(prev!==o.estado){
+      if(o.estado==='LISTO' && isResponsible(o)) overlayQueue.push({tipo:'RECOGER',order:o});
+      knownState[o.id]=o.estado;
+    }
+  });
+  
+  // Detectar nuevas alertas de clientes
+  alerts.forEach(function(a){
+    if(!knownAlerts[a.id] && !a.atendida){
+      // Solo mostrar overlay al camarero asignado
+      if(role === 'camarero' && isResponsibleAlert(a)){
+        clientAlertQueue.push(a);
+      }
+      knownAlerts[a.id] = true;
+    }
+  });
+  
+  initialLoaded=true;
+  if(overlayQueue.length) showOverlay();
+  if(clientAlertQueue.length) showClientAlertOverlay();
+}
 
 // ============ CAMARERO IDENTIDAD ============
 function showCamModal(){renderCamPick();document.getElementById('camModal').classList.remove('hidden');}
@@ -455,7 +564,7 @@ function cambiarPasswordAdmin(){if(!requireFB())return;var a=prompt('Contraseña
 function applyRole(){var mp=document.getElementById('menuPanel'),sp=document.getElementById('staffPanel'),ap=document.getElementById('adminPanel'),cp=document.getElementById('clientPanel'),bs=document.getElementById('btnSalir'),rb=document.getElementById('roleBadge');
   mp.classList.add('hidden');sp.classList.add('hidden');ap.classList.add('hidden');cp.classList.add('hidden');
   
-  // CAMBIO: El botón salir NO se muestra para el cliente
+  // El botón salir NO se muestra para el cliente
   bs.style.display = (role === 'cliente') ? 'none' : 'inline-flex';
   
   rb.textContent=role==='menu'?'-':role.toUpperCase();rb.className='role'+(role==='cliente'?' cliente':'');
@@ -547,7 +656,6 @@ function renderCart(){var b=document.getElementById('cartList');if(!b)return;
   if(!cart.length){b.innerHTML='<div class="empty">Carrito vacío</div>';return;}
   b.innerHTML=cart.map(function(i){return'<div class="cartline"><div><b>'+i.qty+' x '+esc(i.nombre)+'</b>'+(i.precio?'<div class="otime">'+fp(i.precio*i.qty)+'</div>':'')+'</div><button class="btn btn-red btn-sm" onclick="quitCart(\''+i.id+'\')">✕</button></div>';}).join('');}
 
-// CAMBIO: Nueva función para verificar si el cliente debe ver la pantalla de despedida
 function renderClientFarewellCheck(){
   var latest = clientOrders.slice().sort(function(a,b){return(b.createdAtLocal||0)-(a.createdAtLocal||0);})[0];
   if(latest && latest.estado === 'PAGADO'){
@@ -667,7 +775,7 @@ function subscribeAll(){if(!firebaseReady||!db)return;
     db.ref('alertas').on('value',function(s){var d=s.val()||{};var all=Object.keys(d).map(function(k){var o=d[k];o.id=k;return o;});clientAlerts=all.filter(function(a){return a.clientId===clientId;});renderClientStatus();});
   } else if(isStaff()){
     db.ref('pedidos').on('value',function(s){var d=s.val()||{};orders=Object.keys(d).map(function(k){var o=d[k];o.id=k;return o;});renderAll();});
-    db.ref('alertas').on('value',function(s){var d=s.val()||{};alerts=Object.keys(d).map(function(k){var o=d[k];o.id=k;return o;});renderStaffAlerts();renderStats();});
+    db.ref('alertas').on('value',function(s){var d=s.val()||{};alerts=Object.keys(d).map(function(k){var o=d[k];o.id=k;return o;});renderAll();});
     db.ref('pagos').on('value',function(s){var d=s.val()||{};pagos=Object.keys(d).map(function(k){var o=d[k];o.id=k;return o;});pagos.sort(function(a,b){return(b.timestamp||0)-(a.timestamp||0);});if(role==='admin')renderContab();});
   }}
 
