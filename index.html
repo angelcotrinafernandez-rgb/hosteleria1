@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <title>Hostelería Pro</title>
-<!-- VERSION: PROD-2026-09-14-D -->
+<!-- VERSION: PROD-2026-09-14-E -->
 <style>
 :root{--bg:#0a0a0f;--bg2:#13131a;--card:#1a1a24;--border:#2a2a38;--t1:#f4f4f5;--t2:#a1a1aa;--t3:#71717a;--gold:#f59e0b;--green:#10b981;--blue:#3b82f6;--red:#ef4444;--purple:#8b5cf6;}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
@@ -186,7 +186,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-s
     </div>
     <div class="card">
       <h3>🔧 Diagnóstico <button class="btn btn-grey btn-sm" style="margin-left:auto;" onclick="toggleDebug()">Mostrar/Ocultar</button></h3>
-      <div class="otime">Versión: PROD-2026-09-14 D</div>
+      <div class="otime">Versión: PROD-2026-09-14 E</div>
       <div id="debugPanel" class="debug-panel hidden"><div class="debug-line">Iniciando...</div></div>
     </div>
   </section>
@@ -329,7 +329,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-s
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
 
 <script>
 var firebaseConfig={apiKey:"AIzaSyDBwim0SAPEJvqSabaCrDJNvU3J2QeCU5c",authDomain:"hosteleria-41fe7.firebaseapp.com",databaseURL:"https://hosteleria-41fe7-default-rtdb.europe-west1.firebasedatabase.app",projectId:"hosteleria-41fe7",storageBucket:"hosteleria-41fe7.firebasestorage.app",messagingSenderId:"966603143880",appId:"1:966603143880:web:3b2a6b7a903992079bc3fd"};
@@ -356,7 +356,6 @@ else if(['admin','barra','camarero'].indexOf(urlVista)!==-1){role=urlVista;local
 else if(urlVista==='cliente'){role='cliente';}
 else{var sr=localStorage.getItem(KEY_ROLE);if(sr&&['admin','barra','camarero','cliente'].indexOf(sr)!==-1)role=sr;}
 
-// CAMBIO: clientId usa sessionStorage para que cada pestaña/escaneo sea un cliente nuevo
 var clientId=sessionStorage.getItem(KEY_CID);
 if(!clientId){clientId='c_'+Math.random().toString(36).slice(2)+'_'+Date.now();sessionStorage.setItem(KEY_CID,clientId);}
 
@@ -571,9 +570,18 @@ function renderStaffOrders(){var box=document.getElementById('staffOrders');if(!
       '<div class="oitems">'+escL(o.items||'')+'</div><div class="otime" style="margin-bottom:8px;">Responsable:'+rt+'</div>'+
       '<div class="ofoot"><span class="st '+stClass(o.estado)+'">'+stLabel(o.estado)+'</span><div style="display:flex;gap:6px;flex-wrap:wrap;">'+botonesPara(o)+'</div></div></div>';}).join('');}
 
+// CAMBIO: Ocultar alertas atendidas con más de 5 minutos
 function renderStaffAlerts(){var box=document.getElementById('staffAlerts');if(!box)return;
   if(!alerts.length){box.innerHTML='<div class="empty">No hay alertas</div>';return;}
-  var s=alerts.slice().sort(function(a,b){if(!!a.atendida!==!!b.atendida)return a.atendida?1:-1;return(b.createdAtLocal||0)-(a.createdAtLocal||0);});
+  var now=Date.now();
+  var s=alerts.slice()
+    .filter(function(a){
+      // Ocultar alertas atendidas con más de 5 minutos
+      if(a.atendida && a.updatedAtLocal && (now-a.updatedAtLocal)>300000) return false;
+      return true;
+    })
+    .sort(function(a,b){if(!!a.atendida!==!!b.atendida)return a.atendida?1:-1;return(b.createdAtLocal||0)-(a.createdAtLocal||0);});
+  if(!s.length){box.innerHTML='<div class="empty">No hay alertas</div>';return;}
   box.innerHTML=s.map(function(a){var t=a.tipo==='PEDIR_CUENTA'?'💶 Cuenta solicitada':'🔔 Llamar camarero';
     return'<div class="alertrow '+(a.atendida?'ok':'')+'"><div><b>'+t+'</b><div class="otime">Mesa '+esc(a.mesa||'S/M')+' · '+ftime(a.createdAtLocal)+'</div></div>'+
     (!a.atendida?'<button class="btn btn-green btn-sm" onclick="atenderAlerta(\''+a.id+'\')">Atender</button>':'<span style="color:var(--green)">✅</span>')+'</div>';}).join('');}
@@ -689,6 +697,7 @@ function cambiarEstado(id,est){if(!puedeCambiar(est)){showToast('⚠️ Tu rol n
       db.ref('pagos/'+newId()).set({fecha:now.toISOString().slice(0,10),hora:now.toTimeString().slice(0,5),timestamp:now.getTime(),mesa:previa.mesa||'S/M',total:Math.round(t*100)/100,numPedidos:1,origen:'individual'})
         .then(function(){moverAHistorial(id,previa);});}});}
 
+// CAMBIO: Al cobrar mesa, marcar como atendidas todas las alertas de esa mesa
 function cobrarMesa(enc){var mesa=decodeURIComponent(enc);if(!(role==='barra'||role==='admin')){showToast('⚠️ Solo barra/admin','error');return;}if(!requireFB())return;
   var pm=orders.filter(function(o){return o.mesa===mesa&&o.estado!=='CANCELADO'&&o.estado!=='PAGADO';});
   if(!pm.length){showToast('Sin pedidos','error');return;}if(pm.some(function(o){return o.estado!=='ENTREGADO';})){showToast('⚠️ Hay pedidos sin entregar','error');return;}
@@ -700,6 +709,12 @@ function cobrarMesa(enc){var mesa=decodeURIComponent(enc);if(!(role==='barra'||r
     })
     .then(function(){
       pm.forEach(function(p){moverAHistorial(p.id,p);});
+      // NUEVO: Marcar como atendidas todas las alertas de esta mesa
+      alerts.forEach(function(a){
+        if(a.mesa===mesa && !a.atendida){
+          db.ref('alertas/'+a.id).update({atendida:true,updatedAtLocal:nowLocal()});
+        }
+      });
       showToast('✅ Cobrada: '+fp(t),'success');
     });}
 
@@ -728,10 +743,49 @@ function delProd(id){if(!confirm('¿Eliminar?'))return;db.ref('productos/'+id).r
 
 function forceRefresh(){if(!requireFB())return;db.ref('pedidos').once('value').then(function(s){var d=s.val()||{};orders=Object.keys(d).map(function(k){var o=d[k];o.id=k;return o;});renderAll();showToast('✅ Actualizado','success');});}
 
-function exportarExcel(){if(typeof XLSX==='undefined'){showToast('❌ Excel no cargado','error');return;}if(!pagos.length){showToast('⚠️ Sin pagos','error');return;}
+// CAMBIO: Excel con total destacado en verde grande
+function exportarExcel(){
+  if(typeof XLSX==='undefined'){showToast('❌ Excel no cargado','error');return;}
+  if(!pagos.length){showToast('⚠️ Sin pagos','error');return;}
+  
   var data=pagos.map(function(p){return{'Fecha':p.fecha,'Hora':p.hora,'Mesa':p.mesa,'Pedidos':p.numPedidos,'Total (€)':p.total};});
-  var ws=XLSX.utils.json_to_sheet(data);var wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Contabilidad');
-  XLSX.writeFile(wb,'contabilidad_'+new Date().toISOString().slice(0,10)+'.xlsx');showToast('✅ Excel exportado','success');}
+  
+  // Calcular total
+  var total=0;
+  pagos.forEach(function(p){total+=Number(p.total)||0;});
+  
+  // Añadir fila de total
+  data.push({'Fecha':'','Hora':'','Mesa':'','Pedidos':'','Total (€)':'💰 TOTAL: '+fp(total)});
+  
+  var ws=XLSX.utils.json_to_sheet(data);
+  
+  // Aplicar estilos a la fila de total (última fila)
+  var range=XLSX.utils.decode_range(ws['!ref']);
+  var lastRow=range.e.r;
+  
+  // Estilo para la fila de total: fondo verde, texto blanco, negrita, tamaño grande
+  var totalStyle={
+    fill:{fgColor:{rgb:'10B981'}},
+    font:{bold:true,color:{rgb:'FFFFFF'},sz:16},
+    alignment:{horizontal:'center',vertical:'center'}
+  };
+  
+  // Aplicar estilo a todas las celdas de la última fila
+  for(var col=range.s.c;col<=range.e.c;col++){
+    var cellRef=XLSX.utils.encode_cell({r:lastRow,c:col});
+    if(ws[cellRef]){
+      ws[cellRef].s=totalStyle;
+    }
+  }
+  
+  // Ajustar ancho de columnas
+  ws['!cols']=[{wch:12},{wch:8},{wch:10},{wch:10},{wch:15}];
+  
+  var wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'Contabilidad');
+  XLSX.writeFile(wb,'contabilidad_'+new Date().toISOString().slice(0,10)+'.xlsx');
+  showToast('✅ Excel exportado','success');
+}
 
 function exportarHistorial(){
   if(typeof XLSX==='undefined'){showToast('❌ Excel no cargado','error');return;}
